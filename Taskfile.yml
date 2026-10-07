@@ -2,6 +2,9 @@
 
 version: "3"
 
+dotenv:
+  - .env
+
 vars:
   GREETING: Hello, world!
 
@@ -28,3 +31,9 @@ tasks:
     dir: frontend
     cmds:
       - bun run dev
+
+  check:
+    desc: "Check code"
+    dir: frontend
+    cmds:
+      - bun run check
