@@ -19,6 +19,46 @@
       "version": "1.4.0",
       "resolved": "ghcr.io/devcontainers/features/go@sha256:3b2c7acfdb24de88292283d10eb7517ccc45f60ae22a97030f1cf4fbd03634f3",
       "integrity": "sha256:3b2c7acfdb24de88292283d10eb7517ccc45f60ae22a97030f1cf4fbd03634f3"
+    },
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "2.1.0",
+      "resolved": "ghcr.io/devcontainers/features/node@sha256:586c9a6f7dd40bd3ba2cd41e7f2f88dcc31fbe5d1442afcbf07ffbc66b686857",
+      "integrity": "sha256:586c9a6f7dd40bd3ba2cd41e7f2f88dcc31fbe5d1442afcbf07ffbc66b686857"
+    },
+    "ghcr.io/helpers4/devcontainer/essential-dev:1": {
+      "version": "1.2.4",
+      "resolved": "ghcr.io/helpers4/devcontainer/essential-dev@sha256:0ac275fcdf516fe09da90d4470066abae46a0da6f3b3e349dee96b1bde59ba10",
+      "integrity": "sha256:0ac275fcdf516fe09da90d4470066abae46a0da6f3b3e349dee96b1bde59ba10",
+      "dependsOn": [
+        "ghcr.io/helpers4/devcontainer/helpers4-common:1"
+      ]
+    },
+    "ghcr.io/helpers4/devcontainer/helpers4-common:1": {
+      "version": "1.2.3",
+      "resolved": "ghcr.io/helpers4/devcontainer/helpers4-common@sha256:c7a3699fd60b5da8702d7d74ce48c58a84dfea4ee1f0f5370e8ce901b875aa8c",
+      "integrity": "sha256:c7a3699fd60b5da8702d7d74ce48c58a84dfea4ee1f0f5370e8ce901b875aa8c"
+    },
+    "ghcr.io/helpers4/devcontainer/typescript-dev:1": {
+      "version": "1.0.8",
+      "resolved": "ghcr.io/helpers4/devcontainer/typescript-dev@sha256:7f34073a647eaa5f6650f3d5ced63e55a393932440654d5cacf9a41a5bd87802",
+      "integrity": "sha256:7f34073a647eaa5f6650f3d5ced63e55a393932440654d5cacf9a41a5bd87802",
+      "dependsOn": [
+        "ghcr.io/helpers4/devcontainer/essential-dev:1"
+      ]
+    },
+    "ghcr.io/helpers4/devcontainer/vite-plus:1": {
+      "version": "1.2.3",
+      "resolved": "ghcr.io/helpers4/devcontainer/vite-plus@sha256:316cdc66b4669bfadc900e1011cf44cb1eb2a8642dd2b132d5d4b60f896594ba",
+      "integrity": "sha256:316cdc66b4669bfadc900e1011cf44cb1eb2a8642dd2b132d5d4b60f896594ba",
+      "dependsOn": [
+        "ghcr.io/helpers4/devcontainer/typescript-dev:1",
+        "ghcr.io/helpers4/devcontainer/helpers4-common:1"
+      ]
+    },
+    "ghcr.io/mrsimonemms/devcontainers/air:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/mrsimonemms/devcontainers/air@sha256:049fd008b735ea508cb58f99d77e2a8918ad6c28792a9bbbf06813a498502782",
+      "integrity": "sha256:049fd008b735ea508cb58f99d77e2a8918ad6c28792a9bbbf06813a498502782"
     }
   }
 }
