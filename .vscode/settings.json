@@ -29,5 +29,8 @@
   "oxc.fmt.disableNestedConfig": true,
   "search.exclude": {
     "**/routeTree.gen.ts": true
+  },
+  "[go]": {
+    "editor.defaultFormatter": "golang.go"
   }
 }

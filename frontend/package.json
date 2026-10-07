@@ -8,7 +8,7 @@
   "scripts": {
     "build": "vp build",
     "check": "vp check",
-    "dev": "vp dev --port 3000",
+    "dev": "vp dev",
     "generate-routes": "tsr generate",
     "preview": "vp preview"
   },

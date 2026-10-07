@@ -20,11 +20,23 @@ const config = defineConfig({
     options: { typeAware: true, typeCheck: true },
   },
   resolve: { tsconfigPaths: true },
+  server: {
+    host: true,
+    port: 3000,
+    watch: {
+      usePolling: true,
+      interval: 300,
+    },
+  },
   plugins: lazyPlugins(() => [
     devtools(),
     nitro({ rollupConfig: { external: [/^@sentry\//] } }),
     tailwindcss(),
-    tanstackStart(),
+    tanstackStart({
+      spa: {
+        enabled: true,
+      },
+    }),
     viteReact(),
     babel({ presets: [reactCompilerPreset()] }),
   ]),
