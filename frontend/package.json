@@ -11,7 +11,8 @@
     "dev": "vp dev",
     "generate-routes": "tsr generate",
     "openapi-ts": "openapi-ts",
-    "preview": "vp preview"
+    "preview": "vp preview",
+    "test": "vitest"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -43,7 +44,8 @@
     "babel-plugin-react-compiler": "^1.0.0",
     "typescript": "^6.0.2",
     "vite": "npm:@voidzero-dev/vite-plus-core@1.1.0",
-    "vite-plus": "1.1.0"
+    "vite-plus": "1.1.0",
+    "vitest": "^5.0.3"
   },
   "overrides": {
     "vite": "npm:@voidzero-dev/vite-plus-core@1.1.0"

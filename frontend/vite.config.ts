@@ -3,7 +3,6 @@ import { defineConfig, lazyPlugins } from "vite-plus";
 
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 
-import { heyApiPlugin } from "@hey-api/vite-plugin";
 import babel from "@rolldown/plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
 import viteReact, { reactCompilerPreset } from "@vitejs/plugin-react";
@@ -41,56 +40,6 @@ const config = defineConfig({
     }),
     viteReact(),
     babel({ presets: [reactCompilerPreset()] }),
-    heyApiPlugin({
-      config: {
-        input: {
-          path: "http://localhost:8080/openapi.json",
-          watch: true,
-        },
-        output: { path: "src/client/gen", postProcess: ["oxlint", "oxfmt"] },
-        plugins: [
-          {
-            name: "@hey-api/typescript",
-            enums: "typescript-const",
-          },
-          {
-            name: "@hey-api/sdk",
-            validator: true,
-            transformer: true,
-          },
-          {
-            name: "@hey-api/client-fetch",
-            runtimeConfigPath: "./src/client/hey-api.ts",
-          },
-          {
-            name: "zod",
-            requests: true,
-            responses: true,
-            definitions: true,
-            dates: {
-              offset: true,
-            },
-            types: {
-              infer: true,
-              input: true,
-              output: true,
-            },
-          },
-          {
-            name: "@tanstack/react-query",
-            queryKeys: {
-              tags: true,
-            },
-            infiniteQueryKeys: {
-              tags: true,
-            },
-          },
-        ],
-      },
-      vite: {
-        apply: "serve",
-      },
-    }),
   ]),
 });
 

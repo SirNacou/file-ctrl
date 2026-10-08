@@ -21,6 +21,7 @@ tasks:
     deps:
       - dev:backend
       - dev:frontend
+      - dev:openapi
 
   dev:backend:
     desc: Run Go backend with live reload (or go run)
@@ -34,6 +35,12 @@ tasks:
     watch: true
     cmds:
       - bun run dev
+  dev:openapi:
+    desc: "Generate OpenAPI client for frontend"
+    dir: frontend
+    watch: true
+    cmds:
+      - bun run openapi-ts
 
   check:
     desc: "Check code"

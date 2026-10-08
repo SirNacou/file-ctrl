@@ -1,4 +1,4 @@
-import { getApiOptions } from "#/client/gen/@tanstack/react-query.gen.ts";
+import { getApiListFilesOptions } from "#/client/gen/@tanstack/react-query.gen.ts";
 import { env } from "#/config/env.ts";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const { data } = useQuery(getApiOptions());
+  const { data } = useQuery(getApiListFilesOptions());
   useEffect(() => {
     if (data) console.log("get data");
     console.log(env.PUBLIC_APP_URL);

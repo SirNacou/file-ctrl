@@ -1,8 +1,14 @@
 {
+  "[go]": {
+    "editor.defaultFormatter": "golang.go"
+  },
   "[javascript]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[jsonc]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[typescript]": {
@@ -23,14 +29,18 @@
   "files.watcherExclude": {
     "**/routeTree.gen.ts": true
   },
+  "go.alternateTools": {
+    "customFormatter": "golangci-lint-v2"
+  },
+  "go.formatFlags": ["fmt", "--stdin"],
+  "go.formatTool": "custom",
+  "go.lintFlags": ["--path-mode=abs", "--fast-only"],
+  "go.lintTool": "golangci-lint-v2",
   "npm.scriptRunner": "vp",
   "oxc.configPath": "frontend/vite.config.ts",
   "oxc.disableNestedConfig": true,
   "oxc.fmt.disableNestedConfig": true,
   "search.exclude": {
     "**/routeTree.gen.ts": true
-  },
-  "[go]": {
-    "editor.defaultFormatter": "golang.go"
   }
 }
