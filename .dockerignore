@@ -1,0 +1,44 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# CI/CD and IDE / Dev Containers
+.github
+.devcontainer
+.history
+.vscode
+.idea
+.zed
+*.sublime-*
+
+# Secrets and local environment files
+.env
+.env.*
+!.env.example
+
+# Local storage mount (never bake disk files into the image)
+storage/
+
+# Go backend build artifacts and tooling
+backend/tmp/
+backend/bin/
+backend/.air.toml
+
+# Frontend dependencies, caches, and previous builds
+frontend/node_modules/
+frontend/dist/
+frontend/.tanstack/
+frontend/logs/
+
+# Documentation and project notes
+docs/
+*.md
+LICENSE
+
+# Local runner / Taskfile
+Taskfile.yml
+
+# Operating system files
+.DS_Store
+Thumbs.db

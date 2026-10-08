@@ -2,6 +2,8 @@
 
 version: "3"
 
+output: prefixed
+
 dotenv:
   - .env
 
@@ -10,30 +12,43 @@ vars:
 
 tasks:
   default:
-    desc: Print a greeting message
     cmds:
-      - echo "{{.GREETING}}"
+      - task --list
     silent: true
-
   dev:
     desc: Start dev environtment
+    watch: true
     deps:
       - dev:backend
       - dev:frontend
+      - dev:openapi
 
   dev:backend:
     desc: Run Go backend with live reload (or go run)
     dir: backend
+    watch: true
     cmd: air
 
   dev:frontend:
     desc: "Run React dev server"
     dir: frontend
+    watch: true
     cmds:
       - bun run dev
+  dev:openapi:
+    desc: "Generate OpenAPI client for frontend"
+    dir: frontend
+    watch: true
+    cmds:
+      - bun run openapi-ts
 
   check:
     desc: "Check code"
     dir: frontend
     cmds:
       - bun run check
+
+  check:env:
+    desc: Verify environment variables directly from Task
+    cmds:
+      - echo "PUBLIC_APP_URL is -> [${PUBLIC_APP_URL}]"
