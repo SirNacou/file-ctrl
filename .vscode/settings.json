@@ -17,6 +17,7 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
+  "debug.javascript.autoAttachFilter": "disabled",
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "explicit"
   },

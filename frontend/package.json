@@ -8,6 +8,7 @@
   "scripts": {
     "build": "vp build",
     "check": "vp check",
+    "check:fix": "vp check --fix",
     "dev": "vp dev",
     "generate-routes": "tsr generate",
     "openapi-ts": "openapi-ts",

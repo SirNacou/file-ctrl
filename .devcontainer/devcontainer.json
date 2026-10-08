@@ -15,7 +15,11 @@
         "github.vscode-github-actions"
       ],
       "settings": {
-        "terminal.integrated.defaultProfile.linux": "zsh"
+        "debug.javascript.autoAttachFilter": "disabled",
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.env.linux": {
+          "NODE_OPTIONS": ""
+        }
       }
     }
   },

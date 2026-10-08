@@ -1,8 +1,8 @@
-import { defineEnv } from "envin";
-import { z } from "zod";
+import { defineEnv } from 'envin'
+import { z } from 'zod'
 
 export const env = defineEnv({
-  clientPrefix: "PUBLIC_",
+  clientPrefix: 'PUBLIC_',
   client: {
     PUBLIC_APP_URL: z.url(),
   },
@@ -10,4 +10,4 @@ export const env = defineEnv({
     ...process.env, // Server env variables
     ...import.meta.env, // Client env variables
   },
-});
+})
