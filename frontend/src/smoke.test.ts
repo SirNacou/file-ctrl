@@ -1,7 +1,7 @@
-import { describe, expect, it } from "bun:test";
+import { describe, expect, it } from 'bun:test'
 
-describe("Frontend environment", () => {
-  it("executes basic assertions", () => {
-    expect(true).toBe(true);
-  });
-});
+describe('Frontend environment', () => {
+  it('executes basic assertions', () => {
+    expect(true).toBe(true)
+  })
+})
