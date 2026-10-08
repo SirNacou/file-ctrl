@@ -11,7 +11,8 @@
         "tamasfe.even-better-toml",
         "mamacarlos.envautoexample",
         "voidzero.vite-plus-extension-pack",
-        "albert.tabout"
+        "albert.tabout",
+        "github.vscode-github-actions"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "zsh"
