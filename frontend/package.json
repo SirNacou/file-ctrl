@@ -10,6 +10,7 @@
     "check": "vp check",
     "dev": "vp dev",
     "generate-routes": "tsr generate",
+    "openapi-ts": "openapi-ts",
     "preview": "vp preview"
   },
   "dependencies": {
@@ -30,6 +31,8 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@hey-api/openapi-ts": "^0.99.0",
+    "@hey-api/vite-plugin": "^0.3.2",
     "@rolldown/plugin-babel": "^0.2.3",
     "@tanstack/devtools-vite": "0.8.5",
     "@tanstack/router-cli": "^1.132.0",

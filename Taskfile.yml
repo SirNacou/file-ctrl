@@ -12,13 +12,12 @@ vars:
 
 tasks:
   default:
-    desc: Print a greeting message
     cmds:
-      - echo "{{.GREETING}}"
+      - task --list
     silent: true
-
   dev:
     desc: Start dev environtment
+    watch: true
     deps:
       - dev:backend
       - dev:frontend
@@ -26,11 +25,13 @@ tasks:
   dev:backend:
     desc: Run Go backend with live reload (or go run)
     dir: backend
+    watch: true
     cmd: air
 
   dev:frontend:
     desc: "Run React dev server"
     dir: frontend
+    watch: true
     cmds:
       - bun run dev
 
@@ -39,3 +40,8 @@ tasks:
     dir: frontend
     cmds:
       - bun run check
+
+  check:env:
+    desc: Verify environment variables directly from Task
+    cmds:
+      - echo "PUBLIC_APP_URL is -> [${PUBLIC_APP_URL}]"

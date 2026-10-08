@@ -10,8 +10,8 @@
 				"oxc.oxc-vscode",
 				"tamasfe.even-better-toml",
 				"mamacarlos.envautoexample",
-				"metecan.dotenv-studio",
-				"voidzero.vite-plus-extension-pack"
+				"voidzero.vite-plus-extension-pack",
+				"albert.tabout"
 			],
 			"settings": {
 				"terminal.integrated.defaultProfile.linux": "zsh"

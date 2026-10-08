@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 	"log/slog"
 	"net/http"
@@ -9,6 +8,7 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humaecho"
 	"github.com/labstack/echo/v5"
+	"github.com/sirnacou/file-ctrl/backend/internal/features/storage"
 )
 
 func main() {
@@ -20,15 +20,7 @@ func main() {
 
 	apiGrp := huma.NewGroup(api, "/api")
 
-	huma.Get(apiGrp, "", func(ctx context.Context, i *struct{}) (*struct {
-		Status int
-	}, error) {
-		return &struct {
-			Status int
-		}{
-			Status: http.StatusOK,
-		}, nil
-	})
+	storage.RegisterModule(apiGrp)
 
 	slog.Info("Server run on port 8080")
 

@@ -1,13 +1,13 @@
-import { defineEnv } from "envin"
-import { z } from "zod"
+import { defineEnv } from "envin";
+import { z } from "zod";
 
 export const env = defineEnv({
-  shared: {
-    APP_URL: z.url(),
-  },
   clientPrefix: "PUBLIC_",
-  env: {
-    ...process.env,
-    ...import.meta.env,
+  client: {
+    PUBLIC_APP_URL: z.url(),
   },
-})
+  env: {
+    ...process.env, // Server env variables
+    ...import.meta.env, // Client env variables
+  },
+});
