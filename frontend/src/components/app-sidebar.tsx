@@ -6,7 +6,7 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
-} from "./ui/sidebar";
+} from './ui/sidebar'
 
 export const AppSidebar = () => {
   return (
@@ -21,5 +21,5 @@ export const AppSidebar = () => {
       </SidebarContent>
       <SidebarFooter />
     </Sidebar>
-  );
-};
+  )
+}

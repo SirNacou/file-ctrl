@@ -44,7 +44,8 @@ tasks:
     cmds:
       - bun run check
 
-  check:env:
-    desc: Verify environment variables directly from Task
+  check:fix:
+    desc: "Fix code"
+    dir: frontend
     cmds:
-      - echo "PUBLIC_APP_URL is -> [${PUBLIC_APP_URL}]"
+      - bun run check --fix

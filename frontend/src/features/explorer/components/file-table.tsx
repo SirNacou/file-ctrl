@@ -1,4 +1,4 @@
-import type { FileItem } from "#/client/gen/index.ts";
+import type { FileItem } from '#/client/gen/index.ts'
 import {
   Table,
   TableBody,
@@ -6,31 +6,31 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "#/components/ui/table.tsx";
-import { useTable } from "@tanstack/react-table";
-import { columns } from "./columns";
-import { features } from "./features";
+} from '#/components/ui/table.tsx'
+import { useTable } from '@tanstack/react-table'
+import { columns } from './columns'
+import { features } from './features'
 
 type FileTableProps = {
-  data: FileItem[];
-};
+  data: FileItem[]
+}
 
 export const FileTable = ({ data }: FileTableProps) => {
   const table = useTable({
-    key: "file-table",
+    key: 'file-table',
     features,
     columns,
     data,
     meta: {
       itemSelected: (item) => console.log(item),
     },
-  });
+  })
 
   return (
     <div
       className="bg-card shadow border-2 overflow-auto"
       style={{
-        height: "calc(100vh - 200px)",
+        height: 'calc(100vh - 200px)',
       }}
     >
       <Table noWrapper className="text-base">
@@ -38,18 +38,18 @@ export const FileTable = ({ data }: FileTableProps) => {
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
-                const hasExplicitSize = header.column.columnDef.size !== undefined;
+                const hasExplicitSize = header.column.columnDef.size !== undefined
                 return (
                   <TableHead
                     className="font-bold"
                     key={header.id}
                     style={{
-                      width: hasExplicitSize ? header.column.getSize() : "auto",
+                      width: hasExplicitSize ? header.column.getSize() : 'auto',
                     }}
                   >
                     {header.isPlaceholder ? null : <table.FlexRender header={header} />}
                   </TableHead>
-                );
+                )
               })}
             </TableRow>
           ))}
@@ -57,19 +57,19 @@ export const FileTable = ({ data }: FileTableProps) => {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+              <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                 {row.getAllCells().map((cell) => {
-                  const hasExplicitSize = cell.column.columnDef.size !== undefined;
+                  const hasExplicitSize = cell.column.columnDef.size !== undefined
                   return (
                     <TableCell
                       key={cell.id}
                       style={{
-                        width: hasExplicitSize ? cell.column.getSize() : "auto",
+                        width: hasExplicitSize ? cell.column.getSize() : 'auto',
                       }}
                     >
                       <table.FlexRender cell={cell} />
                     </TableCell>
-                  );
+                  )
                 })}
               </TableRow>
             ))
@@ -83,5 +83,5 @@ export const FileTable = ({ data }: FileTableProps) => {
         </TableBody>
       </Table>
     </div>
-  );
-};
+  )
+}
