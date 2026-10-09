@@ -43,5 +43,6 @@
   "oxc.fmt.disableNestedConfig": true,
   "search.exclude": {
     "**/routeTree.gen.ts": true
-  }
+  },
+  "tailwindSorter.sortOnSave": false
 }

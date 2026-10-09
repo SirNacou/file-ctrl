@@ -21,12 +21,20 @@ export const FileTable = ({ data }: FileTableProps) => {
     features,
     columns,
     data,
+    meta: {
+      itemSelected: (item) => console.log(item),
+    },
   });
 
   return (
-    <div className="bg-card shadow border-2">
-      <Table className="w-full text-base">
-        <TableHeader>
+    <div
+      className="bg-card shadow border-2 overflow-auto"
+      style={{
+        height: "calc(100vh - 200px)",
+      }}
+    >
+      <Table noWrapper className="text-base">
+        <TableHeader className="top-0 z-10 sticky bg-card">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
@@ -68,7 +76,7 @@ export const FileTable = ({ data }: FileTableProps) => {
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                This folder is empty.
               </TableCell>
             </TableRow>
           )}

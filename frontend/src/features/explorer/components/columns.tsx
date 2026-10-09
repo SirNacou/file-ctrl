@@ -40,8 +40,8 @@ export const columns = columnHelper.columns([
       return (
         <div
           className="group flex items-center gap-2.5 py-0.5 cursor-pointer select-none"
-          onClick={() => {
-            // if (item.is_dir) onNavigate(item.path);
+          onDoubleClick={() => {
+            row.table.options.meta?.itemSelected(item);
           }}
         >
           <Icon

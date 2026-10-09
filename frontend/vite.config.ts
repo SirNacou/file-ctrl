@@ -27,7 +27,6 @@ const config = defineConfig({
     port: 3000,
     watch: {
       usePolling: true,
-      interval: 500,
     },
   },
   envPrefix: ["PUBLIC_", "VITE_"],

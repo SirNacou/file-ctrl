@@ -16,11 +16,11 @@ function RouteComponent() {
       }
     >
       <AppSidebar />
-      <div className="px-4 md:px-6 py-2 md:py-4 w-full">
+      <div className="flex flex-col px-4 md:px-6 py-2 md:py-4 w-full">
         <header>
           <SidebarTrigger className="md:hidden" />
         </header>
-        <main>
+        <main className="flex-1">
           <Outlet />
         </main>
       </div>
