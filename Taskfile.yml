@@ -15,30 +15,26 @@ tasks:
     cmds:
       - task --list
     silent: true
+
   dev:
     desc: Start dev environtment
-    watch: true
     deps:
       - dev:backend
       - dev:frontend
-      - dev:openapi
 
   dev:backend:
     desc: Run Go backend with live reload (or go run)
     dir: backend
-    watch: true
     cmd: air
 
   dev:frontend:
     desc: "Run React dev server"
     dir: frontend
-    watch: true
     cmds:
       - bun run dev
-  dev:openapi:
+  gen:openapi:
     desc: "Generate OpenAPI client for frontend"
     dir: frontend
-    watch: true
     cmds:
       - bun run openapi-ts
 

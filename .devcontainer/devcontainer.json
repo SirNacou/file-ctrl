@@ -12,7 +12,11 @@
         "mamacarlos.envautoexample",
         "voidzero.vite-plus-extension-pack",
         "albert.tabout",
-        "github.vscode-github-actions"
+        "github.vscode-github-actions",
+        "bradlc.vscode-tailwindcss",
+        "dejmedus.tailwind-sorter",
+        "esdete.tailwind-rainbow",
+        "antfu.iconify"
       ],
       "settings": {
         "debug.javascript.autoAttachFilter": "disabled",
@@ -40,7 +44,15 @@
   // Use 'postStartCommand' to run commands after the container is created.
   "postStartCommand": "git config --global --add safe.directory '*'",
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
+  "forwardPorts": ["8080:8080"],
   // Dynamically append the go-task completion hook into the Zsh profile
-  "updateContentCommand": "mkdir -p ~/.zsh/completion && task --completion zsh > ~/.zsh/completion/_task && echo 'fpath=(~/.zsh/completion $fpath)\nautoload -Uz compinit && compinit' >> ~/.zshrc"
+  "updateContentCommand": "mkdir -p ~/.zsh/completion && task --completion zsh > ~/.zsh/completion/_task && echo 'fpath=(~/.zsh/completion $fpath)\nautoload -Uz compinit && compinit' >> ~/.zshrc",
+  "portsAttributes": {
+    "3000": {
+      "label": "frontend"
+    },
+    "8080": {
+      "label": "backend"
+    }
+  }
 }
