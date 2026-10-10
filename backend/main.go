@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"log/slog"
 	"net/http"
@@ -10,25 +11,20 @@ import (
 	"github.com/danielgtaylor/huma/v2/adapters/humaecho"
 	"github.com/labstack/echo/v5"
 	"github.com/sirnacou/file-ctrl/backend/internal/common"
-	"github.com/sirnacou/file-ctrl/backend/internal/common/config"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage"
 )
 
 func main() {
-	cfg, err := config.LoadEnv()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	commonModule, err := common.NewCommonModule(ctx, cfg)
+	commonModule, err := common.NewCommonModule(ctx)
 	if err != nil {
 		log.Fatalln(err)
 	}
+	slog.SetDefault(commonModule.Logger)
 
-	storageModule, err := storage.NewStorageModule(cfg)
+	storageModule, err := storage.NewStorageModule(commonModule.Env)
 	if err != nil {
 		log.Fatalf("Failed to create Storage Module. Error: %e", err)
 	}
@@ -43,6 +39,6 @@ func main() {
 
 	storageModule.RegisterAPI(apiGrp)
 
-	slog.Info("Server run on port 8080")
-	log.Fatalln(http.ListenAndServe(":8080", router))
+	slog.Info("Server run on port", slog.Int("PORT", int(commonModule.Env.Port())))
+	log.Fatalln(http.ListenAndServe(fmt.Sprintf(":%v", commonModule.Env.Port()), router))
 }

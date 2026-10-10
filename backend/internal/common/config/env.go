@@ -43,3 +43,7 @@ func (c *Config) DbPath() string {
 		return "../data/metadata.db"
 	}
 }
+
+func (c *Config) Port() uint16 {
+	return 8080
+}
