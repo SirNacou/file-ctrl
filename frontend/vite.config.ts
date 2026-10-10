@@ -7,6 +7,7 @@ import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
 import viteReact, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { nitro } from 'nitro/vite'
+import Icons from 'unplugin-icons/vite'
 
 const config = defineConfig({
   fmt: {
@@ -18,7 +19,7 @@ const config = defineConfig({
     jsPlugins: [{ name: 'vite-plus', specifier: 'vite-plus/oxlint-plugin' }],
     rules: { 'vite-plus/prefer-vite-plus-imports': 'error' },
     options: { typeAware: true, typeCheck: true },
-    ignorePatterns: ['*.gen.*'],
+    ignorePatterns: ['**/*.gen.ts'],
   },
   resolve: { tsconfigPaths: true },
   server: {
@@ -26,7 +27,6 @@ const config = defineConfig({
     port: 3000,
     watch: {
       usePolling: true,
-      interval: 300,
     },
   },
   envPrefix: ['PUBLIC_', 'VITE_'],
@@ -41,6 +41,11 @@ const config = defineConfig({
     }),
     viteReact(),
     babel({ presets: [reactCompilerPreset()] }),
+    Icons({
+      autoInstall: true,
+      compiler: 'jsx',
+      jsx: 'react',
+    }),
   ]),
 })
 

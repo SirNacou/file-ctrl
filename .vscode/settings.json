@@ -41,6 +41,8 @@
   "oxc.configPath": "frontend/vite.config.ts",
   "oxc.disableNestedConfig": true,
   "oxc.fmt.disableNestedConfig": true,
+  "pre-commit-helper.command": "task check:fix",
+  "pre-commit-helper.runOnSave": "all hooks",
   "search.exclude": {
     "**/routeTree.gen.ts": true
   }

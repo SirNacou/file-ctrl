@@ -12,7 +12,12 @@
         "mamacarlos.envautoexample",
         "voidzero.vite-plus-extension-pack",
         "albert.tabout",
-        "github.vscode-github-actions"
+        "github.vscode-github-actions",
+        "bradlc.vscode-tailwindcss",
+        "dejmedus.tailwind-sorter",
+        "esdete.tailwind-rainbow",
+        "antfu.iconify",
+        "elagil.pre-commit-helper"
       ],
       "settings": {
         "debug.javascript.autoAttachFilter": "disabled",
@@ -34,13 +39,21 @@
     "ghcr.io/helpers4/devcontainer/vite-plus:1": {},
     "ghcr.io/mrsimonemms/devcontainers/air:1": {}
   },
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  "forwardPorts": ["8080:8080"],
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
   "image": "mcr.microsoft.com/devcontainers/base:bookworm",
   "name": "Docker in Docker",
+  "portsAttributes": {
+    "3000": {
+      "label": "frontend"
+    },
+    "8080": {
+      "label": "backend"
+    }
+  },
   // Use 'postStartCommand' to run commands after the container is created.
   "postStartCommand": "git config --global --add safe.directory '*'",
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
   // Dynamically append the go-task completion hook into the Zsh profile
   "updateContentCommand": "mkdir -p ~/.zsh/completion && task --completion zsh > ~/.zsh/completion/_task && echo 'fpath=(~/.zsh/completion $fpath)\nautoload -Uz compinit && compinit' >> ~/.zshrc"
 }

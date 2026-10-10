@@ -15,30 +15,26 @@ tasks:
     cmds:
       - task --list
     silent: true
+
   dev:
     desc: Start dev environtment
-    watch: true
     deps:
       - dev:backend
       - dev:frontend
-      - dev:openapi
 
   dev:backend:
     desc: Run Go backend with live reload (or go run)
     dir: backend
-    watch: true
     cmd: air
 
   dev:frontend:
     desc: "Run React dev server"
     dir: frontend
-    watch: true
     cmds:
       - bun run dev
-  dev:openapi:
+  gen:openapi:
     desc: "Generate OpenAPI client for frontend"
     dir: frontend
-    watch: true
     cmds:
       - bun run openapi-ts
 
@@ -48,7 +44,8 @@ tasks:
     cmds:
       - bun run check
 
-  check:env:
-    desc: Verify environment variables directly from Task
+  check:fix:
+    desc: "Fix code"
+    dir: frontend
     cmds:
-      - echo "PUBLIC_APP_URL is -> [${PUBLIC_APP_URL}]"
+      - bun run check --fix

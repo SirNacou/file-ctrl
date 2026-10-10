@@ -1,0 +1,21 @@
+'use client'
+
+import { type ComponentProps } from 'react'
+
+// third-party
+import { cn } from 'cn'
+
+function Label({ className, ...props }: ComponentProps<'label'>) {
+  return (
+    <label
+      data-slot="label"
+      className={cn(
+        'flex items-center gap-2 group-data-[disabled=true]:opacity-50 peer-disabled:opacity-50 font-medium leading-none peer-disabled:cursor-not-allowed group-data-[disabled=true]:pointer-events-none select-none',
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
+export { Label }
