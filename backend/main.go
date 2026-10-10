@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"log/slog"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humaecho"
 	"github.com/labstack/echo/v5"
+	"github.com/sirnacou/file-ctrl/backend/internal/common"
 	"github.com/sirnacou/file-ctrl/backend/internal/common/config"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage"
 )
@@ -15,7 +17,20 @@ import (
 func main() {
 	cfg, err := config.LoadEnv()
 	if err != nil {
-		log.Fatalf("Failed to load config. Error: %e", err)
+		log.Fatalln(err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	commonModule, err := common.NewCommonModule(ctx, cfg)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	storageModule, err := storage.NewStorageModule(cfg)
+	if err != nil {
+		log.Fatalf("Failed to create Storage Module. Error: %e", err)
 	}
 
 	router := echo.New()
@@ -25,11 +40,6 @@ func main() {
 	api := humaecho.New(router, humaConfig)
 
 	apiGrp := huma.NewGroup(api, "/api")
-
-	storageModule, err := storage.NewStorageModule(cfg)
-	if err != nil {
-		log.Fatalf("Failed to create Storage Module. Error: %e", err)
-	}
 
 	storageModule.RegisterAPI(apiGrp)
 

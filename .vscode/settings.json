@@ -45,5 +45,8 @@
   "pre-commit-helper.runOnSave": "all hooks",
   "search.exclude": {
     "**/routeTree.gen.ts": true
+  },
+  "[go.mod]": {
+    "editor.defaultFormatter": "golang.go"
   }
 }

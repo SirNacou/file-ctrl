@@ -1,0 +1,23 @@
+version: "3"
+
+env:
+  GOOSE_DRIVER: sqlite3
+  GOOSE_DBSTRING: ./dev.db
+  GOOSE_MIGRATION_DIR: internal/common/database/migrations
+
+tasks:
+  migrate:create:
+    desc: Generate migration file
+    requires:
+      vars:
+        - NAME
+    preconditions:
+      - sh: '[ -n "{{.NAME}}" ]'
+        msg: "Error: NAME cannot be empty!"
+    cmds:
+      - goose -dir {{.GOOSE_MIGRATION_DIR}} create "{{.NAME}}" sql
+
+  gen:
+    desc: Generate bob files
+    cmds:
+      - go run github.com/stephenafamo/bob/gen/bobgen-sqlite@latest -c bobgen.yml
