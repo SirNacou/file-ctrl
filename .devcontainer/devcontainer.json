@@ -16,7 +16,8 @@
         "bradlc.vscode-tailwindcss",
         "dejmedus.tailwind-sorter",
         "esdete.tailwind-rainbow",
-        "antfu.iconify"
+        "antfu.iconify",
+        "elagil.pre-commit-helper"
       ],
       "settings": {
         "debug.javascript.autoAttachFilter": "disabled",
