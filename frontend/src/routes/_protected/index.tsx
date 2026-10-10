@@ -3,7 +3,6 @@ import { FileTable } from '#/features/explorer/components/file-table.tsx'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_protected/')({
-  loader: ({ context: { queryClient } }) => [],
   component: Home,
 })
 
@@ -25,10 +24,9 @@ const items: FileItem[] = Array.from({ length: 1_000 }).flatMap(() => [
 ])
 
 function Home() {
-  const data = Route.useLoaderData()
   return (
     <div className="h-full">
-      <FileTable data={[]} />
+      <FileTable data={items} />
     </div>
   )
 }

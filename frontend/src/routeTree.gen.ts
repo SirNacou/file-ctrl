@@ -28,12 +28,11 @@ const ProtectedExplorerIndexRoute = ProtectedExplorerIndexRouteImport.update({
   path: '/explorer/',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
-const ProtectedExplorerSourceIdIndexRoute =
-  ProtectedExplorerSourceIdIndexRouteImport.update({
-    id: '/explorer/$sourceId/',
-    path: '/explorer/$sourceId/',
-    getParentRoute: () => ProtectedRouteRoute,
-  } as any)
+const ProtectedExplorerSourceIdIndexRoute = ProtectedExplorerSourceIdIndexRouteImport.update({
+  id: '/explorer/$sourceId/',
+  path: '/explorer/$sourceId/',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof ProtectedIndexRoute
