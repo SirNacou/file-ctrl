@@ -10,7 +10,9 @@
     "check": "vp check",
     "check:fix": "vp check --fix",
     "dev": "vp dev",
+    "format": "vp format",
     "generate-routes": "tsr generate",
+    "lint": "vp lint",
     "openapi-ts": "openapi-ts",
     "preview": "vp preview",
     "test": "vitest"

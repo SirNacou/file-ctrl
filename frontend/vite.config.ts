@@ -14,12 +14,13 @@ const config = defineConfig({
     semi: false,
     singleQuote: true,
     trailingComma: 'all',
+    ignorePatterns: ['**/gen/', '**/*.gen.ts'],
   },
   lint: {
     jsPlugins: [{ name: 'vite-plus', specifier: 'vite-plus/oxlint-plugin' }],
     rules: { 'vite-plus/prefer-vite-plus-imports': 'error' },
     options: { typeAware: true, typeCheck: true },
-    ignorePatterns: ['**/*.gen.ts'],
+    ignorePatterns: ['**/gen/', '**/*.gen.ts'],
   },
   resolve: { tsconfigPaths: true },
   server: {
