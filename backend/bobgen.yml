@@ -1,0 +1,37 @@
+plugins_preset: "all" # Valid values are "default", "all" or "none".
+plugins:
+  dbinfo:
+    disabled: true
+    pkgname: "dbinfo"
+    destination: "internal/common/database/gen/dbinfo"
+  enums:
+    disabled: false
+    pkgname: "enums"
+    destination: "internal/common/database/gen/enums"
+  models:
+    disabled: false
+    pkgname: "models"
+    destination: "internal/common/database/gen/models"
+  factory:
+    disabled: false
+    pkgname: "factory"
+    destination: "internal/common/database/gen/factory"
+  dberrors:
+    disabled: false
+    pkgname: "dberrors"
+    destination: "internal/common/database/gen/dberrors"
+  where:
+    disabled: false
+  loaders:
+    disabled: false
+  joins:
+    disabled: false
+  counts:
+    disabled: false
+
+sqlite:
+  dsn: "../data/metadata.db"
+  queries:
+    - internal/common/database/gen/queries
+  except:
+    "goose_db_version":

@@ -10,6 +10,11 @@ dotenv:
 vars:
   GREETING: Hello, world!
 
+includes:
+  backend:
+    taskfile: backend/Taskfile.yml
+    dir: backend
+
 tasks:
   default:
     cmds:

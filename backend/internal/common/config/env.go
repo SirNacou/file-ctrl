@@ -1,6 +1,8 @@
 package config
 
 import (
+	"fmt"
+
 	"github.com/caarlos0/env/v11"
 )
 
@@ -11,7 +13,7 @@ type Config struct {
 func LoadEnv() (*Config, error) {
 	cfg := new(Config)
 	if err := env.Parse(cfg); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to load config: %v", err)
 	}
 
 	return cfg, nil
@@ -31,5 +33,13 @@ func (c *Config) StorageRoot() string {
 	} else {
 		// Local development inside workspace
 		return "../storage"
+	}
+}
+
+func (c *Config) DbPath() string {
+	if c.IsProd() {
+		return "/data/metadata.db"
+	} else {
+		return "../data/metadata.db"
 	}
 }

@@ -17,7 +17,8 @@
         "dejmedus.tailwind-sorter",
         "esdete.tailwind-rainbow",
         "antfu.iconify",
-        "elagil.pre-commit-helper"
+        "elagil.pre-commit-helper",
+        "renesaarsoo.sql-formatter-vsc"
       ],
       "settings": {
         "debug.javascript.autoAttachFilter": "disabled",
@@ -37,7 +38,8 @@
     "ghcr.io/devcontainers/features/go:1": {},
     "ghcr.io/devcontainers/features/node:2": {},
     "ghcr.io/helpers4/devcontainer/vite-plus:1": {},
-    "ghcr.io/mrsimonemms/devcontainers/air:1": {}
+    "ghcr.io/mrsimonemms/devcontainers/air:1": {},
+    "ghcr.io/rafaph/devcontainer-features/goose-cli:1": {}
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": ["8080:8080"],
