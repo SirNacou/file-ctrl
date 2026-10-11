@@ -42,7 +42,9 @@
     "ghcr.io/rafaph/devcontainer-features/goose-cli:1": {}
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": ["8080:8080"],
+  "forwardPorts": [
+    "8080:8080"
+  ],
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
   "image": "mcr.microsoft.com/devcontainers/base:bookworm",
   "name": "Docker in Docker",

@@ -59,6 +59,11 @@
       "version": "1.0.0",
       "resolved": "ghcr.io/mrsimonemms/devcontainers/air@sha256:049fd008b735ea508cb58f99d77e2a8918ad6c28792a9bbbf06813a498502782",
       "integrity": "sha256:049fd008b735ea508cb58f99d77e2a8918ad6c28792a9bbbf06813a498502782"
+    },
+    "ghcr.io/rafaph/devcontainer-features/goose-cli:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/rafaph/devcontainer-features/goose-cli@sha256:a49fa4ddecdded8e19f23aaf7ef49613a0e4ce0cd8be208045db3742cd5e1fe5",
+      "integrity": "sha256:a49fa4ddecdded8e19f23aaf7ef49613a0e4ce0cd8be208045db3742cd5e1fe5"
     }
   }
 }
