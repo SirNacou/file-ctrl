@@ -15,7 +15,7 @@ type ListUnregisteredSourcesResponse struct {
 
 func ListUnregisteredSources(api huma.API, handler *app.ListUnregisteredSourcesHandler) {
 	huma.Register(api, huma.Operation{
-		Method:        "GET",
+		Method:        http.MethodGet,
 		Path:          "/list-unregistered-sources",
 		DefaultStatus: http.StatusOK,
 	}, func(ctx context.Context, i *ListUnregisteredSourcesRequest) (*ListUnregisteredSourcesResponse, error) {

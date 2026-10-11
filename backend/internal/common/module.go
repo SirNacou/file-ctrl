@@ -23,7 +23,7 @@ func NewCommonModule(ctx context.Context) (*CommonModule, error) {
 	}
 
 	logger := newLogger(env.IsProd())
-	db, err := newDB(ctx, env.DataDir)
+	db, err := newDB(ctx, env.DatabasePath)
 	if err != nil {
 		return nil, err
 	}
@@ -50,8 +50,8 @@ func newLogger(isProd bool) *slog.Logger {
 	return slog.New(logHandler)
 }
 
-func newDB(ctx context.Context, dbDir string) (*bob.DB, error) {
-	db, err := database.NewDb(ctx, dbDir)
+func newDB(ctx context.Context, dbPath string) (*bob.DB, error) {
+	db, err := database.NewDb(ctx, dbPath)
 	if err != nil {
 		return nil, err
 	}

@@ -18,7 +18,7 @@ type ListFileResponse struct {
 
 func ListFile(api huma.API, handler *app.ListFilesHandler) {
 	huma.Register(api, huma.Operation{
-		Method:        "GET",
+		Method:        http.MethodGet,
 		Path:          "/list-files",
 		DefaultStatus: http.StatusOK,
 	}, func(ctx context.Context, i *ListFileRequest) (*ListFileResponse, error) {

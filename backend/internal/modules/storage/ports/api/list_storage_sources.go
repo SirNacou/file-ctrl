@@ -15,8 +15,8 @@ type ListStorageSourcesResponse struct {
 
 func ListStorageSources(api huma.API, handler *app.ListStorageSourcesHandler) {
 	huma.Register(api, huma.Operation{
-		Method:        "GET",
-		Path:          "/list-storage-sources",
+		Method:        http.MethodGet,
+		Path:          "",
 		DefaultStatus: http.StatusOK,
 	}, func(ctx context.Context, i *ListStorageSourcesRequest) (*ListStorageSourcesResponse, error) {
 		res, err := handler.Handle(ctx, &app.ListStorageSourcesRequest{})

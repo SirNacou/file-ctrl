@@ -20,7 +20,7 @@ type ListUnregisteredSourcesResponse struct {
 }
 type ListUnregisteredSourcesHandler struct {
 	storageDir string
-	db          bob.Executor
+	db         bob.Executor
 }
 
 func NewListUnregisteredSourcesHandler(storageRoot string) *ListUnregisteredSourcesHandler {

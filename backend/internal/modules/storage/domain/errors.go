@@ -1,6 +1,13 @@
 package domain
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+var (
+	ErrNameMustNotBeEmpty = errors.New("name must not be empty")
+)
 
 type ErrFailToReadDir struct {
 	Path string
