@@ -8,11 +8,11 @@ import (
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/app"
 )
 
-type Request struct {
+type ListFileRequest struct {
 	Path string `query:"path"`
 }
 
-type Response struct {
+type ListFileResponse struct {
 	Body app.ListFilesResponse
 }
 
@@ -21,14 +21,14 @@ func ListFile(api huma.API, handler *app.ListFilesHandler) {
 		Method:        "GET",
 		Path:          "/list-files",
 		DefaultStatus: http.StatusOK,
-	}, func(ctx context.Context, i *Request) (*Response, error) {
+	}, func(ctx context.Context, i *ListFileRequest) (*ListFileResponse, error) {
 
 		res, err := handler.Handle(ctx, &app.ListFilesRequest{Path: i.Path})
 		if err != nil {
 			return nil, err
 		}
 
-		return &Response{
+		return &ListFileResponse{
 			Body: *res,
 		}, nil
 	})

@@ -13,5 +13,6 @@ dist-ssr
 .vinxi
 __unconfig*
 todos.json
-.history
-data
+.history/
+/data/
+/storage/

@@ -28,12 +28,12 @@ type FileItem struct {
 }
 
 type ListFilesHandler struct {
-	storageRoot string
+	storageDir string
 }
 
 func NewListFilesHandler(storageRoot string) *ListFilesHandler {
 	return &ListFilesHandler{
-		storageRoot: storageRoot,
+		storageDir: storageRoot,
 	}
 }
 
@@ -45,7 +45,7 @@ func (h *ListFilesHandler) Handle(ctx context.Context, req *ListFilesRequest) (*
 		req.Path = "/" + req.Path
 	}
 
-	diskPath := filepath.Join(h.storageRoot, filepath.FromSlash(req.Path))
+	diskPath := filepath.Join(h.storageDir, filepath.FromSlash(req.Path))
 
 	entries, err := os.ReadDir(diskPath)
 	if err != nil {

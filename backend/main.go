@@ -24,7 +24,7 @@ func main() {
 	}
 	slog.SetDefault(commonModule.Logger)
 
-	storageModule, err := storage.NewStorageModule(commonModule.Env)
+	storageModule, err := storage.NewStorageModule(commonModule.Env.StorageDir, commonModule.DB)
 	if err != nil {
 		log.Fatalf("Failed to create Storage Module. Error: %e", err)
 	}

@@ -5,6 +5,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "golang.go",
         "redhat.vscode-yaml",
         "task.vscode-task",
         "oxc.oxc-vscode",
@@ -18,7 +19,8 @@
         "esdete.tailwind-rainbow",
         "antfu.iconify",
         "elagil.pre-commit-helper",
-        "renesaarsoo.sql-formatter-vsc"
+        "renesaarsoo.sql-formatter-vsc",
+        "ms-azuretools.vscode-docker"
       ],
       "settings": {
         "debug.javascript.autoAttachFilter": "disabled",

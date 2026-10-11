@@ -19,18 +19,18 @@ type ListUnregisteredSourcesResponse struct {
 	Dirs []string
 }
 type ListUnregisteredSourcesHandler struct {
-	storageRoot string
+	storageDir string
 	db          bob.Executor
 }
 
 func NewListUnregisteredSourcesHandler(storageRoot string) *ListUnregisteredSourcesHandler {
-	return &ListUnregisteredSourcesHandler{storageRoot: storageRoot}
+	return &ListUnregisteredSourcesHandler{storageDir: storageRoot}
 }
 
 func (h *ListUnregisteredSourcesHandler) Handle(ctx context.Context, req *ListUnregisteredSourcesRequest) (*ListUnregisteredSourcesResponse, error) {
-	entries, err := os.ReadDir(h.storageRoot)
+	entries, err := os.ReadDir(h.storageDir)
 	if err != nil {
-		return nil, domain.NewErrFailToReadDir(h.storageRoot)
+		return nil, domain.NewErrFailToReadDir(h.storageDir)
 	}
 
 	sourcePaths, err := h.getSourcePathsFromDB(ctx)

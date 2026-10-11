@@ -7,7 +7,9 @@ import (
 )
 
 type Config struct {
-	AppEnv string `env:"APP_ENV" envDefault="development"`
+	AppEnv     string `env:"APP_ENV" envDefault:"development"`
+	DataDir    string `env:"DATA_DIR" envDefault:"../data"`
+	StorageDir string `env:"STORAGE_DIR" envDefault:"../storage"`
 }
 
 func LoadEnv() (*Config, error) {
@@ -25,23 +27,6 @@ func (c *Config) IsProd() bool {
 
 func (c *Config) IsDev() bool {
 	return c.AppEnv == "development"
-}
-
-func (c *Config) StorageRoot() string {
-	if c.IsProd() {
-		return "/storage"
-	} else {
-		// Local development inside workspace
-		return "../storage"
-	}
-}
-
-func (c *Config) DbPath() string {
-	if c.IsProd() {
-		return "/data/metadata.db"
-	} else {
-		return "../data/metadata.db"
-	}
 }
 
 func (c *Config) Port() uint16 {

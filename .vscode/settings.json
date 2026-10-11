@@ -9,7 +9,7 @@
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
+    "editor.defaultFormatter": "vscode.json-language-features"
   },
   "[typescript]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
@@ -33,9 +33,15 @@
   "go.alternateTools": {
     "customFormatter": "golangci-lint-v2"
   },
-  "go.formatFlags": ["fmt", "--stdin"],
+  "go.formatFlags": [
+    "fmt",
+    "--stdin"
+  ],
   "go.formatTool": "custom",
-  "go.lintFlags": ["--path-mode=abs", "--fast-only"],
+  "go.lintFlags": [
+    "--path-mode=abs",
+    "--fast-only"
+  ],
   "go.lintTool": "golangci-lint-v2",
   "npm.scriptRunner": "vp",
   "oxc.configPath": "frontend/vite.config.ts",
@@ -48,5 +54,8 @@
   },
   "[go.mod]": {
     "editor.defaultFormatter": "golang.go"
+  },
+  "[dockercompose]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-containers"
   }
 }
