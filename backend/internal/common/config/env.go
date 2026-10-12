@@ -41,7 +41,7 @@ func (c *Config) IsDev() bool {
 	return c.AppEnv == "development"
 }
 
-func (c *Config) Port() uint16 {
+func (c *Config) Port() int {
 	return 8080
 }
 

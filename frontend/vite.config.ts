@@ -18,6 +18,10 @@ const config = defineConfig({
   },
   lint: {
     jsPlugins: [{ name: 'vite-plus', specifier: 'vite-plus/oxlint-plugin' }],
+    plugins: ['react', 'react-perf'],
+    categories: {
+      correctness: 'error',
+    },
     rules: { 'vite-plus/prefer-vite-plus-imports': 'error' },
     options: { typeAware: true, typeCheck: true },
     ignorePatterns: ['**/gen/', '**/*.gen.ts'],
