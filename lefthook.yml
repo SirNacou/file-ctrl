@@ -1,0 +1,5 @@
+pre-commit:
+  parallel: true
+  commands:
+    task-check-fix:
+      run: task check:fix
