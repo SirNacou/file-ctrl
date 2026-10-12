@@ -21,10 +21,13 @@ func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error
 
 	return &StorageModule{
 		listFilesHandler:               app.NewListFilesHandler(storageDir),
-		listUnregisteredSourcesHandler: app.NewListUnregisteredSourcesHandler(storageDir),
+		listUnregisteredSourcesHandler: app.NewListUnregisteredSourcesHandler(db, storageDir),
 		listStorageSourcesHandler:      app.NewListStorageSourcesHandler(db),
-		registerStorageSourcesHandler:  app.NewRegisterStorageSourceHandler(storageRepo),
-		removeStorageSourceHandler:     app.NewRemoveStorageSourceHandler(db),
+		registerStorageSourcesHandler: app.NewRegisterStorageSourceHandler(
+			storageRepo,
+			storageDir,
+		),
+		removeStorageSourceHandler: app.NewRemoveStorageSourceHandler(db),
 	}, nil
 }
 

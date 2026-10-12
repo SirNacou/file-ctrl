@@ -22,7 +22,6 @@ func ListFile(api huma.API, handler *app.ListFilesHandler) {
 		Path:          "/list-files",
 		DefaultStatus: http.StatusOK,
 	}, func(ctx context.Context, i *ListFileRequest) (*ListFileResponse, error) {
-
 		res, err := handler.Handle(ctx, &app.ListFilesRequest{Path: i.Path})
 		if err != nil {
 			return nil, err

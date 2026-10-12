@@ -8,10 +8,12 @@ import (
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/app"
 )
 
-type ListUnregisteredSourcesRequest struct{}
-type ListUnregisteredSourcesResponse struct {
-	Dirs []string `json:"dirs"`
-}
+type (
+	ListUnregisteredSourcesRequest  struct{}
+	ListUnregisteredSourcesResponse struct {
+		Dirs []string `json:"dirs"`
+	}
+)
 
 func ListUnregisteredSources(api huma.API, handler *app.ListUnregisteredSourcesHandler) {
 	huma.Register(api, huma.Operation{
@@ -23,6 +25,7 @@ func ListUnregisteredSources(api huma.API, handler *app.ListUnregisteredSourcesH
 		if err != nil {
 			return nil, err
 		}
+
 		return &ListUnregisteredSourcesResponse{
 			Dirs: res.Dirs,
 		}, nil

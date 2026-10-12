@@ -28,13 +28,20 @@ type RegisterStorageSourceResponse struct {
 	ID uuid.UUID
 }
 
-func NewRegisterStorageSourceHandler(inserter StorageSourcesInserter) *RegisterStorageSourceHandler {
+func NewRegisterStorageSourceHandler(
+	inserter StorageSourcesInserter,
+	storageDir string,
+) *RegisterStorageSourceHandler {
 	return &RegisterStorageSourceHandler{
-		inserter: inserter,
+		inserter:   inserter,
+		storageDir: storageDir,
 	}
 }
 
-func (h *RegisterStorageSourceHandler) Handle(ctx context.Context, req *RegisterStorageSourceRequest) (*RegisterStorageSourceResponse, error) {
+func (h *RegisterStorageSourceHandler) Handle(
+	ctx context.Context,
+	req *RegisterStorageSourceRequest,
+) (*RegisterStorageSourceResponse, error) {
 	subpathVO, err := domain.NewSourceSubpath(req.SubPath, false)
 	if err != nil {
 		return nil, err
@@ -42,7 +49,7 @@ func (h *RegisterStorageSourceHandler) Handle(ctx context.Context, req *Register
 
 	diskPath := filepath.Join(h.storageDir, filepath.FromSlash(subpathVO.String()))
 
-	if err := h.assertDirectoryExists(diskPath); err != nil {
+	if err = h.assertDirectoryExists(diskPath); err != nil {
 		return nil, err
 	}
 
@@ -67,6 +74,7 @@ func (h *RegisterStorageSourceHandler) assertDirectoryExists(targetDiskPath stri
 		if os.IsNotExist(err) {
 			return errors.New("directory does not exist on disk")
 		}
+
 		return fmt.Errorf("filesystem error: %w", err)
 	}
 

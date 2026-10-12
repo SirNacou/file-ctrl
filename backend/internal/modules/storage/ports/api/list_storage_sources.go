@@ -8,10 +8,12 @@ import (
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/app"
 )
 
-type ListStorageSourcesRequest struct{}
-type ListStorageSourcesResponse struct {
-	Sources []app.Source `json:"sources"`
-}
+type (
+	ListStorageSourcesRequest  struct{}
+	ListStorageSourcesResponse struct {
+		Sources []app.Source `json:"sources"`
+	}
+)
 
 func ListStorageSources(api huma.API, handler *app.ListStorageSourcesHandler) {
 	huma.Register(api, huma.Operation{

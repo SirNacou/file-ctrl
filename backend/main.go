@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 	"log/slog"
 
@@ -11,13 +10,11 @@ import (
 )
 
 func main() {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	commonModule, err := common.NewCommonModule(ctx)
+	commonModule, err := common.NewCommonModule()
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	slog.SetDefault(commonModule.Logger)
 
 	storageModule, err := storage.NewStorageModule(commonModule.Env.StorageDir, commonModule.DB)
@@ -27,7 +24,8 @@ func main() {
 
 	httpRouter := api.NewHttpRouter()
 	httpRouter.RegisterRoutes(storageModule.RegisterAPI)
+
 	if err := httpRouter.Run(commonModule.Env.Port()); err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 }

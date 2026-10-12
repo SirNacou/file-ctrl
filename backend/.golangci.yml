@@ -1,0 +1,39 @@
+version: "2"
+
+linters:
+  enable:
+    - exhaustruct_v5
+    - exhaustive
+    - gomodguard_v2
+    - wsl_v5
+    - gocritic
+    - govet
+
+  settings:
+    wsl_v5:
+      allow-first-in-block: true
+      allow-whole-block: false
+      branch-max-lines: 2
+    govet:
+      enable-all: true
+      disable-all: false
+    exhaustruct_v5:
+      enforce-patterns:
+        - ".*"
+      optional-patterns:
+        - ".*Setter$"
+        - ".*Options$"
+        - ".*Server$"
+      ignore-patterns:
+        - '.*/huma(/v2)?\.Operation$'
+      allow-empty: false
+      allow-empty-returns: false
+      allow-empty-declarations: false
+      allow-empty-blank-assignments: false
+      explicit-mode: true
+
+formatters:
+  enable:
+    - gofumpt
+    - golines
+    - goimports

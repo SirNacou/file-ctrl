@@ -7,10 +7,10 @@ import (
 )
 
 type StorageSource struct {
-	ID        uuid.UUID
-	Name      string
-	Subpath   SourceSubpath
 	CreatedAt time.Time
+	Subpath   SourceSubpath
+	Name      string
+	ID        uuid.UUID
 }
 
 func NewStorageSource(name string, subPath SourceSubpath) (*StorageSource, error) {

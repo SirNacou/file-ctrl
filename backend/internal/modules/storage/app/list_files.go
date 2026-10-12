@@ -20,11 +20,11 @@ type ListFilesResponse struct {
 }
 
 type FileItem struct {
+	ModTime time.Time `json:"mod_time"`
 	Name    string    `json:"name"`
 	Path    string    `json:"path"`
-	IsDir   bool      `json:"is_dir"`
 	Size    int64     `json:"size"`
-	ModTime time.Time `json:"mod_time"`
+	IsDir   bool      `json:"is_dir"`
 }
 
 type ListFilesHandler struct {
@@ -37,10 +37,14 @@ func NewListFilesHandler(storageRoot string) *ListFilesHandler {
 	}
 }
 
-func (h *ListFilesHandler) Handle(ctx context.Context, req *ListFilesRequest) (*ListFilesResponse, error) {
+func (h *ListFilesHandler) Handle(
+	ctx context.Context,
+	req *ListFilesRequest,
+) (*ListFilesResponse, error) {
 	if req.Path == "" {
 		req.Path = "/"
 	}
+
 	if !strings.HasPrefix(req.Path, "/") {
 		req.Path = "/" + req.Path
 	}

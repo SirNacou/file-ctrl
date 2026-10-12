@@ -14,20 +14,32 @@ import (
 	"github.com/stephenafamo/scan"
 )
 
-type ListUnregisteredSourcesRequest struct{}
-type ListUnregisteredSourcesResponse struct {
-	Dirs []string
-}
+type (
+	ListUnregisteredSourcesRequest  struct{}
+	ListUnregisteredSourcesResponse struct {
+		Dirs []string
+	}
+)
+
 type ListUnregisteredSourcesHandler struct {
-	storageDir string
 	db         bob.Executor
+	storageDir string
 }
 
-func NewListUnregisteredSourcesHandler(storageRoot string) *ListUnregisteredSourcesHandler {
-	return &ListUnregisteredSourcesHandler{storageDir: storageRoot}
+func NewListUnregisteredSourcesHandler(
+	db bob.Executor,
+	storageRoot string,
+) *ListUnregisteredSourcesHandler {
+	return &ListUnregisteredSourcesHandler{
+		db:         db,
+		storageDir: storageRoot,
+	}
 }
 
-func (h *ListUnregisteredSourcesHandler) Handle(ctx context.Context, req *ListUnregisteredSourcesRequest) (*ListUnregisteredSourcesResponse, error) {
+func (h *ListUnregisteredSourcesHandler) Handle(
+	ctx context.Context,
+	req *ListUnregisteredSourcesRequest,
+) (*ListUnregisteredSourcesResponse, error) {
 	entries, err := os.ReadDir(h.storageDir)
 	if err != nil {
 		return nil, domain.NewErrFailToReadDir(h.storageDir)
@@ -50,7 +62,9 @@ func (h *ListUnregisteredSourcesHandler) Handle(ctx context.Context, req *ListUn
 	}, nil
 }
 
-func (h *ListUnregisteredSourcesHandler) getSourcePathsFromDB(ctx context.Context) ([]string, error) {
+func (h *ListUnregisteredSourcesHandler) getSourcePathsFromDB(
+	ctx context.Context,
+) ([]string, error) {
 	q := sqlite.Select(
 		sm.Columns(models.StorageSources.Columns.Subpath.Name()),
 		sm.From(models.StorageSources.Name()))

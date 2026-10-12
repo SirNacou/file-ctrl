@@ -9,15 +9,18 @@ import (
 	"github.com/stephenafamo/bob"
 )
 
-type ListStorageSourcesRequest struct{}
-type ListStorageSourcesResponse struct {
-	Sources []Source
-}
+type (
+	ListStorageSourcesRequest  struct{}
+	ListStorageSourcesResponse struct {
+		Sources []Source
+	}
+)
+
 type Source struct {
+	CreatedAt time.Time `json:"created_at"`
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	Subpath   string    `json:"sub_path"`
-	CreatedAt time.Time `json:"created_at"`
 }
 
 type ListStorageSourcesHandler struct {
@@ -28,7 +31,10 @@ func NewListStorageSourcesHandler(db bob.Executor) *ListStorageSourcesHandler {
 	return &ListStorageSourcesHandler{db: db}
 }
 
-func (h *ListStorageSourcesHandler) Handle(ctx context.Context, req *ListStorageSourcesRequest) (*ListStorageSourcesResponse, error) {
+func (h *ListStorageSourcesHandler) Handle(
+	ctx context.Context,
+	req *ListStorageSourcesRequest,
+) (*ListStorageSourcesResponse, error) {
 	res, err := queries.AllStorageSources().All(ctx, h.db)
 	if err != nil {
 		return nil, errors.New("failed to query database")

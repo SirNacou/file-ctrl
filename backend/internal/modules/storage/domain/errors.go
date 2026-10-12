@@ -5,9 +5,7 @@ import (
 	"fmt"
 )
 
-var (
-	ErrNameMustNotBeEmpty = errors.New("name must not be empty")
-)
+var ErrNameMustNotBeEmpty = errors.New("name must not be empty")
 
 type ErrFailToReadDir struct {
 	Path string

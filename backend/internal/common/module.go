@@ -16,13 +16,17 @@ type CommonModule struct {
 	DB     *bob.DB
 }
 
-func NewCommonModule(ctx context.Context) (*CommonModule, error) {
+func NewCommonModule() (*CommonModule, error) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	env, err := config.LoadEnv()
 	if err != nil {
 		return nil, err
 	}
 
 	logger := newLogger(env.IsProd())
+
 	db, err := newDB(ctx, env.DatabasePath)
 	if err != nil {
 		return nil, err

@@ -21,8 +21,12 @@ func NewRemoveStorageSourceHandler(db bob.Executor) *RemoveStorageSourceHandler 
 	return &RemoveStorageSourceHandler{db: db}
 }
 
-func (h *RemoveStorageSourceHandler) Handle(ctx context.Context, req *RemoveStorageSourceRequest) (*RemoveStorageSourceResponse, error) {
-	_, err := models.StorageSources.Delete(models.DeleteWhere.StorageSources.ID.EQ(req.ID.String())).Exec(ctx, h.db)
+func (h *RemoveStorageSourceHandler) Handle(
+	ctx context.Context,
+	req *RemoveStorageSourceRequest,
+) (*RemoveStorageSourceResponse, error) {
+	_, err := models.StorageSources.Delete(models.DeleteWhere.StorageSources.ID.EQ(req.ID.String())).
+		Exec(ctx, h.db)
 	if err != nil {
 		return nil, errors.New("failed to remove source")
 	}

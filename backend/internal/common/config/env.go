@@ -15,9 +15,9 @@ var (
 )
 
 type Config struct {
-	AppEnv       string `env:"APP_ENV" envDefault:"development"`
+	AppEnv       string `env:"APP_ENV"       envDefault:"development"`
 	DatabasePath string `env:"DATABASE_PATH" envDefault:"../data/metadata.db"`
-	StorageDir   string `env:"STORAGE_DIR" envDefault:"../storage"`
+	StorageDir   string `env:"STORAGE_DIR"   envDefault:"../storage"`
 }
 
 func LoadEnv() (*Config, error) {
@@ -57,6 +57,7 @@ func (c *Config) Validate() error {
 	if err != nil {
 		return fmt.Errorf("invalid storage root: %w", err)
 	}
+
 	c.StorageDir = absStorage
 
 	// Normalize database path to an absolute path
@@ -64,6 +65,7 @@ func (c *Config) Validate() error {
 	if err != nil {
 		return fmt.Errorf("invalid database path: %w", err)
 	}
+
 	c.DatabasePath = absDB
 
 	// Assert SQLite database is not located inside the storage directory

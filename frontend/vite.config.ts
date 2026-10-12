@@ -40,9 +40,9 @@ const config = defineConfig({
     nitro({ rollupConfig: { external: [/^@sentry\//] } }),
     tailwindcss(),
     tanstackStart({
-      // spa: {
-      //   enabled: true,
-      // },
+      spa: {
+        enabled: true,
+      },
     }),
     viteReact(),
     babel({ presets: [reactCompilerPreset()] }),

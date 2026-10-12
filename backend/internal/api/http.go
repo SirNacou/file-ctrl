@@ -46,15 +46,17 @@ func (r *HttpRouter) Run(port int) error {
 	}
 
 	slog.Info("Server started", slog.Int("PORT", port))
+
 	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		return fmt.Errorf("Failed to start server: %v", err)
+		return fmt.Errorf("failed to start server: %v", err)
 	}
 
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
 	if err := server.Shutdown(shutdownCtx); err != nil {
 		_ = server.Close()
-		return fmt.Errorf("Failed to shutdown http server: %v", err)
+		return fmt.Errorf("failed to shutdown http server: %v", err)
 	}
 
 	log.Println("HTTP server stopped")

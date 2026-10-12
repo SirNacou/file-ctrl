@@ -34,6 +34,7 @@
       },
       "devDependencies": {
         "@hey-api/openapi-ts": "^0.99.0",
+        "@hey-api/vite-plugin": "^0.3.2",
         "@iconify-json/lucide": "^1.2.141",
         "@rolldown/plugin-babel": "^0.2.3",
         "@svgr/core": "^8.1.0",
@@ -160,6 +161,8 @@
     "@hey-api/spec-types": ["@hey-api/spec-types@0.2.0", "", { "dependencies": { "@hey-api/types": "0.1.4" } }, "sha512-ibQ8Is7evMavzr8GNyJCcTg975d8DpaMUyLmOrQ85UBdy1l6t1KuRAwgChAbesJsIlNV6gjmlXruWyegDX18Fg=="],
 
     "@hey-api/types": ["@hey-api/types@0.1.4", "", {}, "sha512-thWfawrDIP7wSI9ioT13I5soaaqB5vAPIiZmgD8PbeEVKNrkonc0N/Sjj97ezl7oQgusZmaNphGdMKipPO6IBg=="],
+
+    "@hey-api/vite-plugin": ["@hey-api/vite-plugin@0.3.2", "", { "peerDependencies": { "@hey-api/openapi-ts": "<2", "vite": "^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0" } }, "sha512-r9xfyfqvWQ3LoVE0U9TYkA54J3HSXJdFbeQrnWdOcbkhI4rfUTaanj4EPpk5ygZTxoex4EJrlyzn+nPSU82cjw=="],
 
     "@hono/node-server": ["@hono/node-server@2.1.4", "", { "peerDependencies": { "hono": "^4 || ^5.0.0-0" } }, "sha512-2g1qeHl4BduwDn6L8nkAvDrPUWPMlkQ//a5NhP/zIyaXKMjZNRV+cG9Csu+BiJFf6+68pqzjf4Hi5sJGKHuS1g=="],
 
