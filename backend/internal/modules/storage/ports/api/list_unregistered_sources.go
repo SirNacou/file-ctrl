@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -11,6 +12,9 @@ import (
 type (
 	ListUnregisteredSourcesRequest  struct{}
 	ListUnregisteredSourcesResponse struct {
+		Body ListUnregisteredSourcesResponseBody
+	}
+	ListUnregisteredSourcesResponseBody struct {
 		Dirs []string `json:"dirs"`
 	}
 )
@@ -25,9 +29,12 @@ func ListUnregisteredSources(api huma.API, handler *app.ListUnregisteredSourcesH
 		if err != nil {
 			return nil, err
 		}
+		fmt.Printf("res: %q\n", res.Dirs)
 
 		return &ListUnregisteredSourcesResponse{
-			Dirs: res.Dirs,
+			ListUnregisteredSourcesResponseBody{
+				Dirs: res.Dirs,
+			},
 		}, nil
 	})
 }

@@ -50,7 +50,7 @@ func (h *ListUnregisteredSourcesHandler) Handle(
 		return nil, err
 	}
 
-	dirs := make([]string, len(entries))
+	dirs := make([]string, 0, len(entries))
 	for _, entry := range entries {
 		if entry.IsDir() && !slices.Contains(sourcePaths, entry.Name()) {
 			dirs = append(dirs, entry.Name())
