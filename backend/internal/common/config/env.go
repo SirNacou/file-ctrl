@@ -23,7 +23,7 @@ type Config struct {
 func LoadEnv() (*Config, error) {
 	cfg := new(Config)
 	if err := env.Parse(cfg); err != nil {
-		return nil, fmt.Errorf("failed to load config: %v", err)
+		return nil, fmt.Errorf("failed to load config: %w", err)
 	}
 
 	if err := cfg.Validate(); err != nil {

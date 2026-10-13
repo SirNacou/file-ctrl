@@ -31,7 +31,7 @@ func (r *StorageSourcesRepository) Insert(ctx context.Context, model *domain.Sto
 		CreatedAt: omit.From(model.CreatedAt),
 	}).Exec(ctx, r.db)
 	if err != nil {
-		return fmt.Errorf("failed to insert new Storage Source: %v", err)
+		return fmt.Errorf("failed to insert new Storage Source: %w", err)
 	}
 
 	return nil
@@ -46,7 +46,7 @@ func (r *StorageSourcesRepository) Update(ctx context.Context, model *domain.Sto
 			}.UpdateMod()).
 		Exec(ctx, r.db)
 	if err != nil {
-		return fmt.Errorf("failed to update Storage Source \"%s\": %v", model.ID, err)
+		return fmt.Errorf("failed to update Storage Source \"%s\":w%v", model.ID, err)
 	}
 
 	return nil

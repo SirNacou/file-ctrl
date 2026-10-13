@@ -40,18 +40,15 @@ tasks:
     dir: frontend
     cmds:
       - bun run dev
-  gen:openapi:
-    desc: "Generate OpenAPI client for frontend"
-    dir: frontend
-    cmds:
-      - bun run openapi-ts
 
   check:
     desc: Check all projects
     deps:
       - task: frontend:check
+      - task: backend:check
 
   check:fix:
     desc: Fix all projects
     deps:
+      - task: backend:check:fix
       - task: frontend:check:fix

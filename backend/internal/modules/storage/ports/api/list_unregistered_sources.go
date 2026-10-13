@@ -29,6 +29,7 @@ func ListUnregisteredSources(api huma.API, handler *app.ListUnregisteredSourcesH
 		if err != nil {
 			return nil, err
 		}
+
 		fmt.Printf("res: %q\n", res.Dirs)
 
 		return &ListUnregisteredSourcesResponse{

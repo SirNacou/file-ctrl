@@ -11,6 +11,9 @@ import (
 type (
 	ListStorageSourcesRequest  struct{}
 	ListStorageSourcesResponse struct {
+		Body ListStorageSourcesResponseBody
+	}
+	ListStorageSourcesResponseBody struct {
 		Sources []app.Source `json:"sources"`
 	}
 )
@@ -27,7 +30,9 @@ func ListStorageSources(api huma.API, handler *app.ListStorageSourcesHandler) {
 		}
 
 		return &ListStorageSourcesResponse{
-			Sources: res.Sources,
+			Body: ListStorageSourcesResponseBody{
+				Sources: res.Sources,
+			},
 		}, nil
 	})
 }

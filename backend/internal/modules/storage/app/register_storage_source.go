@@ -53,7 +53,7 @@ func (h *RegisterStorageSourceHandler) Handle(
 		return nil, err
 	}
 
-	source, err := domain.NewStorageSource(req.Name, subpathVO)
+	source, err := domain.NewStorageSource(req.Name, *subpathVO)
 	if err != nil {
 		return nil, err
 	}

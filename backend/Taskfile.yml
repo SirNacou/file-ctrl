@@ -28,6 +28,6 @@ tasks:
       - golangci-lint run
 
   check:fix:
-    desc: Check backend
+    desc: Fix backend
     cmds:
       - golangci-lint run --fix

@@ -24,6 +24,8 @@ func NewHttpRouter() *HttpRouter {
 
 	humaConfig := huma.DefaultConfig("File Ctrl API", "v1")
 	humaConfig.DocsRenderer = huma.DocsRendererScalar
+	humaConfig.CreateHooks = nil
+
 	api := humaecho.New(router, humaConfig)
 	apiGroup := huma.NewGroup(api, "/api")
 
@@ -48,7 +50,7 @@ func (r *HttpRouter) Run(port int) error {
 	slog.Info("Server started", slog.Int("PORT", port))
 
 	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		return fmt.Errorf("failed to start server: %v", err)
+		return fmt.Errorf("failed to start server: %w", err)
 	}
 
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -56,7 +58,7 @@ func (r *HttpRouter) Run(port int) error {
 
 	if err := server.Shutdown(shutdownCtx); err != nil {
 		_ = server.Close()
-		return fmt.Errorf("failed to shutdown http server: %v", err)
+		return fmt.Errorf("failed to shutdown http server: %w", err)
 	}
 
 	log.Println("HTTP server stopped")

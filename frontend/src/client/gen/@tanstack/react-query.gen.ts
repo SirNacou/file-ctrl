@@ -22,6 +22,8 @@ import type {
   GetApiStorageListFilesResponse,
   GetApiStorageListUnregisteredSourcesData,
   GetApiStorageListUnregisteredSourcesError,
+  GetApiStorageListUnregisteredSourcesResponse,
+  GetApiStorageResponse,
   PostApiStorageData,
   PostApiStorageError,
 } from "../types.gen";
@@ -69,7 +71,12 @@ export const getApiStorageQueryKey = (options?: Options<GetApiStorageData>) =>
   createQueryKey("getApiStorage", options);
 
 export const getApiStorageOptions = (options?: Options<GetApiStorageData>) =>
-  queryOptions<unknown, GetApiStorageError, unknown, ReturnType<typeof getApiStorageQueryKey>>({
+  queryOptions<
+    GetApiStorageResponse,
+    GetApiStorageError,
+    GetApiStorageResponse,
+    ReturnType<typeof getApiStorageQueryKey>
+  >({
     queryFn: async ({ queryKey, signal }) => {
       const { data } = await getApiStorage({
         ...options,
@@ -132,9 +139,9 @@ export const getApiStorageListUnregisteredSourcesOptions = (
   options?: Options<GetApiStorageListUnregisteredSourcesData>,
 ) =>
   queryOptions<
-    unknown,
+    GetApiStorageListUnregisteredSourcesResponse,
     GetApiStorageListUnregisteredSourcesError,
-    unknown,
+    GetApiStorageListUnregisteredSourcesResponse,
     ReturnType<typeof getApiStorageListUnregisteredSourcesQueryKey>
   >({
     queryFn: async ({ queryKey, signal }) => {

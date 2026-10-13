@@ -15,7 +15,6 @@ export type ErrorDetailZodInput = z.input<typeof zErrorDetail>;
 export type ErrorDetailZodOutput = z.output<typeof zErrorDetail>;
 
 export const zErrorModel = z.object({
-  $schema: z.url().readonly().optional(),
   detail: z.string().optional(),
   errors: z.array(zErrorDetail).nullish(),
   instance: z.url().optional(),
@@ -60,7 +59,6 @@ export type FileItemZodInput = z.input<typeof zFileItem>;
 export type FileItemZodOutput = z.output<typeof zFileItem>;
 
 export const zListFilesResponse = z.object({
-  $schema: z.url().readonly().optional(),
   current_path: z.string(),
   items: z.array(zFileItem).nullable(),
 });
@@ -70,6 +68,22 @@ export type ListFilesResponseZodType = z.infer<typeof zListFilesResponse>;
 export type ListFilesResponseZodInput = z.input<typeof zListFilesResponse>;
 
 export type ListFilesResponseZodOutput = z.output<typeof zListFilesResponse>;
+
+export const zListUnregisteredSourcesResponseBody = z.object({
+  dirs: z.array(z.string()).nullable(),
+});
+
+export type ListUnregisteredSourcesResponseBodyZodType = z.infer<
+  typeof zListUnregisteredSourcesResponseBody
+>;
+
+export type ListUnregisteredSourcesResponseBodyZodInput = z.input<
+  typeof zListUnregisteredSourcesResponseBody
+>;
+
+export type ListUnregisteredSourcesResponseBodyZodOutput = z.output<
+  typeof zListUnregisteredSourcesResponseBody
+>;
 
 export const zSource = z.object({
   created_at: z.iso.datetime({ offset: true }),
@@ -84,39 +98,30 @@ export type SourceZodInput = z.input<typeof zSource>;
 
 export type SourceZodOutput = z.output<typeof zSource>;
 
-export const zErrorModelWritable = z.object({
-  detail: z.string().optional(),
-  errors: z.array(zErrorDetail).nullish(),
-  instance: z.url().optional(),
-  status: z.coerce
-    .bigint()
-    .min(BigInt("-9223372036854775808"), {
-      error: "Invalid value: Expected int64 to be >= -9223372036854775808",
-    })
-    .max(BigInt("9223372036854775807"), {
-      error: "Invalid value: Expected int64 to be <= 9223372036854775807",
-    })
-    .optional(),
-  title: z.string().optional(),
-  type: z.url().optional().default("about:blank"),
+export const zListStorageSourcesResponseBody = z.object({
+  sources: z.array(zSource).nullable(),
 });
 
-export type ErrorModelWritableZodType = z.infer<typeof zErrorModelWritable>;
+export type ListStorageSourcesResponseBodyZodType = z.infer<typeof zListStorageSourcesResponseBody>;
 
-export type ErrorModelWritableZodInput = z.input<typeof zErrorModelWritable>;
+export type ListStorageSourcesResponseBodyZodInput = z.input<
+  typeof zListStorageSourcesResponseBody
+>;
 
-export type ErrorModelWritableZodOutput = z.output<typeof zErrorModelWritable>;
+export type ListStorageSourcesResponseBodyZodOutput = z.output<
+  typeof zListStorageSourcesResponseBody
+>;
 
-export const zListFilesResponseWritable = z.object({
-  current_path: z.string(),
-  items: z.array(zFileItem).nullable(),
-});
+/**
+ * OK
+ */
+export const zGetApiStorageResponse = zListStorageSourcesResponseBody;
 
-export type ListFilesResponseWritableZodType = z.infer<typeof zListFilesResponseWritable>;
+export type GetApiStorageResponseZodType = z.infer<typeof zGetApiStorageResponse>;
 
-export type ListFilesResponseWritableZodInput = z.input<typeof zListFilesResponseWritable>;
+export type GetApiStorageResponseZodInput = z.input<typeof zGetApiStorageResponse>;
 
-export type ListFilesResponseWritableZodOutput = z.output<typeof zListFilesResponseWritable>;
+export type GetApiStorageResponseZodOutput = z.output<typeof zGetApiStorageResponse>;
 
 export const zGetApiStorageListFilesQuery = z.object({
   path: z.string().optional(),
@@ -141,6 +146,23 @@ export type GetApiStorageListFilesResponseZodInput = z.input<
 
 export type GetApiStorageListFilesResponseZodOutput = z.output<
   typeof zGetApiStorageListFilesResponse
+>;
+
+/**
+ * OK
+ */
+export const zGetApiStorageListUnregisteredSourcesResponse = zListUnregisteredSourcesResponseBody;
+
+export type GetApiStorageListUnregisteredSourcesResponseZodType = z.infer<
+  typeof zGetApiStorageListUnregisteredSourcesResponse
+>;
+
+export type GetApiStorageListUnregisteredSourcesResponseZodInput = z.input<
+  typeof zGetApiStorageListUnregisteredSourcesResponse
+>;
+
+export type GetApiStorageListUnregisteredSourcesResponseZodOutput = z.output<
+  typeof zGetApiStorageListUnregisteredSourcesResponse
 >;
 
 /**

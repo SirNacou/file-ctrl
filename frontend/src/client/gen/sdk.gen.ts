@@ -25,6 +25,8 @@ import {
   zDeleteApiStorageRemoveStorageSourceResponse,
   zGetApiStorageListFilesQuery,
   zGetApiStorageListFilesResponse,
+  zGetApiStorageListUnregisteredSourcesResponse,
+  zGetApiStorageResponse,
 } from "./zod.gen";
 
 export type Options<
@@ -57,6 +59,7 @@ export const getApiStorage = <ThrowOnError extends boolean = false>(
           query: z.never().optional(),
         })
         .parseAsync(data),
+    responseTransformer: async (data) => await zGetApiStorageResponse.parseAsync(data),
     url: "/api/storage",
     ...options,
   });
@@ -118,6 +121,8 @@ export const getApiStorageListUnregisteredSources = <ThrowOnError extends boolea
           query: z.never().optional(),
         })
         .parseAsync(data),
+    responseTransformer: async (data) =>
+      await zGetApiStorageListUnregisteredSourcesResponse.parseAsync(data),
     url: "/api/storage/list-unregistered-sources",
     ...options,
   });

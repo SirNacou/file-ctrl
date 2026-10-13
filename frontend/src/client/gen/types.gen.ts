@@ -21,10 +21,6 @@ export type ErrorDetail = {
 
 export type ErrorModel = {
   /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  /**
    * A human-readable explanation specific to this occurrence of the problem.
    */
   detail?: string;
@@ -59,12 +55,16 @@ export type FileItem = {
 };
 
 export type ListFilesResponse = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
   current_path: string;
   items: Array<FileItem> | null;
+};
+
+export type ListStorageSourcesResponseBody = {
+  sources: Array<Source> | null;
+};
+
+export type ListUnregisteredSourcesResponseBody = {
+  dirs: Array<string> | null;
 };
 
 export type Source = {
@@ -72,38 +72,6 @@ export type Source = {
   id: string;
   name: string;
   sub_path: string;
-};
-
-export type ErrorModelWritable = {
-  /**
-   * A human-readable explanation specific to this occurrence of the problem.
-   */
-  detail?: string;
-  /**
-   * Optional list of individual error details
-   */
-  errors?: Array<ErrorDetail> | null;
-  /**
-   * A URI reference that identifies the specific occurrence of the problem.
-   */
-  instance?: string;
-  /**
-   * HTTP status code
-   */
-  status?: number;
-  /**
-   * A short, human-readable summary of the problem type. This value should not change between occurrences of the error.
-   */
-  title?: string;
-  /**
-   * A URI reference to human-readable documentation for the error.
-   */
-  type?: string;
-};
-
-export type ListFilesResponseWritable = {
-  current_path: string;
-  items: Array<FileItem> | null;
 };
 
 export type GetApiStorageData = {
@@ -126,8 +94,10 @@ export type GetApiStorageResponses = {
   /**
    * OK
    */
-  200: unknown;
+  200: ListStorageSourcesResponseBody;
 };
+
+export type GetApiStorageResponse = GetApiStorageResponses[keyof GetApiStorageResponses];
 
 export type PostApiStorageData = {
   body?: never;
@@ -202,8 +172,11 @@ export type GetApiStorageListUnregisteredSourcesResponses = {
   /**
    * OK
    */
-  200: unknown;
+  200: ListUnregisteredSourcesResponseBody;
 };
+
+export type GetApiStorageListUnregisteredSourcesResponse =
+  GetApiStorageListUnregisteredSourcesResponses[keyof GetApiStorageListUnregisteredSourcesResponses];
 
 export type DeleteApiStorageRemoveStorageSourceData = {
   body?: never;

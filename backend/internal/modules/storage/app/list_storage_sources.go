@@ -3,9 +3,10 @@ package app
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"time"
 
-	"github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/queries"
+	"github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
 	"github.com/stephenafamo/bob"
 )
 
@@ -35,18 +36,19 @@ func (h *ListStorageSourcesHandler) Handle(
 	ctx context.Context,
 	req *ListStorageSourcesRequest,
 ) (*ListStorageSourcesResponse, error) {
-	res, err := queries.AllStorageSources().All(ctx, h.db)
+	res, err := models.StorageSources.Query().All(ctx, h.db)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to query storage sources", slog.String("error", err.Error()))
 		return nil, errors.New("failed to query database")
 	}
 
-	sources := make([]Source, len(res))
+	sources := make([]Source, 0, len(res))
 	for _, s := range res {
 		sources = append(sources, Source{
 			ID:        s.ID,
 			Name:      s.Name,
 			Subpath:   s.Subpath,
-			CreatedAt: time.Unix(s.CreatedAt.IntPart(), 0),
+			CreatedAt: s.CreatedAt,
 		})
 	}
 

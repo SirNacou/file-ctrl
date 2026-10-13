@@ -37,6 +37,7 @@
   "features": {
     "ghcr.io/devcontainers-extra/features/bun:1": {},
     "ghcr.io/devcontainers-extra/features/go-task:1": {},
+    "ghcr.io/devcontainers-extra/features/golangci-lint:1": {},
     "ghcr.io/devcontainers/features/docker-in-docker:4": {},
     "ghcr.io/devcontainers/features/go:1": {},
     "ghcr.io/devcontainers/features/node:2": {
@@ -44,9 +45,9 @@
       "version": "26"
     },
     "ghcr.io/helpers4/devcontainer/vite-plus:1": {},
+    "ghcr.io/iyaki/devcontainer-features/lefthook:2": {},
     "ghcr.io/mrsimonemms/devcontainers/air:1": {},
-    "ghcr.io/rafaph/devcontainer-features/goose-cli:1": {},
-    "ghcr.io/iyaki/devcontainer-features/lefthook:2": {}
+    "ghcr.io/rafaph/devcontainer-features/goose-cli:1": {}
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [
@@ -59,7 +60,7 @@
   // Optional: Add labels or behavioral rules for the ports
   "portsAttributes": {
     "3000": {
-      "label": "frontend",
+      "label": "TanStack Start React",
       "onAutoForward": "notify"
     },
     "8080": {

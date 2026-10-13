@@ -10,10 +10,17 @@ import (
 )
 
 type RegisterStorageSourceRequest struct {
-	Name    string `json:"name"`
-	SubPath string `json:"sub_path"`
+	Body struct {
+		Name    string `json:"name"`
+		SubPath string `json:"sub_path"`
+	}
 }
+
 type RegisterStorageSourceResponse struct {
+	Body RegisterStorageSourceResponseBody
+}
+
+type RegisterStorageSourceResponseBody struct {
 	ID uuid.UUID `json:"id"`
 }
 
@@ -24,15 +31,17 @@ func RegisterStorageSource(api huma.API, handler *app.RegisterStorageSourceHandl
 		DefaultStatus: http.StatusCreated,
 	}, func(ctx context.Context, i *RegisterStorageSourceRequest) (*RegisterStorageSourceResponse, error) {
 		res, err := handler.Handle(ctx, &app.RegisterStorageSourceRequest{
-			Name:    i.Name,
-			SubPath: i.SubPath,
+			Name:    i.Body.Name,
+			SubPath: i.Body.SubPath,
 		})
 		if err != nil {
 			return nil, err
 		}
 
 		return &RegisterStorageSourceResponse{
-			ID: res.ID,
+			Body: RegisterStorageSourceResponseBody{
+				ID: res.ID,
+			},
 		}, nil
 	})
 }

@@ -9,9 +9,9 @@ import (
 func TestListFilesHandler(t *testing.T) {
 	root := t.TempDir()
 
-	_ = os.Mkdir(filepath.Join(root, "docs"), 0o755)
-	_ = os.WriteFile(filepath.Join(root, "file.txt"), []byte("content"), 0o644)
-	_ = os.Mkdir(filepath.Join(root, "empty_dir"), 0o755)
+	_ = os.Mkdir(filepath.Join(root, "docs"), 0o750)
+	_ = os.WriteFile(filepath.Join(root, "file.txt"), []byte("content"), 0o600)
+	_ = os.Mkdir(filepath.Join(root, "empty_dir"), 0o750)
 
 	handler := NewListFilesHandler(root)
 

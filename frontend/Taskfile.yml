@@ -10,3 +10,8 @@ tasks:
     desc: 'Fix code'
     cmds:
       - bun run check --fix
+
+  gen:
+    desc: 'Generate OpenAPI client for frontend'
+    cmds:
+      - bun run openapi-ts

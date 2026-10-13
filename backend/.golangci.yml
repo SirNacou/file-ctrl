@@ -2,12 +2,28 @@ version: "2"
 
 linters:
   enable:
+    - bodyclose
+    - copyloopvar
+    - cyclop
+    - dupl
+    - dupword
+    - errcheck
+    - errorlint
     - exhaustruct_v5
     - exhaustive
-    - gomodguard_v2
-    - wsl_v5
+    - gochecknoglobals
     - gocritic
+    - gocyclo
+    - gomodguard_v2
+    - gosec
     - govet
+    - ineffassign
+    - misspell
+    - modernize
+    - noctx
+    - staticcheck
+    - unused
+    - wsl_v5
 
   settings:
     wsl_v5:
@@ -34,6 +50,9 @@ linters:
 
 formatters:
   enable:
+    - gci
+    - gofmt
     - gofumpt
-    - golines
     - goimports
+    - golines
+    - swaggo
