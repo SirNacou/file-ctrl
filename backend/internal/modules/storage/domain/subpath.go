@@ -2,7 +2,7 @@ package domain
 
 import (
 	"errors"
-	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -18,36 +18,53 @@ type SourceSubpath struct {
 	value string
 }
 
-func NewSourceSubpath(raw string, allowNested bool) (*SourceSubpath, error) {
-	trimmed := strings.TrimSpace(raw)
-	if trimmed == "" {
-		return nil, ErrEmptySubpath
+func NewSourceSubpath(raw string, allowNested bool) (SourceSubpath, error) {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return SourceSubpath{}, ErrEmptySubpath
 	}
 
-	// 1. Invariant: No control characters or null bytes
-	if strings.ContainsRune(trimmed, 0) || strings.ContainsAny(trimmed, "\r\n") {
-		return nil, ErrInvalidSubpathChars
+	if err := validateChars(raw); err != nil {
+		return SourceSubpath{}, err
 	}
 
-	// 2. Invariant: Normalized virtual path
-	cleaned := path.Clean("/" + trimmed)
-	sanitized := strings.Trim(cleaned, "/")
-
-	if sanitized == "" || sanitized == "." {
-		return nil, ErrEmptySubpath
+	segments := strings.Split(raw, "/")
+	if err := validateSegments(segments); err != nil {
+		return SourceSubpath{}, err
 	}
 
-	// 3. Invariant: Traversal prevention
-	if strings.HasPrefix(sanitized, "..") {
-		return nil, ErrPathEscapesSandbox
+	if !filepath.IsLocal(filepath.FromSlash(raw)) {
+		return SourceSubpath{}, ErrPathEscapesSandbox
 	}
 
-	// 4. Invariant: Single-level directory rule
-	if !allowNested && strings.Contains(sanitized, "/") {
-		return nil, ErrNestedSubpathForbidden
+	if !allowNested && len(segments) > 1 {
+		return SourceSubpath{}, ErrNestedSubpathForbidden
 	}
 
-	return &SourceSubpath{value: sanitized}, nil
+	return SourceSubpath{value: raw}, nil
+}
+
+// validateChars rejects control characters and backslashes.
+func validateChars(s string) error {
+	for _, r := range s {
+		if r < 0x20 || r == 0x7f || r == '\\' {
+			return ErrInvalidSubpathChars
+		}
+	}
+
+	return nil
+}
+
+// validateSegments rejects empty, "." and ".." segments, which also
+// covers leading/trailing/double slashes.
+func validateSegments(segments []string) error {
+	for _, s := range segments {
+		if s == "" || s == "." || s == ".." {
+			return ErrPathEscapesSandbox
+		}
+	}
+
+	return nil
 }
 
 func (s SourceSubpath) String() string {

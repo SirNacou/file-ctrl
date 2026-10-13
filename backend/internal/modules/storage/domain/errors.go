@@ -5,7 +5,12 @@ import (
 	"fmt"
 )
 
-var ErrNameMustNotBeEmpty = errors.New("name must not be empty")
+var (
+	ErrNameMustNotBeEmpty     = errors.New("name must not be empty")
+	ErrStorageSourceNotFound  = errors.New("storage source not found")
+	ErrInvalidSourceDirectory = errors.New("source directory is invalid or does not exist")
+	ErrInvalidPath            = errors.New("invalid path")
+)
 
 type ErrFailToReadDir struct {
 	Path string
