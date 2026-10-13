@@ -1,44 +1,42 @@
 package storage
 
 import (
-	"fmt"
-	"os"
-	"path/filepath"
-
 	"github.com/danielgtaylor/huma/v2"
-	"github.com/sirnacou/file-ctrl/backend/internal/common/config"
+	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/adapters"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/app"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/ports/api"
+	"github.com/stephenafamo/bob"
 )
 
 type StorageModule struct {
-	listFilesHandler *app.ListFilesHandler
+	listFilesHandler               *app.ListFilesHandler
+	listUnregisteredSourcesHandler *app.ListUnregisteredSourcesHandler
+	listStorageSourcesHandler      *app.ListStorageSourcesHandler
+	registerStorageSourcesHandler  *app.RegisterStorageSourceHandler
+	removeStorageSourceHandler     *app.RemoveStorageSourceHandler
 }
 
-func NewStorageModule(cfg *config.Config) (*StorageModule, error) {
-	rootDir, err := createStorageDirectory(cfg.StorageRoot())
-	if err != nil {
-		return nil, err
-	}
+func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error) {
+	storageRepo := adapters.NewStorageSourcesRepository(db)
 
 	return &StorageModule{
-		listFilesHandler: app.NewListFilesHandler(rootDir),
+		listFilesHandler:               app.NewListFilesHandler(storageDir),
+		listUnregisteredSourcesHandler: app.NewListUnregisteredSourcesHandler(db, storageDir),
+		listStorageSourcesHandler:      app.NewListStorageSourcesHandler(db),
+		registerStorageSourcesHandler: app.NewRegisterStorageSourceHandler(
+			storageRepo,
+			storageDir,
+		),
+		removeStorageSourceHandler: app.NewRemoveStorageSourceHandler(db),
 	}, nil
 }
 
 func (m *StorageModule) RegisterAPI(humaApi huma.API) {
-	api.ListFile(humaApi, m.listFilesHandler)
-}
+	storageApi := huma.NewGroup(humaApi, "/storage")
 
-func createStorageDirectory(rootPath string) (string, error) {
-	absRoot, err := filepath.Abs(filepath.Clean(rootPath))
-	if err != nil {
-		return "", fmt.Errorf("invalid storage root path: %w", err)
-	}
-
-	if err := os.MkdirAll(absRoot, 0755); err != nil {
-		return "", fmt.Errorf("failed to create storage directory %q: %w", absRoot, err)
-	}
-
-	return absRoot, nil
+	api.ListFile(storageApi, m.listFilesHandler)
+	api.ListUnregisteredSources(storageApi, m.listUnregisteredSourcesHandler)
+	api.ListStorageSources(storageApi, m.listStorageSourcesHandler)
+	api.RegisterStorageSource(storageApi, m.registerStorageSourcesHandler)
+	api.RemoveStorageSource(storageApi, m.removeStorageSourceHandler)
 }

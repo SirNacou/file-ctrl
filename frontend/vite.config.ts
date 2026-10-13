@@ -14,12 +14,17 @@ const config = defineConfig({
     semi: false,
     singleQuote: true,
     trailingComma: 'all',
+    ignorePatterns: ['**/gen/', '**/*.gen.ts'],
   },
   lint: {
     jsPlugins: [{ name: 'vite-plus', specifier: 'vite-plus/oxlint-plugin' }],
+    plugins: ['react', 'react-perf'],
+    categories: {
+      correctness: 'error',
+    },
     rules: { 'vite-plus/prefer-vite-plus-imports': 'error' },
     options: { typeAware: true, typeCheck: true },
-    ignorePatterns: ['**/*.gen.ts'],
+    ignorePatterns: ['**/gen/', '**/*.gen.ts'],
   },
   resolve: { tsconfigPaths: true },
   server: {
@@ -35,9 +40,9 @@ const config = defineConfig({
     nitro({ rollupConfig: { external: [/^@sentry\//] } }),
     tailwindcss(),
     tanstackStart({
-      // spa: {
-      //   enabled: true,
-      // },
+      spa: {
+        enabled: true,
+      },
     }),
     viteReact(),
     babel({ presets: [reactCompilerPreset()] }),

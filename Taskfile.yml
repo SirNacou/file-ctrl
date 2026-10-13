@@ -14,6 +14,9 @@ includes:
   backend:
     taskfile: backend/Taskfile.yml
     dir: backend
+  frontend:
+    taskfile: frontend/Taskfile.yml
+    dir: frontend
 
 tasks:
   default:
@@ -37,20 +40,15 @@ tasks:
     dir: frontend
     cmds:
       - bun run dev
-  gen:openapi:
-    desc: "Generate OpenAPI client for frontend"
-    dir: frontend
-    cmds:
-      - bun run openapi-ts
 
   check:
-    desc: "Check code"
-    dir: frontend
-    cmds:
-      - bun run check
+    desc: Check all projects
+    deps:
+      - task: frontend:check
+      - task: backend:check
 
   check:fix:
-    desc: "Fix code"
-    dir: frontend
-    cmds:
-      - bun run check --fix
+    desc: Fix all projects
+    deps:
+      - task: backend:check:fix
+      - task: frontend:check:fix

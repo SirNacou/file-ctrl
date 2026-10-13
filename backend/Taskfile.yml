@@ -21,3 +21,13 @@ tasks:
     desc: Generate bob files
     cmds:
       - go run github.com/stephenafamo/bob/gen/bobgen-sqlite@latest -c bobgen.yml
+
+  check:
+    desc: Check backend
+    cmds:
+      - golangci-lint run
+
+  check:fix:
+    desc: Fix backend
+    cmds:
+      - golangci-lint run --fix

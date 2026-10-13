@@ -1,4 +1,10 @@
 {
+  "[dockercompose]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-containers"
+  },
+  "[go.mod]": {
+    "editor.defaultFormatter": "golang.go"
+  },
   "[go]": {
     "editor.defaultFormatter": "golang.go"
   },
@@ -8,8 +14,11 @@
   "[javascriptreact]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
   "[jsonc]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
+    "editor.defaultFormatter": "vscode.json-language-features"
   },
   "[typescript]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
@@ -25,28 +34,31 @@
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "files.readonlyInclude": {
-    "**/routeTree.gen.ts": true
+    "**/*.gen.ts": true
   },
   "files.watcherExclude": {
-    "**/routeTree.gen.ts": true
+    "**/*.gen.ts": true
   },
   "go.alternateTools": {
     "customFormatter": "golangci-lint-v2"
   },
-  "go.formatFlags": ["fmt", "--stdin"],
+  "go.formatFlags": [
+    "fmt",
+    "--stdin"
+  ],
   "go.formatTool": "custom",
-  "go.lintFlags": ["--path-mode=abs", "--fast-only"],
+  "go.lintFlags": [
+    "--path-mode=abs",
+    "--fast-only"
+  ],
   "go.lintTool": "golangci-lint-v2",
-  "npm.scriptRunner": "vp",
+  // "npm.scriptRunner": "vp",
   "oxc.configPath": "frontend/vite.config.ts",
   "oxc.disableNestedConfig": true,
   "oxc.fmt.disableNestedConfig": true,
   "pre-commit-helper.command": "task check:fix",
   "pre-commit-helper.runOnSave": "all hooks",
   "search.exclude": {
-    "**/routeTree.gen.ts": true
-  },
-  "[go.mod]": {
-    "editor.defaultFormatter": "golang.go"
+    "**/*.gen.ts": true
   }
 }

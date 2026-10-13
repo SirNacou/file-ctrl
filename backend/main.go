@@ -1,48 +1,31 @@
 package main
 
 import (
-	"context"
 	"log"
 	"log/slog"
-	"net/http"
 
-	"github.com/danielgtaylor/huma/v2"
-	"github.com/danielgtaylor/huma/v2/adapters/humaecho"
-	"github.com/labstack/echo/v5"
+	"github.com/sirnacou/file-ctrl/backend/internal/api"
 	"github.com/sirnacou/file-ctrl/backend/internal/common"
-	"github.com/sirnacou/file-ctrl/backend/internal/common/config"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage"
 )
 
 func main() {
-	cfg, err := config.LoadEnv()
+	commonModule, err := common.NewCommonModule()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	slog.SetDefault(commonModule.Logger)
 
-	commonModule, err := common.NewCommonModule(ctx, cfg)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	storageModule, err := storage.NewStorageModule(cfg)
+	storageModule, err := storage.NewStorageModule(commonModule.Env.StorageDir, commonModule.DB)
 	if err != nil {
 		log.Fatalf("Failed to create Storage Module. Error: %e", err)
 	}
 
-	router := echo.New()
+	httpRouter := api.NewHttpRouter()
+	httpRouter.RegisterRoutes(storageModule.RegisterAPI)
 
-	humaConfig := huma.DefaultConfig("File Ctrl API", "v1")
-	humaConfig.DocsRenderer = huma.DocsRendererScalar
-	api := humaecho.New(router, humaConfig)
-
-	apiGrp := huma.NewGroup(api, "/api")
-
-	storageModule.RegisterAPI(apiGrp)
-
-	slog.Info("Server run on port 8080")
-	log.Fatalln(http.ListenAndServe(":8080", router))
+	if err := httpRouter.Run(commonModule.Env.Port()); err != nil {
+		log.Fatalln(err)
+	}
 }

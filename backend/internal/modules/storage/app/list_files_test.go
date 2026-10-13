@@ -9,9 +9,9 @@ import (
 func TestListFilesHandler(t *testing.T) {
 	root := t.TempDir()
 
-	_ = os.Mkdir(filepath.Join(root, "docs"), 0755)
-	_ = os.WriteFile(filepath.Join(root, "file.txt"), []byte("content"), 0644)
-	_ = os.Mkdir(filepath.Join(root, "empty_dir"), 0755)
+	_ = os.Mkdir(filepath.Join(root, "docs"), 0o750)
+	_ = os.WriteFile(filepath.Join(root, "file.txt"), []byte("content"), 0o600)
+	_ = os.Mkdir(filepath.Join(root, "empty_dir"), 0o750)
 
 	handler := NewListFilesHandler(root)
 
@@ -57,6 +57,7 @@ func TestListFilesHandler(t *testing.T) {
 				if err == nil {
 					t.Fatalf("expected error, got nil")
 				}
+
 				return
 			}
 

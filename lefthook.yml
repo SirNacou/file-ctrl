@@ -1,0 +1,7 @@
+pre-commit:
+  parallel: true
+  commands:
+    task-check-fix:
+      glob:
+        - "*.{js,ts,jsx,tsx,go}"
+      run: task check:fix

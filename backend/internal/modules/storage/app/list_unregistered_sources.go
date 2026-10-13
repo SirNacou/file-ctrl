@@ -1,0 +1,78 @@
+package app
+
+import (
+	"context"
+	"errors"
+	"os"
+	"slices"
+
+	"github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
+	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
+	"github.com/stephenafamo/bob"
+	"github.com/stephenafamo/bob/dialect/sqlite"
+	"github.com/stephenafamo/bob/dialect/sqlite/sm"
+	"github.com/stephenafamo/scan"
+)
+
+type (
+	ListUnregisteredSourcesRequest  struct{}
+	ListUnregisteredSourcesResponse struct {
+		Dirs []string
+	}
+)
+
+type ListUnregisteredSourcesHandler struct {
+	db         bob.Executor
+	storageDir string
+}
+
+func NewListUnregisteredSourcesHandler(
+	db bob.Executor,
+	storageRoot string,
+) *ListUnregisteredSourcesHandler {
+	return &ListUnregisteredSourcesHandler{
+		db:         db,
+		storageDir: storageRoot,
+	}
+}
+
+func (h *ListUnregisteredSourcesHandler) Handle(
+	ctx context.Context,
+	req *ListUnregisteredSourcesRequest,
+) (*ListUnregisteredSourcesResponse, error) {
+	entries, err := os.ReadDir(h.storageDir)
+	if err != nil {
+		return nil, domain.NewErrFailToReadDir(h.storageDir)
+	}
+
+	sourcePaths, err := h.getSourcePathsFromDB(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	dirs := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		if entry.IsDir() && !slices.Contains(sourcePaths, entry.Name()) {
+			dirs = append(dirs, entry.Name())
+		}
+	}
+
+	return &ListUnregisteredSourcesResponse{
+		Dirs: dirs,
+	}, nil
+}
+
+func (h *ListUnregisteredSourcesHandler) getSourcePathsFromDB(
+	ctx context.Context,
+) ([]string, error) {
+	q := sqlite.Select(
+		sm.Columns(models.StorageSources.Columns.Subpath.Name()),
+		sm.From(models.StorageSources.Name()))
+
+	sourcePaths, err := bob.All(ctx, h.db, q, scan.SingleColumnMapper[string])
+	if err != nil {
+		return nil, errors.New("failed to get source paths from database")
+	}
+
+	return sourcePaths, nil
+}
