@@ -27,19 +27,8 @@ tasks:
   dev:
     desc: Start dev environtment
     deps:
-      - dev:backend
-      - dev:frontend
-
-  dev:backend:
-    desc: Run Go backend with live reload (or go run)
-    dir: backend
-    cmd: air
-
-  dev:frontend:
-    desc: "Run React dev server"
-    dir: frontend
-    cmds:
-      - bun run dev
+      - task: backend:dev
+      - task: frontend:dev
 
   check:
     desc: Check all projects

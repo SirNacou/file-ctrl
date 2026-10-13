@@ -21,9 +21,18 @@ linters:
     - misspell
     - modernize
     - noctx
+    - nolintlint
     - staticcheck
     - unused
     - wsl_v5
+
+  exclusions:
+    paths-except:
+      - "(^|/)gen/"
+    rules:
+      - linters:
+          - exhaustruct_v5
+        path-except: '.*_test\.go'
 
   settings:
     wsl_v5:
@@ -37,7 +46,7 @@ linters:
       enforce-patterns:
         - ".*"
       optional-patterns:
-        - ".*Setter$"
+        # - ".*Setter$"
         - ".*Options$"
         - ".*Server$"
       ignore-patterns:
@@ -46,7 +55,7 @@ linters:
       allow-empty-returns: false
       allow-empty-declarations: false
       allow-empty-blank-assignments: false
-      explicit-mode: true
+      explicit-mode: false
 
 formatters:
   enable:

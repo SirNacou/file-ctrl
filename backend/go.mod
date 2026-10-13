@@ -9,7 +9,7 @@ require (
 	github.com/danielgtaylor/huma/v2 v2.39.1
 	github.com/google/go-cmp v0.7.0
 	github.com/jaswdr/faker/v2 v2.10.0
-	github.com/labstack/echo/v5 v5.3.0
+	github.com/labstack/echo/v5 v5.4.0
 	github.com/pressly/goose/v3 v3.28.0
 	github.com/shopspring/decimal v1.4.0
 	github.com/stephenafamo/bob v0.50.0
@@ -39,6 +39,7 @@ require (
 	golang.org/x/sync v0.23.0 // indirect
 	golang.org/x/sys v0.48.0 // indirect
 	golang.org/x/text v0.41.0 // indirect
+	golang.org/x/time v0.15.0 // indirect
 	modernc.org/libc v1.77.1 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.12.1 // indirect
