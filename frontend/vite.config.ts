@@ -1,30 +1,30 @@
-import { devtools } from '@tanstack/devtools-vite'
-import { defineConfig, lazyPlugins } from 'vite-plus'
+import { devtools } from "@tanstack/devtools-vite";
+import { defineConfig, lazyPlugins } from "vite-plus";
 
-import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 
-import babel from '@rolldown/plugin-babel'
-import tailwindcss from '@tailwindcss/vite'
-import viteReact, { reactCompilerPreset } from '@vitejs/plugin-react'
-import { nitro } from 'nitro/vite'
-import Icons from 'unplugin-icons/vite'
+import babel from "@rolldown/plugin-babel";
+import tailwindcss from "@tailwindcss/vite";
+import viteReact, { reactCompilerPreset } from "@vitejs/plugin-react";
+import { nitro } from "nitro/vite";
+import Icons from "unplugin-icons/vite";
 
 const config = defineConfig({
   fmt: {
     semi: false,
     singleQuote: true,
-    trailingComma: 'all',
-    ignorePatterns: ['**/gen/', '**/*.gen.ts'],
+    trailingComma: "all",
+    ignorePatterns: ["**/gen/", "**/*.gen.ts"],
   },
   lint: {
-    jsPlugins: [{ name: 'vite-plus', specifier: 'vite-plus/oxlint-plugin' }],
-    plugins: ['react', 'react-perf'],
+    jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
+    plugins: ["react", "react-perf"],
     categories: {
-      correctness: 'error',
+      correctness: "error",
     },
-    rules: { 'vite-plus/prefer-vite-plus-imports': 'error' },
+    rules: { "vite-plus/prefer-vite-plus-imports": "error" },
     options: { typeAware: true, typeCheck: true },
-    ignorePatterns: ['**/gen/', '**/*.gen.ts'],
+    ignorePatterns: ["**/gen/", "**/*.gen.ts"],
   },
   resolve: { tsconfigPaths: true },
   server: {
@@ -34,7 +34,7 @@ const config = defineConfig({
       usePolling: true,
     },
   },
-  envPrefix: ['PUBLIC_', 'VITE_'],
+  envPrefix: ["PUBLIC_", "VITE_"],
   plugins: lazyPlugins(() => [
     devtools(),
     nitro({ rollupConfig: { external: [/^@sentry\//] } }),
@@ -48,10 +48,10 @@ const config = defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     Icons({
       autoInstall: true,
-      compiler: 'jsx',
-      jsx: 'react',
+      compiler: "jsx",
+      jsx: "react",
     }),
   ]),
-})
+});
 
-export default config
+export default config;

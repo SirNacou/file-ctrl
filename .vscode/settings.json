@@ -52,10 +52,14 @@
     "--fast-only"
   ],
   "go.lintTool": "golangci-lint-v2",
-  // "npm.scriptRunner": "vp",
+  "npm.scriptRunner": "vp",
   "oxc.configPath": "frontend/vite.config.ts",
   "oxc.disableNestedConfig": true,
+  "oxc.enable": true,
+  "oxc.fmt.configPath": "frontend/vite.config.ts",
   "oxc.fmt.disableNestedConfig": true,
+  "oxc.path.oxfmt": "frontend/node_modules/.bin/oxlint",
+  "oxc.path.oxlint": "frontend/node_modules/.bin/oxfmt",
   "pre-commit-helper.command": "task check:fix",
   "pre-commit-helper.runOnSave": "all hooks",
   "search.exclude": {

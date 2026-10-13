@@ -29,6 +29,8 @@ func NewHttpRouter() *HttpRouter {
 	api := humaecho.New(router, humaConfig)
 	apiGroup := huma.NewGroup(api, "/api")
 
+	registerFrontend(router)
+
 	return &HttpRouter{
 		router: router,
 		api:    apiGroup,

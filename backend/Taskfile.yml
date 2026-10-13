@@ -31,3 +31,7 @@ tasks:
     desc: Fix backend
     cmds:
       - golangci-lint run --fix
+
+  dev:
+    desc: Run Go backend with live reload (or go run)
+    cmd: air

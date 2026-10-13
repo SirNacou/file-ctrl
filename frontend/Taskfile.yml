@@ -1,17 +1,22 @@
-version: '3'
+version: "3"
 
 tasks:
   check:
-    desc: 'Check code'
+    desc: "Check code"
     cmds:
-      - bun run check
+      - vp run check
 
   check:fix:
-    desc: 'Fix code'
+    desc: "Fix code"
     cmds:
-      - bun run check --fix
+      - vp run check --fix
 
   gen:
-    desc: 'Generate OpenAPI client for frontend'
+    desc: "Generate OpenAPI client for frontend"
     cmds:
-      - bun run openapi-ts
+      - vp run openapi-ts
+
+  dev:
+    desc: "Run React dev server"
+    cmds:
+      - vp run dev
