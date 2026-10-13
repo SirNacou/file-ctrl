@@ -11,7 +11,7 @@ import (
 
 func registerFrontend(e *echo.Echo) {
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:       ".output/public",
+		Root:       "public",
 		Index:      "_shell.html",
 		Filesystem: web.FS,
 		HTML5:      true,

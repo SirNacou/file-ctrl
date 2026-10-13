@@ -15,7 +15,7 @@ COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 
 COPY backend/ ./
-COPY --from=frontend-builder /app/frontend/.output ./web/.output
+COPY --from=frontend-builder /app/frontend/.output/public ./web/public
 
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /app/server .
 
