@@ -11,7 +11,8 @@ import (
 
 func registerFrontend(e *echo.Echo) {
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:       "dist",
+		Root:       ".output/public",
+		Index:      "_shell.html",
 		Filesystem: web.FS,
 		HTML5:      true,
 		// Don't serve index.html for unknown API paths; let them 404 properly
