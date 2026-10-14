@@ -23,16 +23,24 @@ export default defineConfig({
     },
     {
       name: 'zod',
-      requests: true,
-      responses: true,
+      requests: {
+        enabled: true,
+        types: {
+          input: true,
+        },
+      },
+      responses: {
+        enabled: true,
+        types: {
+          output: true,
+        },
+      },
       definitions: true,
       dates: {
         offset: true,
       },
       types: {
         infer: true,
-        input: true,
-        output: true,
       },
     },
     {

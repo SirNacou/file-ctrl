@@ -22,6 +22,7 @@
   "menuColor": "inverted-translucent",
   "menuAccent": "subtle",
   "registries": {
-    "@uiable": "https://uiable.com/r/{name}.json"
+    "@uiable": "https://uiable.com/r/{name}.json",
+    "@magicui": "https://magicui.design/r/{name}"
   }
 }

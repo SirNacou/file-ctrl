@@ -8,11 +8,11 @@ import type {
   DeleteApiStorageRemoveStorageSourceData,
   DeleteApiStorageRemoveStorageSourceErrors,
   DeleteApiStorageRemoveStorageSourceResponses,
+  GetApiStorageByIdFilesData,
+  GetApiStorageByIdFilesErrors,
+  GetApiStorageByIdFilesResponses,
   GetApiStorageData,
   GetApiStorageErrors,
-  GetApiStorageListFilesData,
-  GetApiStorageListFilesErrors,
-  GetApiStorageListFilesResponses,
   GetApiStorageListUnregisteredSourcesData,
   GetApiStorageListUnregisteredSourcesErrors,
   GetApiStorageListUnregisteredSourcesResponses,
@@ -23,10 +23,13 @@ import type {
 } from "./types.gen";
 import {
   zDeleteApiStorageRemoveStorageSourceResponse,
-  zGetApiStorageListFilesQuery,
-  zGetApiStorageListFilesResponse,
+  zGetApiStorageByIdFilesPath,
+  zGetApiStorageByIdFilesQuery,
+  zGetApiStorageByIdFilesResponse,
   zGetApiStorageListUnregisteredSourcesResponse,
   zGetApiStorageResponse,
+  zPostApiStorageBody,
+  zPostApiStorageResponse,
 } from "./zod.gen";
 
 export type Options<
@@ -65,40 +68,24 @@ export const getApiStorage = <ThrowOnError extends boolean = false>(
   });
 
 export const postApiStorage = <ThrowOnError extends boolean = false>(
-  options?: Options<PostApiStorageData, ThrowOnError>,
+  options: Options<PostApiStorageData, ThrowOnError>,
 ): RequestResult<PostApiStorageResponses, PostApiStorageErrors, ThrowOnError> =>
-  (options?.client ?? client).post<PostApiStorageResponses, PostApiStorageErrors, ThrowOnError>({
+  (options.client ?? client).post<PostApiStorageResponses, PostApiStorageErrors, ThrowOnError>({
     requestValidator: async (data) =>
       await z
         .object({
-          body: z.never().optional(),
+          body: zPostApiStorageBody,
           path: z.never().optional(),
           query: z.never().optional(),
         })
         .parseAsync(data),
+    responseTransformer: async (data) => await zPostApiStorageResponse.parseAsync(data),
     url: "/api/storage",
     ...options,
-  });
-
-export const getApiStorageListFiles = <ThrowOnError extends boolean = false>(
-  options?: Options<GetApiStorageListFilesData, ThrowOnError>,
-): RequestResult<GetApiStorageListFilesResponses, GetApiStorageListFilesErrors, ThrowOnError> =>
-  (options?.client ?? client).get<
-    GetApiStorageListFilesResponses,
-    GetApiStorageListFilesErrors,
-    ThrowOnError
-  >({
-    requestValidator: async (data) =>
-      await z
-        .object({
-          body: z.never().optional(),
-          path: z.never().optional(),
-          query: zGetApiStorageListFilesQuery.optional(),
-        })
-        .parseAsync(data),
-    responseTransformer: async (data) => await zGetApiStorageListFilesResponse.parseAsync(data),
-    url: "/api/storage/list-files",
-    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
   });
 
 export const getApiStorageListUnregisteredSources = <ThrowOnError extends boolean = false>(
@@ -150,5 +137,26 @@ export const deleteApiStorageRemoveStorageSource = <ThrowOnError extends boolean
     responseTransformer: async (data) =>
       await zDeleteApiStorageRemoveStorageSourceResponse.parseAsync(data),
     url: "/api/storage/remove-storage-source",
+    ...options,
+  });
+
+export const getApiStorageByIdFiles = <ThrowOnError extends boolean = false>(
+  options: Options<GetApiStorageByIdFilesData, ThrowOnError>,
+): RequestResult<GetApiStorageByIdFilesResponses, GetApiStorageByIdFilesErrors, ThrowOnError> =>
+  (options.client ?? client).get<
+    GetApiStorageByIdFilesResponses,
+    GetApiStorageByIdFilesErrors,
+    ThrowOnError
+  >({
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: z.never().optional(),
+          path: zGetApiStorageByIdFilesPath,
+          query: zGetApiStorageByIdFilesQuery.optional(),
+        })
+        .parseAsync(data),
+    responseTransformer: async (data) => await zGetApiStorageByIdFilesResponse.parseAsync(data),
+    url: "/api/storage/{id}/files",
     ...options,
   });

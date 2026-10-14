@@ -2,6 +2,23 @@
 
 import * as z from "zod";
 
+export const zDirectoryEntry = z.object({
+  is_dir: z.boolean(),
+  mod_time: z.iso.datetime({ offset: true }),
+  name: z.string(),
+  path: z.string(),
+  size: z.coerce
+    .bigint()
+    .min(BigInt("-9223372036854775808"), {
+      error: "Invalid value: Expected int64 to be >= -9223372036854775808",
+    })
+    .max(BigInt("9223372036854775807"), {
+      error: "Invalid value: Expected int64 to be <= 9223372036854775807",
+    }),
+});
+
+export type DirectoryEntryZodType = z.infer<typeof zDirectoryEntry>;
+
 export const zErrorDetail = z.object({
   location: z.string().optional(),
   message: z.string().optional(),
@@ -9,10 +26,6 @@ export const zErrorDetail = z.object({
 });
 
 export type ErrorDetailZodType = z.infer<typeof zErrorDetail>;
-
-export type ErrorDetailZodInput = z.input<typeof zErrorDetail>;
-
-export type ErrorDetailZodOutput = z.output<typeof zErrorDetail>;
 
 export const zErrorModel = z.object({
   detail: z.string().optional(),
@@ -33,41 +46,12 @@ export const zErrorModel = z.object({
 
 export type ErrorModelZodType = z.infer<typeof zErrorModel>;
 
-export type ErrorModelZodInput = z.input<typeof zErrorModel>;
-
-export type ErrorModelZodOutput = z.output<typeof zErrorModel>;
-
-export const zFileItem = z.object({
-  is_dir: z.boolean(),
-  mod_time: z.iso.datetime({ offset: true }),
-  name: z.string(),
-  path: z.string(),
-  size: z.coerce
-    .bigint()
-    .min(BigInt("-9223372036854775808"), {
-      error: "Invalid value: Expected int64 to be >= -9223372036854775808",
-    })
-    .max(BigInt("9223372036854775807"), {
-      error: "Invalid value: Expected int64 to be <= 9223372036854775807",
-    }),
-});
-
-export type FileItemZodType = z.infer<typeof zFileItem>;
-
-export type FileItemZodInput = z.input<typeof zFileItem>;
-
-export type FileItemZodOutput = z.output<typeof zFileItem>;
-
-export const zListFilesResponse = z.object({
+export const zListDirectoryResponse = z.object({
   current_path: z.string(),
-  items: z.array(zFileItem).nullable(),
+  items: z.array(zDirectoryEntry).nullable(),
 });
 
-export type ListFilesResponseZodType = z.infer<typeof zListFilesResponse>;
-
-export type ListFilesResponseZodInput = z.input<typeof zListFilesResponse>;
-
-export type ListFilesResponseZodOutput = z.output<typeof zListFilesResponse>;
+export type ListDirectoryResponseZodType = z.infer<typeof zListDirectoryResponse>;
 
 export const zListUnregisteredSourcesResponseBody = z.object({
   dirs: z.array(z.string()).nullable(),
@@ -77,12 +61,21 @@ export type ListUnregisteredSourcesResponseBodyZodType = z.infer<
   typeof zListUnregisteredSourcesResponseBody
 >;
 
-export type ListUnregisteredSourcesResponseBodyZodInput = z.input<
-  typeof zListUnregisteredSourcesResponseBody
+export const zRegisterStorageSourceRequestBody = z.object({
+  name: z.string(),
+  sub_path: z.string(),
+});
+
+export type RegisterStorageSourceRequestBodyZodType = z.infer<
+  typeof zRegisterStorageSourceRequestBody
 >;
 
-export type ListUnregisteredSourcesResponseBodyZodOutput = z.output<
-  typeof zListUnregisteredSourcesResponseBody
+export const zRegisterStorageSourceResponseBody = z.object({
+  id: z.string(),
+});
+
+export type RegisterStorageSourceResponseBodyZodType = z.infer<
+  typeof zRegisterStorageSourceResponseBody
 >;
 
 export const zSource = z.object({
@@ -94,74 +87,36 @@ export const zSource = z.object({
 
 export type SourceZodType = z.infer<typeof zSource>;
 
-export type SourceZodInput = z.input<typeof zSource>;
-
-export type SourceZodOutput = z.output<typeof zSource>;
-
 export const zListStorageSourcesResponseBody = z.object({
   sources: z.array(zSource).nullable(),
 });
 
 export type ListStorageSourcesResponseBodyZodType = z.infer<typeof zListStorageSourcesResponseBody>;
 
-export type ListStorageSourcesResponseBodyZodInput = z.input<
-  typeof zListStorageSourcesResponseBody
->;
-
-export type ListStorageSourcesResponseBodyZodOutput = z.output<
-  typeof zListStorageSourcesResponseBody
->;
-
 /**
  * OK
  */
 export const zGetApiStorageResponse = zListStorageSourcesResponseBody;
 
-export type GetApiStorageResponseZodType = z.infer<typeof zGetApiStorageResponse>;
+export type getApiStorageResponseZodOutput = z.output<typeof zGetApiStorageResponse>;
 
-export type GetApiStorageResponseZodInput = z.input<typeof zGetApiStorageResponse>;
+export const zPostApiStorageBody = zRegisterStorageSourceRequestBody;
 
-export type GetApiStorageResponseZodOutput = z.output<typeof zGetApiStorageResponse>;
-
-export const zGetApiStorageListFilesQuery = z.object({
-  path: z.string().optional(),
-});
-
-export type GetApiStorageListFilesQueryZodType = z.infer<typeof zGetApiStorageListFilesQuery>;
-
-export type GetApiStorageListFilesQueryZodInput = z.input<typeof zGetApiStorageListFilesQuery>;
-
-export type GetApiStorageListFilesQueryZodOutput = z.output<typeof zGetApiStorageListFilesQuery>;
+export type PostApiStorageBodyZodType = z.infer<typeof zPostApiStorageBody>;
 
 /**
- * OK
+ * Created
  */
-export const zGetApiStorageListFilesResponse = zListFilesResponse;
+export const zPostApiStorageResponse = zRegisterStorageSourceResponseBody;
 
-export type GetApiStorageListFilesResponseZodType = z.infer<typeof zGetApiStorageListFilesResponse>;
-
-export type GetApiStorageListFilesResponseZodInput = z.input<
-  typeof zGetApiStorageListFilesResponse
->;
-
-export type GetApiStorageListFilesResponseZodOutput = z.output<
-  typeof zGetApiStorageListFilesResponse
->;
+export type postApiStorageResponseZodOutput = z.output<typeof zPostApiStorageResponse>;
 
 /**
  * OK
  */
 export const zGetApiStorageListUnregisteredSourcesResponse = zListUnregisteredSourcesResponseBody;
 
-export type GetApiStorageListUnregisteredSourcesResponseZodType = z.infer<
-  typeof zGetApiStorageListUnregisteredSourcesResponse
->;
-
-export type GetApiStorageListUnregisteredSourcesResponseZodInput = z.input<
-  typeof zGetApiStorageListUnregisteredSourcesResponse
->;
-
-export type GetApiStorageListUnregisteredSourcesResponseZodOutput = z.output<
+export type getApiStorageListUnregisteredSourcesResponseZodOutput = z.output<
   typeof zGetApiStorageListUnregisteredSourcesResponse
 >;
 
@@ -170,14 +125,27 @@ export type GetApiStorageListUnregisteredSourcesResponseZodOutput = z.output<
  */
 export const zDeleteApiStorageRemoveStorageSourceResponse = z.void();
 
-export type DeleteApiStorageRemoveStorageSourceResponseZodType = z.infer<
+export type deleteApiStorageRemoveStorageSourceResponseZodOutput = z.output<
   typeof zDeleteApiStorageRemoveStorageSourceResponse
 >;
 
-export type DeleteApiStorageRemoveStorageSourceResponseZodInput = z.input<
-  typeof zDeleteApiStorageRemoveStorageSourceResponse
->;
+export const zGetApiStorageByIdFilesPath = z.object({
+  id: z.uuid(),
+});
 
-export type DeleteApiStorageRemoveStorageSourceResponseZodOutput = z.output<
-  typeof zDeleteApiStorageRemoveStorageSourceResponse
+export type GetApiStorageByIdFilesPathZodType = z.infer<typeof zGetApiStorageByIdFilesPath>;
+
+export const zGetApiStorageByIdFilesQuery = z.object({
+  path: z.string().optional().default("."),
+});
+
+export type GetApiStorageByIdFilesQueryZodType = z.infer<typeof zGetApiStorageByIdFilesQuery>;
+
+/**
+ * OK
+ */
+export const zGetApiStorageByIdFilesResponse = zListDirectoryResponse;
+
+export type getApiStorageByIdFilesResponseZodOutput = z.output<
+  typeof zGetApiStorageByIdFilesResponse
 >;

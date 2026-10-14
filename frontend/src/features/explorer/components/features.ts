@@ -1,4 +1,4 @@
-import type { FileItem } from '#/client/gen/index.ts'
+import type { DirectoryEntry } from '#/client/gen/index.ts'
 import {
   columnSizingFeature,
   metaHelper,
@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-table'
 
 interface TableMeta {
-  itemSelected: (item: FileItem) => void
+  itemSelected: (item: DirectoryEntry) => void
 }
 
 export const features = tableFeatures({

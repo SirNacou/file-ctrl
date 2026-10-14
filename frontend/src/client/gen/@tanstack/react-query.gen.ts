@@ -6,7 +6,7 @@ import { client } from "../client.gen";
 import {
   deleteApiStorageRemoveStorageSource,
   getApiStorage,
-  getApiStorageListFiles,
+  getApiStorageByIdFiles,
   getApiStorageListUnregisteredSources,
   type Options,
   postApiStorage,
@@ -15,17 +15,18 @@ import type {
   DeleteApiStorageRemoveStorageSourceData,
   DeleteApiStorageRemoveStorageSourceError,
   DeleteApiStorageRemoveStorageSourceResponse,
+  GetApiStorageByIdFilesData,
+  GetApiStorageByIdFilesError,
+  GetApiStorageByIdFilesResponse,
   GetApiStorageData,
   GetApiStorageError,
-  GetApiStorageListFilesData,
-  GetApiStorageListFilesError,
-  GetApiStorageListFilesResponse,
   GetApiStorageListUnregisteredSourcesData,
   GetApiStorageListUnregisteredSourcesError,
   GetApiStorageListUnregisteredSourcesResponse,
   GetApiStorageResponse,
   PostApiStorageData,
   PostApiStorageError,
+  PostApiStorageResponse,
 } from "../types.gen";
 
 export type QueryKey<TOptions extends Options> = [
@@ -91,9 +92,9 @@ export const getApiStorageOptions = (options?: Options<GetApiStorageData>) =>
 
 export const postApiStorageMutation = (
   options?: Partial<Options<PostApiStorageData>>,
-): UseMutationOptions<unknown, PostApiStorageError, Options<PostApiStorageData>> => {
+): UseMutationOptions<PostApiStorageResponse, PostApiStorageError, Options<PostApiStorageData>> => {
   const mutationOptions: UseMutationOptions<
-    unknown,
+    PostApiStorageResponse,
     PostApiStorageError,
     Options<PostApiStorageData>
   > = {
@@ -108,28 +109,6 @@ export const postApiStorageMutation = (
   };
   return mutationOptions;
 };
-
-export const getApiStorageListFilesQueryKey = (options?: Options<GetApiStorageListFilesData>) =>
-  createQueryKey("getApiStorageListFiles", options);
-
-export const getApiStorageListFilesOptions = (options?: Options<GetApiStorageListFilesData>) =>
-  queryOptions<
-    GetApiStorageListFilesResponse,
-    GetApiStorageListFilesError,
-    GetApiStorageListFilesResponse,
-    ReturnType<typeof getApiStorageListFilesQueryKey>
-  >({
-    queryFn: async ({ queryKey, signal }) => {
-      const { data } = await getApiStorageListFiles({
-        ...options,
-        ...queryKey[0],
-        signal,
-        throwOnError: true,
-      });
-      return data;
-    },
-    queryKey: getApiStorageListFilesQueryKey(options),
-  });
 
 export const getApiStorageListUnregisteredSourcesQueryKey = (
   options?: Options<GetApiStorageListUnregisteredSourcesData>,
@@ -179,3 +158,25 @@ export const deleteApiStorageRemoveStorageSourceMutation = (
   };
   return mutationOptions;
 };
+
+export const getApiStorageByIdFilesQueryKey = (options: Options<GetApiStorageByIdFilesData>) =>
+  createQueryKey("getApiStorageByIdFiles", options);
+
+export const getApiStorageByIdFilesOptions = (options: Options<GetApiStorageByIdFilesData>) =>
+  queryOptions<
+    GetApiStorageByIdFilesResponse,
+    GetApiStorageByIdFilesError,
+    GetApiStorageByIdFilesResponse,
+    ReturnType<typeof getApiStorageByIdFilesQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await getApiStorageByIdFiles({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: getApiStorageByIdFilesQueryKey(options),
+  });

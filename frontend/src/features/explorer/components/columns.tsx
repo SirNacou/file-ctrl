@@ -1,10 +1,10 @@
-import type { FileItem } from '#/client/gen/index.ts'
+import type { DirectoryEntry } from '#/client/gen/index.ts'
 import { Checkbox } from '#/components/ui/checkbox.tsx'
 import { createColumnHelper } from '@tanstack/react-table'
 import { formatBytes, getFileIcon } from '../types'
 import type { Features } from './features'
 
-const columnHelper = createColumnHelper<Features, FileItem>()
+const columnHelper = createColumnHelper<Features, DirectoryEntry>()
 
 export const columns = columnHelper.columns([
   columnHelper.display({

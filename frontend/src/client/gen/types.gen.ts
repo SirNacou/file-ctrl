@@ -4,6 +4,14 @@ export type ClientOptions = {
   baseUrl: "http://localhost:8080" | (string & {});
 };
 
+export type DirectoryEntry = {
+  is_dir: boolean;
+  mod_time: string;
+  name: string;
+  path: string;
+  size: number;
+};
+
 export type ErrorDetail = {
   /**
    * Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id'
@@ -46,17 +54,9 @@ export type ErrorModel = {
   type?: string;
 };
 
-export type FileItem = {
-  is_dir: boolean;
-  mod_time: string;
-  name: string;
-  path: string;
-  size: number;
-};
-
-export type ListFilesResponse = {
+export type ListDirectoryResponse = {
   current_path: string;
-  items: Array<FileItem> | null;
+  items: Array<DirectoryEntry> | null;
 };
 
 export type ListStorageSourcesResponseBody = {
@@ -65,6 +65,15 @@ export type ListStorageSourcesResponseBody = {
 
 export type ListUnregisteredSourcesResponseBody = {
   dirs: Array<string> | null;
+};
+
+export type RegisterStorageSourceRequestBody = {
+  name: string;
+  sub_path: string;
+};
+
+export type RegisterStorageSourceResponseBody = {
+  id: string;
 };
 
 export type Source = {
@@ -100,7 +109,7 @@ export type GetApiStorageResponses = {
 export type GetApiStorageResponse = GetApiStorageResponses[keyof GetApiStorageResponses];
 
 export type PostApiStorageData = {
-  body?: never;
+  body: RegisterStorageSourceRequestBody;
   path?: never;
   query?: never;
   url: "/api/storage";
@@ -119,37 +128,10 @@ export type PostApiStorageResponses = {
   /**
    * Created
    */
-  201: unknown;
+  201: RegisterStorageSourceResponseBody;
 };
 
-export type GetApiStorageListFilesData = {
-  body?: never;
-  path?: never;
-  query?: {
-    path?: string;
-  };
-  url: "/api/storage/list-files";
-};
-
-export type GetApiStorageListFilesErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type GetApiStorageListFilesError =
-  GetApiStorageListFilesErrors[keyof GetApiStorageListFilesErrors];
-
-export type GetApiStorageListFilesResponses = {
-  /**
-   * OK
-   */
-  200: ListFilesResponse;
-};
-
-export type GetApiStorageListFilesResponse =
-  GetApiStorageListFilesResponses[keyof GetApiStorageListFilesResponses];
+export type PostApiStorageResponse = PostApiStorageResponses[keyof PostApiStorageResponses];
 
 export type GetApiStorageListUnregisteredSourcesData = {
   body?: never;
@@ -204,3 +186,34 @@ export type DeleteApiStorageRemoveStorageSourceResponses = {
 
 export type DeleteApiStorageRemoveStorageSourceResponse =
   DeleteApiStorageRemoveStorageSourceResponses[keyof DeleteApiStorageRemoveStorageSourceResponses];
+
+export type GetApiStorageByIdFilesData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: {
+    path?: string;
+  };
+  url: "/api/storage/{id}/files";
+};
+
+export type GetApiStorageByIdFilesErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type GetApiStorageByIdFilesError =
+  GetApiStorageByIdFilesErrors[keyof GetApiStorageByIdFilesErrors];
+
+export type GetApiStorageByIdFilesResponses = {
+  /**
+   * OK
+   */
+  200: ListDirectoryResponse;
+};
+
+export type GetApiStorageByIdFilesResponse =
+  GetApiStorageByIdFilesResponses[keyof GetApiStorageByIdFilesResponses];

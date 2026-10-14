@@ -1,13 +1,16 @@
+import { TanStackDevtools } from '@tanstack/react-devtools'
+import { FormDevtoolsPanel } from '@tanstack/react-form-devtools'
 import { HeadContent, Scripts, createRootRouteWithContext } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
 import appCss from '../styles.css?url'
 
-import type { QueryClient } from '@tanstack/react-query'
+import { ThemeProvider } from '#/components/theme-provider.tsx'
+import { Toaster } from '#/components/ui/toast.tsx'
 import { TooltipProvider } from '#/components/ui/tooltip.tsx'
+import type { QueryClient } from '@tanstack/react-query'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -39,12 +42,18 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body>
-        <TooltipProvider>{children}</TooltipProvider>
+        <ThemeProvider defaultTheme="system" storageKey="theme">
+          <TooltipProvider>
+            {children}
+            <Toaster />
+          </TooltipProvider>
+        </ThemeProvider>
+
         <TanStackDevtools
           config={{
             position: 'bottom-right',
@@ -55,6 +64,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               render: <TanStackRouterDevtoolsPanel />,
             },
             TanStackQueryDevtools,
+            {
+              name: 'Tanstack Form',
+              render: <FormDevtoolsPanel />,
+            },
           ]}
         />
         <Scripts />
