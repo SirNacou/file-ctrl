@@ -92,9 +92,9 @@ export const AddStorageDialog = () => {
     <Dialog>
       <DialogTrigger
         render={
-          <Button className="w-full">
-            <LucidePlusIcon className="size-7" />
-            <span className="font-bold text-lg uppercase">Storage</span>
+          <Button>
+            <LucidePlusIcon strokeWidth={2} />
+            <span>Storage</span>
           </Button>
         }
       />

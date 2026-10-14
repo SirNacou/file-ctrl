@@ -1,4 +1,5 @@
-import { AddStorageDialog } from '#/features/storage/components/add-storage-dialog.tsx'
+import { Link } from '@tanstack/react-router'
+import ArchiveDuotoneIcon from '~icons/lucide-extended/archive-duotone'
 import { ThemeToggle } from './theme-toggle'
 import {
   Sidebar,
@@ -8,6 +9,7 @@ import {
   SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuButton,
   SidebarMenuItem,
 } from './ui/sidebar'
 
@@ -21,11 +23,14 @@ export const AppSidebar = () => {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          {/* <SidebarGroupLabel className="text-xl">Storage</SidebarGroupLabel> */}
+          {/* <SidebarGroupLabel>Main</SidebarGroupLabel> */}
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <AddStorageDialog />
+                <SidebarMenuButton render={<Link to="/storage" />}>
+                  <ArchiveDuotoneIcon />
+                  <span>Storage</span>
+                </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

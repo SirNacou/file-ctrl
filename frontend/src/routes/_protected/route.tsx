@@ -8,13 +8,7 @@ export const Route = createFileRoute('/_protected')({
 
 function RouteComponent() {
   return (
-    <SidebarProvider
-      style={
-        {
-          '--sidebar-width': '20rem',
-        } as React.CSSProperties
-      }
-    >
+    <SidebarProvider>
       <AppSidebar />
       <div className="flex flex-col px-4 md:px-6 py-2 md:py-4 w-full">
         <header>
