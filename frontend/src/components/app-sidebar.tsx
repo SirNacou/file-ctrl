@@ -29,7 +29,7 @@ export const AppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton render={<Link to="/storage" />}>
                   <ArchiveDuotoneIcon />
-                  <span>Storage</span>
+                  <span className="text-base">Storage</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

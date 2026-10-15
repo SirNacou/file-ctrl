@@ -57,6 +57,7 @@ export type ErrorModel = {
 export type ListDirectoryResponse = {
   current_path: string;
   items: Array<DirectoryEntry> | null;
+  storage_name: string;
 };
 
 export type ListStorageSourcesResponseBody = {
@@ -160,34 +161,34 @@ export type GetApiStorageListUnregisteredSourcesResponses = {
 export type GetApiStorageListUnregisteredSourcesResponse =
   GetApiStorageListUnregisteredSourcesResponses[keyof GetApiStorageListUnregisteredSourcesResponses];
 
-export type DeleteApiStorageRemoveStorageSourceData = {
+export type RemoveStorageData = {
   body?: never;
-  path?: never;
+  path: {
+    id: string;
+  };
   query?: never;
-  url: "/api/storage/remove-storage-source";
+  url: "/api/storage/{id}";
 };
 
-export type DeleteApiStorageRemoveStorageSourceErrors = {
+export type RemoveStorageErrors = {
   /**
    * Error
    */
   default: ErrorModel;
 };
 
-export type DeleteApiStorageRemoveStorageSourceError =
-  DeleteApiStorageRemoveStorageSourceErrors[keyof DeleteApiStorageRemoveStorageSourceErrors];
+export type RemoveStorageError = RemoveStorageErrors[keyof RemoveStorageErrors];
 
-export type DeleteApiStorageRemoveStorageSourceResponses = {
+export type RemoveStorageResponses = {
   /**
    * No Content
    */
   204: void;
 };
 
-export type DeleteApiStorageRemoveStorageSourceResponse =
-  DeleteApiStorageRemoveStorageSourceResponses[keyof DeleteApiStorageRemoveStorageSourceResponses];
+export type RemoveStorageResponse = RemoveStorageResponses[keyof RemoveStorageResponses];
 
-export type GetApiStorageByIdFilesData = {
+export type ListDirectoryData = {
   body?: never;
   path: {
     id: string;
@@ -198,22 +199,20 @@ export type GetApiStorageByIdFilesData = {
   url: "/api/storage/{id}/files";
 };
 
-export type GetApiStorageByIdFilesErrors = {
+export type ListDirectoryErrors = {
   /**
    * Error
    */
   default: ErrorModel;
 };
 
-export type GetApiStorageByIdFilesError =
-  GetApiStorageByIdFilesErrors[keyof GetApiStorageByIdFilesErrors];
+export type ListDirectoryError = ListDirectoryErrors[keyof ListDirectoryErrors];
 
-export type GetApiStorageByIdFilesResponses = {
+export type ListDirectoryResponses = {
   /**
    * OK
    */
   200: ListDirectoryResponse;
 };
 
-export type GetApiStorageByIdFilesResponse =
-  GetApiStorageByIdFilesResponses[keyof GetApiStorageByIdFilesResponses];
+export type ListDirectoryResponse2 = ListDirectoryResponses[keyof ListDirectoryResponses];

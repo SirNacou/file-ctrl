@@ -49,6 +49,7 @@ export type ErrorModelZodType = z.infer<typeof zErrorModel>;
 export const zListDirectoryResponse = z.object({
   current_path: z.string(),
   items: z.array(zDirectoryEntry).nullable(),
+  storage_name: z.string(),
 });
 
 export type ListDirectoryResponseZodType = z.infer<typeof zListDirectoryResponse>;
@@ -120,32 +121,34 @@ export type getApiStorageListUnregisteredSourcesResponseZodOutput = z.output<
   typeof zGetApiStorageListUnregisteredSourcesResponse
 >;
 
-/**
- * No Content
- */
-export const zDeleteApiStorageRemoveStorageSourceResponse = z.void();
-
-export type deleteApiStorageRemoveStorageSourceResponseZodOutput = z.output<
-  typeof zDeleteApiStorageRemoveStorageSourceResponse
->;
-
-export const zGetApiStorageByIdFilesPath = z.object({
+export const zRemoveStoragePath = z.object({
   id: z.uuid(),
 });
 
-export type GetApiStorageByIdFilesPathZodType = z.infer<typeof zGetApiStorageByIdFilesPath>;
+export type RemoveStoragePathZodType = z.infer<typeof zRemoveStoragePath>;
 
-export const zGetApiStorageByIdFilesQuery = z.object({
+/**
+ * No Content
+ */
+export const zRemoveStorageResponse = z.void();
+
+export type removeStorageResponseZodOutput = z.output<typeof zRemoveStorageResponse>;
+
+export const zListDirectoryPath = z.object({
+  id: z.uuid(),
+});
+
+export type ListDirectoryPathZodType = z.infer<typeof zListDirectoryPath>;
+
+export const zListDirectoryQuery = z.object({
   path: z.string().optional().default("."),
 });
 
-export type GetApiStorageByIdFilesQueryZodType = z.infer<typeof zGetApiStorageByIdFilesQuery>;
+export type ListDirectoryQueryZodType = z.infer<typeof zListDirectoryQuery>;
 
 /**
  * OK
  */
-export const zGetApiStorageByIdFilesResponse = zListDirectoryResponse;
+export const zListDirectoryResponse2 = zListDirectoryResponse;
 
-export type getApiStorageByIdFilesResponseZodOutput = z.output<
-  typeof zGetApiStorageByIdFilesResponse
->;
+export type listDirectoryResponseZodOutput = z.output<typeof zListDirectoryResponse2>;

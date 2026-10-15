@@ -5,31 +5,32 @@ import * as z from "zod";
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from "./client";
 import { client } from "./client.gen";
 import type {
-  DeleteApiStorageRemoveStorageSourceData,
-  DeleteApiStorageRemoveStorageSourceErrors,
-  DeleteApiStorageRemoveStorageSourceResponses,
-  GetApiStorageByIdFilesData,
-  GetApiStorageByIdFilesErrors,
-  GetApiStorageByIdFilesResponses,
   GetApiStorageData,
   GetApiStorageErrors,
   GetApiStorageListUnregisteredSourcesData,
   GetApiStorageListUnregisteredSourcesErrors,
   GetApiStorageListUnregisteredSourcesResponses,
   GetApiStorageResponses,
+  ListDirectoryData,
+  ListDirectoryErrors,
+  ListDirectoryResponses,
   PostApiStorageData,
   PostApiStorageErrors,
   PostApiStorageResponses,
+  RemoveStorageData,
+  RemoveStorageErrors,
+  RemoveStorageResponses,
 } from "./types.gen";
 import {
-  zDeleteApiStorageRemoveStorageSourceResponse,
-  zGetApiStorageByIdFilesPath,
-  zGetApiStorageByIdFilesQuery,
-  zGetApiStorageByIdFilesResponse,
   zGetApiStorageListUnregisteredSourcesResponse,
   zGetApiStorageResponse,
+  zListDirectoryPath,
+  zListDirectoryQuery,
+  zListDirectoryResponse2,
   zPostApiStorageBody,
   zPostApiStorageResponse,
+  zRemoveStoragePath,
+  zRemoveStorageResponse,
 } from "./zod.gen";
 
 export type Options<
@@ -114,49 +115,36 @@ export const getApiStorageListUnregisteredSources = <ThrowOnError extends boolea
     ...options,
   });
 
-export const deleteApiStorageRemoveStorageSource = <ThrowOnError extends boolean = false>(
-  options?: Options<DeleteApiStorageRemoveStorageSourceData, ThrowOnError>,
-): RequestResult<
-  DeleteApiStorageRemoveStorageSourceResponses,
-  DeleteApiStorageRemoveStorageSourceErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).delete<
-    DeleteApiStorageRemoveStorageSourceResponses,
-    DeleteApiStorageRemoveStorageSourceErrors,
-    ThrowOnError
-  >({
+export const removeStorage = <ThrowOnError extends boolean = false>(
+  options: Options<RemoveStorageData, ThrowOnError>,
+): RequestResult<RemoveStorageResponses, RemoveStorageErrors, ThrowOnError> =>
+  (options.client ?? client).delete<RemoveStorageResponses, RemoveStorageErrors, ThrowOnError>({
     requestValidator: async (data) =>
       await z
         .object({
           body: z.never().optional(),
-          path: z.never().optional(),
+          path: zRemoveStoragePath,
           query: z.never().optional(),
         })
         .parseAsync(data),
-    responseTransformer: async (data) =>
-      await zDeleteApiStorageRemoveStorageSourceResponse.parseAsync(data),
-    url: "/api/storage/remove-storage-source",
+    responseTransformer: async (data) => await zRemoveStorageResponse.parseAsync(data),
+    url: "/api/storage/{id}",
     ...options,
   });
 
-export const getApiStorageByIdFiles = <ThrowOnError extends boolean = false>(
-  options: Options<GetApiStorageByIdFilesData, ThrowOnError>,
-): RequestResult<GetApiStorageByIdFilesResponses, GetApiStorageByIdFilesErrors, ThrowOnError> =>
-  (options.client ?? client).get<
-    GetApiStorageByIdFilesResponses,
-    GetApiStorageByIdFilesErrors,
-    ThrowOnError
-  >({
+export const listDirectory = <ThrowOnError extends boolean = false>(
+  options: Options<ListDirectoryData, ThrowOnError>,
+): RequestResult<ListDirectoryResponses, ListDirectoryErrors, ThrowOnError> =>
+  (options.client ?? client).get<ListDirectoryResponses, ListDirectoryErrors, ThrowOnError>({
     requestValidator: async (data) =>
       await z
         .object({
           body: z.never().optional(),
-          path: zGetApiStorageByIdFilesPath,
-          query: zGetApiStorageByIdFilesQuery.optional(),
+          path: zListDirectoryPath,
+          query: zListDirectoryQuery.optional(),
         })
         .parseAsync(data),
-    responseTransformer: async (data) => await zGetApiStorageByIdFilesResponse.parseAsync(data),
+    responseTransformer: async (data) => await zListDirectoryResponse2.parseAsync(data),
     url: "/api/storage/{id}/files",
     ...options,
   });

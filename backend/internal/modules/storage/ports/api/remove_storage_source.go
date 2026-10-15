@@ -10,14 +10,15 @@ import (
 )
 
 type RemoveStorageSourceRequest struct {
-	ID uuid.UUID `json:"id" format:"uuid"`
+	ID uuid.UUID `path:"id" format:"uuid"`
 }
 type RemoveStorageSourceResponse struct{}
 
 func RemoveStorageSource(api huma.API, handler *app.RemoveStorageSourceHandler) {
 	huma.Register(api, huma.Operation{
+		OperationID:   "remove-storage",
 		Method:        http.MethodDelete,
-		Path:          "/remove-storage-source",
+		Path:          "/{id}",
 		DefaultStatus: http.StatusNoContent,
 	}, func(ctx context.Context, i *RemoveStorageSourceRequest) (*RemoveStorageSourceResponse, error) {
 		_, err := handler.Handle(ctx, &app.RemoveStorageSourceRequest{
