@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-table'
 
 type TableMeta = {
-  handleRemove: (id: string) => void
+  handleRemove: (subpath: string) => void
 }
 
 export const features = tableFeatures({

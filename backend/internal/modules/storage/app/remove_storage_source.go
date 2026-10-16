@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"errors"
-	"uuid"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
 	"github.com/stephenafamo/bob"
@@ -13,7 +12,7 @@ type RemoveStorageSourceHandler struct {
 	db bob.Executor
 }
 type RemoveStorageSourceRequest struct {
-	ID uuid.UUID
+	Subpath string
 }
 type RemoveStorageSourceResponse struct{}
 
@@ -25,7 +24,7 @@ func (h *RemoveStorageSourceHandler) Handle(
 	ctx context.Context,
 	req *RemoveStorageSourceRequest,
 ) (*RemoveStorageSourceResponse, error) {
-	_, err := models.StorageSources.Delete(models.DeleteWhere.StorageSources.ID.EQ(req.ID.String())).
+	_, err := models.StorageSources.Delete(models.DeleteWhere.StorageSources.Subpath.EQ(req.Subpath)).
 		Exec(ctx, h.db)
 	if err != nil {
 		return nil, errors.New("failed to remove source")

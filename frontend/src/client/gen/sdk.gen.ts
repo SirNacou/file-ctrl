@@ -120,23 +120,6 @@ export const getApiStorageListUnregisteredSources = <ThrowOnError extends boolea
     ...options,
   });
 
-export const removeStorage = <ThrowOnError extends boolean = false>(
-  options: Options<RemoveStorageData, ThrowOnError>,
-): RequestResult<RemoveStorageResponses, RemoveStorageErrors, ThrowOnError> =>
-  (options.client ?? client).delete<RemoveStorageResponses, RemoveStorageErrors, ThrowOnError>({
-    requestValidator: async (data) =>
-      await z
-        .object({
-          body: z.never().optional(),
-          path: zRemoveStoragePath,
-          query: z.never().optional(),
-        })
-        .parseAsync(data),
-    responseValidator: async (data) => await zRemoveStorageResponse.parseAsync(data),
-    url: "/api/storage/{id}",
-    ...options,
-  });
-
 export const listDirectory = <ThrowOnError extends boolean = false>(
   options: Options<ListDirectoryData, ThrowOnError>,
 ): RequestResult<ListDirectoryResponses, ListDirectoryErrors, ThrowOnError> =>
@@ -151,6 +134,23 @@ export const listDirectory = <ThrowOnError extends boolean = false>(
         .parseAsync(data),
     responseTransformer: listDirectoryResponseTransformer,
     responseValidator: async (data) => await zListDirectoryResponse2.parseAsync(data),
-    url: "/api/storage/{id}/files",
+    url: "/api/storage/{storage_subpath}/files",
+    ...options,
+  });
+
+export const removeStorage = <ThrowOnError extends boolean = false>(
+  options: Options<RemoveStorageData, ThrowOnError>,
+): RequestResult<RemoveStorageResponses, RemoveStorageErrors, ThrowOnError> =>
+  (options.client ?? client).delete<RemoveStorageResponses, RemoveStorageErrors, ThrowOnError>({
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: z.never().optional(),
+          path: zRemoveStoragePath,
+          query: z.never().optional(),
+        })
+        .parseAsync(data),
+    responseValidator: async (data) => await zRemoveStorageResponse.parseAsync(data),
+    url: "/api/storage/{subpath}",
     ...options,
   });

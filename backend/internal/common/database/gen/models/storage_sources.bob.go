@@ -21,9 +21,8 @@ import (
 
 // StorageSource is an object representing the database table.
 type StorageSource struct {
-	ID        string    `db:"id,pk" `
+	Subpath   string    `db:"subpath,pk" `
 	Name      string    `db:"name" `
-	Subpath   string    `db:"subpath" `
 	CreatedAt time.Time `db:"created_at" `
 }
 
@@ -39,7 +38,7 @@ type StorageSourcesQuery = *sqlite.ViewQuery[*StorageSource, StorageSourceSlice]
 
 func buildStorageSourceColumns(tableName string) storageSourceColumns {
 	columnsExpr := expr.NewColumnsExpr(
-		"id", "name", "subpath", "created_at",
+		"subpath", "name", "created_at",
 	)
 
 	if tableName != "" {
@@ -49,9 +48,8 @@ func buildStorageSourceColumns(tableName string) storageSourceColumns {
 	return storageSourceColumns{
 		ColumnsExpr: columnsExpr,
 		tableAlias:  tableName,
-		ID:          buildStorageSourceColumn(tableName, "id"),
-		Name:        buildStorageSourceColumn(tableName, "name"),
 		Subpath:     buildStorageSourceColumn(tableName, "subpath"),
+		Name:        buildStorageSourceColumn(tableName, "name"),
 		CreatedAt:   buildStorageSourceColumn(tableName, "created_at"),
 	}
 }
@@ -59,9 +57,8 @@ func buildStorageSourceColumns(tableName string) storageSourceColumns {
 type storageSourceColumns struct {
 	expr.ColumnsExpr
 	tableAlias string
-	ID         storageSourceColumn
-	Name       storageSourceColumn
 	Subpath    storageSourceColumn
+	Name       storageSourceColumn
 	CreatedAt  storageSourceColumn
 }
 
@@ -108,22 +105,18 @@ func (c storageSourceColumn) ShouldOmitParens() bool {
 // All values are optional, and do not have to be set
 // Generated columns are not included
 type StorageSourceSetter struct {
-	ID        omit.Val[string]    `db:"id,pk" `
+	Subpath   omit.Val[string]    `db:"subpath,pk" `
 	Name      omit.Val[string]    `db:"name" `
-	Subpath   omit.Val[string]    `db:"subpath" `
 	CreatedAt omit.Val[time.Time] `db:"created_at" `
 }
 
 func (s StorageSourceSetter) SetColumns() []string {
-	vals := make([]string, 0, 4)
-	if s.ID.IsValue() {
-		vals = append(vals, "id")
+	vals := make([]string, 0, 3)
+	if s.Subpath.IsValue() {
+		vals = append(vals, "subpath")
 	}
 	if s.Name.IsValue() {
 		vals = append(vals, "name")
-	}
-	if s.Subpath.IsValue() {
-		vals = append(vals, "subpath")
 	}
 	if s.CreatedAt.IsValue() {
 		vals = append(vals, "created_at")
@@ -132,14 +125,11 @@ func (s StorageSourceSetter) SetColumns() []string {
 }
 
 func (s StorageSourceSetter) Overwrite(t *StorageSource) {
-	if s.ID.IsValue() {
-		t.ID = s.ID.MustGet()
+	if s.Subpath.IsValue() {
+		t.Subpath = s.Subpath.MustGet()
 	}
 	if s.Name.IsValue() {
 		t.Name = s.Name.MustGet()
-	}
-	if s.Subpath.IsValue() {
-		t.Subpath = s.Subpath.MustGet()
 	}
 	if s.CreatedAt.IsValue() {
 		t.CreatedAt = s.CreatedAt.MustGet()
@@ -154,7 +144,7 @@ func (s *StorageSourceSetter) Apply(q *dialect.InsertQuery) {
 	if len(q.TableRef.Columns) == 0 {
 		q.TableRef.Columns = s.SetColumns()
 		if len(q.TableRef.Columns) == 0 {
-			q.TableRef.Columns = []string{"id"}
+			q.TableRef.Columns = []string{"subpath"}
 		}
 
 	}
@@ -162,12 +152,12 @@ func (s *StorageSourceSetter) Apply(q *dialect.InsertQuery) {
 	vals := make([]bob.Expression, 0, len(q.TableRef.Columns))
 	for _, col := range q.TableRef.Columns {
 		switch col {
-		case "id":
+		case "subpath":
 			vals = append(vals, bob.ExpressionFunc(func(ctx context.Context, w io.StringWriter, d bob.Dialect, start int) ([]any, error) {
-				if s.ID.IsUnset() {
+				if s.Subpath.IsUnset() {
 					return sqlite.Arg(nil).WriteSQL(ctx, w, d, start)
 				}
-				return sqlite.Arg(s.ID.MustGet()).WriteSQL(ctx, w, d, start)
+				return sqlite.Arg(s.Subpath.MustGet()).WriteSQL(ctx, w, d, start)
 			}))
 		case "name":
 			vals = append(vals, bob.ExpressionFunc(func(ctx context.Context, w io.StringWriter, d bob.Dialect, start int) ([]any, error) {
@@ -175,13 +165,6 @@ func (s *StorageSourceSetter) Apply(q *dialect.InsertQuery) {
 					return sqlite.Arg(nil).WriteSQL(ctx, w, d, start)
 				}
 				return sqlite.Arg(s.Name.MustGet()).WriteSQL(ctx, w, d, start)
-			}))
-		case "subpath":
-			vals = append(vals, bob.ExpressionFunc(func(ctx context.Context, w io.StringWriter, d bob.Dialect, start int) ([]any, error) {
-				if s.Subpath.IsUnset() {
-					return sqlite.Arg(nil).WriteSQL(ctx, w, d, start)
-				}
-				return sqlite.Arg(s.Subpath.MustGet()).WriteSQL(ctx, w, d, start)
 			}))
 		case "created_at":
 			vals = append(vals, bob.ExpressionFunc(func(ctx context.Context, w io.StringWriter, d bob.Dialect, start int) ([]any, error) {
@@ -201,12 +184,12 @@ func (s StorageSourceSetter) UpdateMod() bob.Mod[*dialect.UpdateQuery] {
 }
 
 func (s StorageSourceSetter) Expressions(prefix ...string) []bob.Expression {
-	exprs := make([]bob.Expression, 0, 4)
+	exprs := make([]bob.Expression, 0, 3)
 
-	if s.ID.IsValue() {
+	if s.Subpath.IsValue() {
 		exprs = append(exprs, expr.Join{Sep: " = ", Exprs: []bob.Expression{
-			sqlite.Quote(append(prefix, "id")...),
-			sqlite.Arg(s.ID),
+			sqlite.Quote(append(prefix, "subpath")...),
+			sqlite.Arg(s.Subpath),
 		}})
 	}
 
@@ -214,13 +197,6 @@ func (s StorageSourceSetter) Expressions(prefix ...string) []bob.Expression {
 		exprs = append(exprs, expr.Join{Sep: " = ", Exprs: []bob.Expression{
 			sqlite.Quote(append(prefix, "name")...),
 			sqlite.Arg(s.Name),
-		}})
-	}
-
-	if s.Subpath.IsValue() {
-		exprs = append(exprs, expr.Join{Sep: " = ", Exprs: []bob.Expression{
-			sqlite.Quote(append(prefix, "subpath")...),
-			sqlite.Arg(s.Subpath),
 		}})
 	}
 
@@ -241,15 +217,13 @@ func storageSourceScanMapper(ctx context.Context, cols []string) (scan.BeforeFun
 		idx int
 		dst func(o *StorageSource) any
 	}
-	targets := make([]target, 0, 4)
+	targets := make([]target, 0, 3)
 	for i, col := range cols {
 		switch col {
-		case "id":
-			targets = append(targets, target{i, func(o *StorageSource) any { return &o.ID }})
-		case "name":
-			targets = append(targets, target{i, func(o *StorageSource) any { return &o.Name }})
 		case "subpath":
 			targets = append(targets, target{i, func(o *StorageSource) any { return &o.Subpath }})
+		case "name":
+			targets = append(targets, target{i, func(o *StorageSource) any { return &o.Name }})
 		case "created_at":
 			targets = append(targets, target{i, func(o *StorageSource) any { return &o.CreatedAt }})
 		}
@@ -268,23 +242,23 @@ func storageSourceScanMapper(ctx context.Context, cols []string) (scan.BeforeFun
 
 // FindStorageSource retrieves a single record by primary key
 // If cols is empty Find will return all columns.
-func FindStorageSource(ctx context.Context, exec bob.Executor, IDPK string, cols ...string) (*StorageSource, error) {
+func FindStorageSource(ctx context.Context, exec bob.Executor, SubpathPK string, cols ...string) (*StorageSource, error) {
 	if len(cols) == 0 {
 		return StorageSources.Query(
-			sm.Where(StorageSources.Columns.ID.EQ(sqlite.Arg(IDPK))),
+			sm.Where(StorageSources.Columns.Subpath.EQ(sqlite.Arg(SubpathPK))),
 		).One(ctx, exec)
 	}
 
 	return StorageSources.Query(
-		sm.Where(StorageSources.Columns.ID.EQ(sqlite.Arg(IDPK))),
+		sm.Where(StorageSources.Columns.Subpath.EQ(sqlite.Arg(SubpathPK))),
 		sm.Columns(StorageSources.Columns.Only(cols...)),
 	).One(ctx, exec)
 }
 
 // StorageSourceExists checks the presence of a single record by primary key
-func StorageSourceExists(ctx context.Context, exec bob.Executor, IDPK string) (bool, error) {
+func StorageSourceExists(ctx context.Context, exec bob.Executor, SubpathPK string) (bool, error) {
 	return StorageSources.Query(
-		sm.Where(StorageSources.Columns.ID.EQ(sqlite.Arg(IDPK))),
+		sm.Where(StorageSources.Columns.Subpath.EQ(sqlite.Arg(SubpathPK))),
 	).Exists(ctx, exec)
 }
 
@@ -309,11 +283,11 @@ func (o *StorageSource) AfterQueryHook(ctx context.Context, exec bob.Executor, q
 
 // primaryKeyVals returns the primary key values of the StorageSource
 func (o *StorageSource) primaryKeyVals() bob.Expression {
-	return sqlite.Arg(o.ID)
+	return sqlite.Arg(o.Subpath)
 }
 
 func (o *StorageSource) pkEQ() dialect.Expression {
-	return sqlite.Quote("storage_sources", "id").EQ(bob.ExpressionFunc(func(ctx context.Context, w io.StringWriter, d bob.Dialect, start int) ([]any, error) {
+	return sqlite.Quote("storage_sources", "subpath").EQ(bob.ExpressionFunc(func(ctx context.Context, w io.StringWriter, d bob.Dialect, start int) ([]any, error) {
 		return o.primaryKeyVals().WriteSQL(ctx, w, d, start)
 	}))
 }
@@ -339,7 +313,7 @@ func (o *StorageSource) Delete(ctx context.Context, exec bob.Executor) error {
 // Reload refreshes the StorageSource using the executor
 func (o *StorageSource) Reload(ctx context.Context, exec bob.Executor) error {
 	o2, err := StorageSources.Query(
-		sm.Where(StorageSources.Columns.ID.EQ(sqlite.Arg(o.ID))),
+		sm.Where(StorageSources.Columns.Subpath.EQ(sqlite.Arg(o.Subpath))),
 	).One(ctx, exec)
 	if err != nil {
 		return err
@@ -374,7 +348,7 @@ func (o StorageSourceSlice) pkIN() dialect.Expression {
 		return sqlite.Raw("NULL")
 	}
 
-	return sqlite.Quote("storage_sources", "id").In(bob.ExpressionFunc(func(ctx context.Context, w io.StringWriter, d bob.Dialect, start int) ([]any, error) {
+	return sqlite.Quote("storage_sources", "subpath").In(bob.ExpressionFunc(func(ctx context.Context, w io.StringWriter, d bob.Dialect, start int) ([]any, error) {
 		pkPairs := make([]bob.Expression, len(o))
 		for i, row := range o {
 			pkPairs[i] = row.primaryKeyVals()
@@ -390,13 +364,13 @@ func (o StorageSourceSlice) copyMatchingRows(from ...*StorageSource) {
 	fromByPK := make(map[string]*StorageSource, len(from))
 	for _, new := range from {
 		// keep the first row for each key, like the nested loop did
-		if _, ok := fromByPK[new.ID]; !ok {
-			fromByPK[new.ID] = new
+		if _, ok := fromByPK[new.Subpath]; !ok {
+			fromByPK[new.Subpath] = new
 		}
 	}
 
 	for i, old := range o {
-		new, ok := fromByPK[old.ID]
+		new, ok := fromByPK[old.Subpath]
 		if !ok {
 			continue
 		}
@@ -498,9 +472,8 @@ func (o StorageSourceSlice) ReloadAll(ctx context.Context, exec bob.Executor) er
 
 type storageSourceWhere[Q sqlite.Filterable] struct {
 	cols      storageSourceColumns
-	ID        sqlite.WhereMod[Q, string]
-	Name      sqlite.WhereMod[Q, string]
 	Subpath   sqlite.WhereMod[Q, string]
+	Name      sqlite.WhereMod[Q, string]
 	CreatedAt sqlite.WhereMod[Q, time.Time]
 }
 
@@ -511,9 +484,8 @@ func (storageSourceWhere[Q]) AliasedAs(alias string) storageSourceWhere[Q] {
 func buildStorageSourceWhere[Q sqlite.Filterable](cols storageSourceColumns) storageSourceWhere[Q] {
 	return storageSourceWhere[Q]{
 		cols:      cols,
-		ID:        sqlite.Where[Q, string](cols.ID.Expression),
-		Name:      sqlite.Where[Q, string](cols.Name.Expression),
 		Subpath:   sqlite.Where[Q, string](cols.Subpath.Expression),
+		Name:      sqlite.Where[Q, string](cols.Name.Expression),
 		CreatedAt: sqlite.Where[Q, time.Time](cols.CreatedAt.Expression),
 	}
 }

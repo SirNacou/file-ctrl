@@ -121,9 +121,8 @@ export type RegisterStorageSourceResponseBodyZodOutput = z.output<
 
 export const zSource = z.object({
   created_at: z.iso.datetime({ offset: true }),
-  id: z.string(),
   name: z.string(),
-  sub_path: z.string(),
+  subpath: z.string(),
 });
 
 export type SourceZodType = z.infer<typeof zSource>;
@@ -193,29 +192,8 @@ export type GetApiStorageListUnregisteredSourcesResponseZodOutput = z.output<
   typeof zGetApiStorageListUnregisteredSourcesResponse
 >;
 
-export const zRemoveStoragePath = z.object({
-  id: z.uuid(),
-});
-
-export type RemoveStoragePathZodType = z.infer<typeof zRemoveStoragePath>;
-
-export type RemoveStoragePathZodInput = z.input<typeof zRemoveStoragePath>;
-
-export type RemoveStoragePathZodOutput = z.output<typeof zRemoveStoragePath>;
-
-/**
- * No Content
- */
-export const zRemoveStorageResponse = z.void();
-
-export type RemoveStorageResponseZodType = z.infer<typeof zRemoveStorageResponse>;
-
-export type RemoveStorageResponseZodInput = z.input<typeof zRemoveStorageResponse>;
-
-export type RemoveStorageResponseZodOutput = z.output<typeof zRemoveStorageResponse>;
-
 export const zListDirectoryPath = z.object({
-  id: z.uuid(),
+  storage_subpath: z.string(),
 });
 
 export type ListDirectoryPathZodType = z.infer<typeof zListDirectoryPath>;
@@ -244,3 +222,24 @@ export type ListDirectoryResponseZodType2 = z.infer<typeof zListDirectoryRespons
 export type ListDirectoryResponseZodInput2 = z.input<typeof zListDirectoryResponse2>;
 
 export type ListDirectoryResponseZodOutput2 = z.output<typeof zListDirectoryResponse2>;
+
+export const zRemoveStoragePath = z.object({
+  subpath: z.string(),
+});
+
+export type RemoveStoragePathZodType = z.infer<typeof zRemoveStoragePath>;
+
+export type RemoveStoragePathZodInput = z.input<typeof zRemoveStoragePath>;
+
+export type RemoveStoragePathZodOutput = z.output<typeof zRemoveStoragePath>;
+
+/**
+ * No Content
+ */
+export const zRemoveStorageResponse = z.void();
+
+export type RemoveStorageResponseZodType = z.infer<typeof zRemoveStorageResponse>;
+
+export type RemoveStorageResponseZodInput = z.input<typeof zRemoveStorageResponse>;
+
+export type RemoveStorageResponseZodOutput = z.output<typeof zRemoveStorageResponse>;

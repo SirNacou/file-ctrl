@@ -25,7 +25,6 @@ func (r *StorageSourcesRepository) WithTx(tx *bob.Tx) *StorageSourcesRepository 
 
 func (r *StorageSourcesRepository) Insert(ctx context.Context, model *domain.StorageSource) error {
 	_, err := models.StorageSources.Insert(&models.StorageSourceSetter{
-		ID:        omit.From(model.ID.String()),
 		Name:      omit.From(model.Name),
 		Subpath:   omit.From(model.Subpath.String()),
 		CreatedAt: omit.From(model.CreatedAt),
@@ -39,14 +38,14 @@ func (r *StorageSourcesRepository) Insert(ctx context.Context, model *domain.Sto
 
 func (r *StorageSourcesRepository) Update(ctx context.Context, model *domain.StorageSource) error {
 	_, err := models.StorageSources.
-		Update(models.UpdateWhere.StorageSources.ID.EQ(model.ID.String()),
+		Update(models.UpdateWhere.StorageSources.Subpath.EQ(model.Subpath.String()),
 			models.StorageSourceSetter{
 				Name:    omit.From(model.Name),
 				Subpath: omit.From(model.Subpath.String()),
 			}.UpdateMod()).
 		Exec(ctx, r.db)
 	if err != nil {
-		return fmt.Errorf("failed to update Storage Source \"%s\":w%v", model.ID, err)
+		return fmt.Errorf("failed to update Storage Source \"%s\":w%v", model.Subpath, err)
 	}
 
 	return nil

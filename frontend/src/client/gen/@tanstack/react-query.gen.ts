@@ -135,26 +135,6 @@ export const getApiStorageListUnregisteredSourcesOptions = (
     queryKey: getApiStorageListUnregisteredSourcesQueryKey(options),
   });
 
-export const removeStorageMutation = (
-  options?: Partial<Options<RemoveStorageData>>,
-): UseMutationOptions<RemoveStorageResponse, RemoveStorageError, Options<RemoveStorageData>> => {
-  const mutationOptions: UseMutationOptions<
-    RemoveStorageResponse,
-    RemoveStorageError,
-    Options<RemoveStorageData>
-  > = {
-    mutationFn: async (fnOptions) => {
-      const { data } = await removeStorage({
-        ...options,
-        ...fnOptions,
-        throwOnError: true,
-      });
-      return data;
-    },
-  };
-  return mutationOptions;
-};
-
 export const listDirectoryQueryKey = (options: Options<ListDirectoryData>) =>
   createQueryKey("listDirectory", options);
 
@@ -176,3 +156,23 @@ export const listDirectoryOptions = (options: Options<ListDirectoryData>) =>
     },
     queryKey: listDirectoryQueryKey(options),
   });
+
+export const removeStorageMutation = (
+  options?: Partial<Options<RemoveStorageData>>,
+): UseMutationOptions<RemoveStorageResponse, RemoveStorageError, Options<RemoveStorageData>> => {
+  const mutationOptions: UseMutationOptions<
+    RemoveStorageResponse,
+    RemoveStorageError,
+    Options<RemoveStorageData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await removeStorage({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};

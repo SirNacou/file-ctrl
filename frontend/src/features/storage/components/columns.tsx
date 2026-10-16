@@ -11,7 +11,7 @@ export const columns = columnHelper.columns([
   columnHelper.accessor('name', {
     header: () => <span>Name</span>,
   }),
-  columnHelper.accessor('sub_path', {
+  columnHelper.accessor('subpath', {
     header: () => <span>Path</span>,
   }),
   columnHelper.accessor('created_at', {
@@ -36,12 +36,19 @@ export const columns = columnHelper.columns([
     header: () => <span>Actions</span>,
     cell: ({ row, table }) => (
       <div className="flex gap-2">
-        <Button render={<Link to="/storage/$sourceId" params={{ sourceId: row.original.id }} />}>
+        <Button
+          render={
+            <Link
+              to="/storage/$storage_subpath"
+              params={{ storage_subpath: row.original.subpath }}
+            />
+          }
+        >
           Open
         </Button>
         <ConfirmDelete
           buttonText="Remove"
-          onConfirm={() => table.options.meta?.handleRemove(row.original.id)}
+          onConfirm={() => table.options.meta?.handleRemove(row.original.subpath)}
         />
       </div>
     ),

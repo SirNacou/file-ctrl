@@ -79,9 +79,8 @@ export type RegisterStorageSourceResponseBody = {
 
 export type Source = {
   created_at: Date;
-  id: string;
   name: string;
-  sub_path: string;
+  subpath: string;
 };
 
 export type GetApiStorageData = {
@@ -161,42 +160,15 @@ export type GetApiStorageListUnregisteredSourcesResponses = {
 export type GetApiStorageListUnregisteredSourcesResponse =
   GetApiStorageListUnregisteredSourcesResponses[keyof GetApiStorageListUnregisteredSourcesResponses];
 
-export type RemoveStorageData = {
-  body?: never;
-  path: {
-    id: string;
-  };
-  query?: never;
-  url: "/api/storage/{id}";
-};
-
-export type RemoveStorageErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type RemoveStorageError = RemoveStorageErrors[keyof RemoveStorageErrors];
-
-export type RemoveStorageResponses = {
-  /**
-   * No Content
-   */
-  204: void;
-};
-
-export type RemoveStorageResponse = RemoveStorageResponses[keyof RemoveStorageResponses];
-
 export type ListDirectoryData = {
   body?: never;
   path: {
-    id: string;
+    storage_subpath: string;
   };
   query?: {
     path?: string;
   };
-  url: "/api/storage/{id}/files";
+  url: "/api/storage/{storage_subpath}/files";
 };
 
 export type ListDirectoryErrors = {
@@ -216,3 +188,30 @@ export type ListDirectoryResponses = {
 };
 
 export type ListDirectoryResponse2 = ListDirectoryResponses[keyof ListDirectoryResponses];
+
+export type RemoveStorageData = {
+  body?: never;
+  path: {
+    subpath: string;
+  };
+  query?: never;
+  url: "/api/storage/{subpath}";
+};
+
+export type RemoveStorageErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type RemoveStorageError = RemoveStorageErrors[keyof RemoveStorageErrors];
+
+export type RemoveStorageResponses = {
+  /**
+   * No Content
+   */
+  204: void;
+};
+
+export type RemoveStorageResponse = RemoveStorageResponses[keyof RemoveStorageResponses];

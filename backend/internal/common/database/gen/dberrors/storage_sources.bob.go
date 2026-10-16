@@ -7,20 +7,11 @@ var StorageSourceErrors = &storageSourceErrors{
 	ErrUniquePkMainStorageSources: &UniqueConstraintError{
 		schema:  "",
 		table:   "storage_sources",
-		columns: []string{"id"},
-		s:       "pk_main_storage_sources",
-	},
-
-	ErrUniqueSqliteAutoindexStorageSources2: &UniqueConstraintError{
-		schema:  "",
-		table:   "storage_sources",
 		columns: []string{"subpath"},
-		s:       "sqlite_autoindex_storage_sources_2",
+		s:       "pk_main_storage_sources",
 	},
 }
 
 type storageSourceErrors struct {
 	ErrUniquePkMainStorageSources *UniqueConstraintError
-
-	ErrUniqueSqliteAutoindexStorageSources2 *UniqueConstraintError
 }
