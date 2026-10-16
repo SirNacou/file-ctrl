@@ -1,5 +1,6 @@
 import { listDirectoryOptions } from '#/client/gen/@tanstack/react-query.gen.ts'
 import { PageHeader } from '#/components/page-header.tsx'
+import { FileTable } from '#/features/explorer/components/file-table.tsx'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -19,6 +20,7 @@ function RouteComponent() {
   return (
     <>
       <PageHeader title={`Storage: ${data.storage_name}`} />
+      <FileTable data={data.items ?? []} />
     </>
   )
 }

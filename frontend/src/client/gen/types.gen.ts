@@ -6,10 +6,10 @@ export type ClientOptions = {
 
 export type DirectoryEntry = {
   is_dir: boolean;
-  mod_time: string;
+  mod_time: Date;
   name: string;
   path: string;
-  size: number;
+  size: bigint;
 };
 
 export type ErrorDetail = {
@@ -43,7 +43,7 @@ export type ErrorModel = {
   /**
    * HTTP status code
    */
-  status?: number;
+  status?: bigint;
   /**
    * A short, human-readable summary of the problem type. This value should not change between occurrences of the error.
    */
@@ -78,7 +78,7 @@ export type RegisterStorageSourceResponseBody = {
 };
 
 export type Source = {
-  created_at: string;
+  created_at: Date;
   id: string;
   name: string;
   sub_path: string;

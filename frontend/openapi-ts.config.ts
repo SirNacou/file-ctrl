@@ -5,42 +5,47 @@ export default defineConfig({
     path: 'http://localhost:8080/openapi.json',
     watch: true,
   },
-  output: { path: 'src/client/gen', postProcess: ['oxlint', 'oxfmt'], clean: true },
+  output: {
+    path: 'src/client/gen',
+    postProcess: ['oxlint', 'oxfmt'],
+    clean: true,
+  },
   logs: 'logs',
   plugins: [
-    {
-      name: '@hey-api/typescript',
-      enums: 'typescript-const',
-    },
+    // 1. Hook up the SDK plugin specifically using Zod validation and transformation rules
     {
       name: '@hey-api/sdk',
-      validator: true,
+      validator: 'zod',
       transformer: true,
+    },
+    {
+      name: '@hey-api/transformers',
+      dates: true,
+      bigInt: true,
     },
     {
       name: '@hey-api/client-fetch',
       runtimeConfigPath: './src/client/hey-api.ts',
     },
+    // 2. Configure Zod v4 to exclusively handle schemas + infer static TS types
     {
       name: 'zod',
       requests: {
         enabled: true,
-        types: {
-          input: true,
-        },
       },
       responses: {
         enabled: true,
-        types: {
-          output: true,
-        },
       },
-      definitions: true,
+      definitions: {
+        enabled: true,
+      },
       dates: {
         offset: true,
       },
       types: {
+        input: true,
         infer: true,
+        output: true,
       },
     },
     {

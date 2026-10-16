@@ -42,7 +42,14 @@ export const SelectField = <T extends Key>({
   return (
     <Field>
       <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
-      <Select disabled={disabled} id={field.name} name={field.name} items={items}>
+      <Select
+        value={field.state.value}
+        onValueChange={(value) => value && field.handleChange(value)}
+        disabled={disabled}
+        id={field.name}
+        name={field.name}
+        items={items}
+      >
         <SelectTrigger className="w-full">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>

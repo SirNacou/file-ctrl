@@ -8,13 +8,28 @@ import FileTextIcon from '~icons/lucide/file-text'
 import FileVideoIcon from '~icons/lucide/file-video'
 import FolderIcon from '~icons/lucide/folder'
 
-export const formatBytes = (bytes: number, decimals = 0): string => {
-  if (bytes === 0) return '--'
-  const k = 1024
-  const dm = decimals < 0 ? 0 : decimals
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+export const formatBytes = (bytes: number | bigint, decimals = 0): string => {
+  if (bytes === 0 || bytes === 0n) return '--'
+
+  const k = 1024n
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB']
+  const dm = Math.max(0, decimals)
+
+  if (typeof bytes === 'bigint') {
+    let value = bytes
+    let i = 0
+
+    while (value >= k && i < sizes.length - 1) {
+      value /= k
+      i++
+    }
+
+    return `${value} ${sizes[i]}`
+  }
+
+  const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), sizes.length - 1)
+
+  return `${Number((bytes / Math.pow(1024, i)).toFixed(dm))} ${sizes[i]}`
 }
 
 export function getFileIcon(name: string, isDir: boolean) {
