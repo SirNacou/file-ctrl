@@ -4,28 +4,29 @@ import { queryOptions, type UseMutationOptions } from "@tanstack/react-query";
 
 import { client } from "../client.gen";
 import {
-  deleteApiStorageRemoveStorageSource,
   getApiStorage,
-  getApiStorageListFiles,
   getApiStorageListUnregisteredSources,
+  listDirectory,
   type Options,
   postApiStorage,
+  removeStorage,
 } from "../sdk.gen";
 import type {
-  DeleteApiStorageRemoveStorageSourceData,
-  DeleteApiStorageRemoveStorageSourceError,
-  DeleteApiStorageRemoveStorageSourceResponse,
   GetApiStorageData,
   GetApiStorageError,
-  GetApiStorageListFilesData,
-  GetApiStorageListFilesError,
-  GetApiStorageListFilesResponse,
   GetApiStorageListUnregisteredSourcesData,
   GetApiStorageListUnregisteredSourcesError,
   GetApiStorageListUnregisteredSourcesResponse,
   GetApiStorageResponse,
+  ListDirectoryData,
+  ListDirectoryError,
+  ListDirectoryResponse2,
   PostApiStorageData,
   PostApiStorageError,
+  PostApiStorageResponse,
+  RemoveStorageData,
+  RemoveStorageError,
+  RemoveStorageResponse,
 } from "../types.gen";
 
 export type QueryKey<TOptions extends Options> = [
@@ -91,9 +92,9 @@ export const getApiStorageOptions = (options?: Options<GetApiStorageData>) =>
 
 export const postApiStorageMutation = (
   options?: Partial<Options<PostApiStorageData>>,
-): UseMutationOptions<unknown, PostApiStorageError, Options<PostApiStorageData>> => {
+): UseMutationOptions<PostApiStorageResponse, PostApiStorageError, Options<PostApiStorageData>> => {
   const mutationOptions: UseMutationOptions<
-    unknown,
+    PostApiStorageResponse,
     PostApiStorageError,
     Options<PostApiStorageData>
   > = {
@@ -108,28 +109,6 @@ export const postApiStorageMutation = (
   };
   return mutationOptions;
 };
-
-export const getApiStorageListFilesQueryKey = (options?: Options<GetApiStorageListFilesData>) =>
-  createQueryKey("getApiStorageListFiles", options);
-
-export const getApiStorageListFilesOptions = (options?: Options<GetApiStorageListFilesData>) =>
-  queryOptions<
-    GetApiStorageListFilesResponse,
-    GetApiStorageListFilesError,
-    GetApiStorageListFilesResponse,
-    ReturnType<typeof getApiStorageListFilesQueryKey>
-  >({
-    queryFn: async ({ queryKey, signal }) => {
-      const { data } = await getApiStorageListFiles({
-        ...options,
-        ...queryKey[0],
-        signal,
-        throwOnError: true,
-      });
-      return data;
-    },
-    queryKey: getApiStorageListFilesQueryKey(options),
-  });
 
 export const getApiStorageListUnregisteredSourcesQueryKey = (
   options?: Options<GetApiStorageListUnregisteredSourcesData>,
@@ -156,20 +135,16 @@ export const getApiStorageListUnregisteredSourcesOptions = (
     queryKey: getApiStorageListUnregisteredSourcesQueryKey(options),
   });
 
-export const deleteApiStorageRemoveStorageSourceMutation = (
-  options?: Partial<Options<DeleteApiStorageRemoveStorageSourceData>>,
-): UseMutationOptions<
-  DeleteApiStorageRemoveStorageSourceResponse,
-  DeleteApiStorageRemoveStorageSourceError,
-  Options<DeleteApiStorageRemoveStorageSourceData>
-> => {
+export const removeStorageMutation = (
+  options?: Partial<Options<RemoveStorageData>>,
+): UseMutationOptions<RemoveStorageResponse, RemoveStorageError, Options<RemoveStorageData>> => {
   const mutationOptions: UseMutationOptions<
-    DeleteApiStorageRemoveStorageSourceResponse,
-    DeleteApiStorageRemoveStorageSourceError,
-    Options<DeleteApiStorageRemoveStorageSourceData>
+    RemoveStorageResponse,
+    RemoveStorageError,
+    Options<RemoveStorageData>
   > = {
     mutationFn: async (fnOptions) => {
-      const { data } = await deleteApiStorageRemoveStorageSource({
+      const { data } = await removeStorage({
         ...options,
         ...fnOptions,
         throwOnError: true,
@@ -179,3 +154,25 @@ export const deleteApiStorageRemoveStorageSourceMutation = (
   };
   return mutationOptions;
 };
+
+export const listDirectoryQueryKey = (options: Options<ListDirectoryData>) =>
+  createQueryKey("listDirectory", options);
+
+export const listDirectoryOptions = (options: Options<ListDirectoryData>) =>
+  queryOptions<
+    ListDirectoryResponse2,
+    ListDirectoryError,
+    ListDirectoryResponse2,
+    ReturnType<typeof listDirectoryQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await listDirectory({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: listDirectoryQueryKey(options),
+  });

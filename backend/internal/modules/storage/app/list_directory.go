@@ -22,6 +22,7 @@ type ListDirectoryRequest struct {
 	StorageID uuid.UUID
 }
 type ListDirectoryResponse struct {
+	StorageName string `json:"storage_name"`
 	CurrentPath string           `json:"current_path"`
 	Items       []DirectoryEntry `json:"items"`
 }
@@ -82,6 +83,7 @@ func (h *ListDirectoryHandler) Handle(
 	}
 
 	return &ListDirectoryResponse{
+		StorageName: source.Name,
 		CurrentPath: displayPath(userPath),
 		Items:       items,
 	}, nil

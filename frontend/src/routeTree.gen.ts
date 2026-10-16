@@ -12,7 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as ProtectedIndexRouteImport } from './routes/_protected/index'
 import { Route as ProtectedExplorerIndexRouteImport } from './routes/_protected/explorer/index'
-import { Route as ProtectedExplorerSourceIdIndexRouteImport } from './routes/_protected/explorer/$sourceId/index'
+import { Route as ProtectedStorageIndexRouteImport } from './routes/_protected/storage/index'
+import { Route as ProtectedStorageSourceIdIndexRouteImport } from './routes/_protected/storage/$sourceId/index'
 
 const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
   id: '/_protected',
@@ -28,41 +29,50 @@ const ProtectedExplorerIndexRoute = ProtectedExplorerIndexRouteImport.update({
   path: '/explorer/',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
-const ProtectedExplorerSourceIdIndexRoute =
-  ProtectedExplorerSourceIdIndexRouteImport.update({
-    id: '/explorer/$sourceId/',
-    path: '/explorer/$sourceId/',
+const ProtectedStorageIndexRoute = ProtectedStorageIndexRouteImport.update({
+  id: '/storage/',
+  path: '/storage/',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const ProtectedStorageSourceIdIndexRoute =
+  ProtectedStorageSourceIdIndexRouteImport.update({
+    id: '/storage/$sourceId/',
+    path: '/storage/$sourceId/',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof ProtectedIndexRoute
   '/explorer/': typeof ProtectedExplorerIndexRoute
-  '/explorer/$sourceId/': typeof ProtectedExplorerSourceIdIndexRoute
+  '/storage/': typeof ProtectedStorageIndexRoute
+  '/storage/$sourceId/': typeof ProtectedStorageSourceIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof ProtectedIndexRoute
   '/explorer': typeof ProtectedExplorerIndexRoute
-  '/explorer/$sourceId': typeof ProtectedExplorerSourceIdIndexRoute
+  '/storage': typeof ProtectedStorageIndexRoute
+  '/storage/$sourceId': typeof ProtectedStorageSourceIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_protected': typeof ProtectedRouteRouteWithChildren
   '/_protected/': typeof ProtectedIndexRoute
   '/_protected/explorer/': typeof ProtectedExplorerIndexRoute
-  '/_protected/explorer/$sourceId/': typeof ProtectedExplorerSourceIdIndexRoute
+  '/_protected/storage/': typeof ProtectedStorageIndexRoute
+  '/_protected/storage/$sourceId/': typeof ProtectedStorageSourceIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/explorer/' | '/explorer/$sourceId/'
+  fullPaths: '/' | '/explorer/' | '/storage/' | '/storage/$sourceId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/explorer' | '/explorer/$sourceId'
+  to: '/' | '/explorer' | '/storage' | '/storage/$sourceId'
   id:
     | '__root__'
     | '/_protected'
     | '/_protected/'
     | '/_protected/explorer/'
-    | '/_protected/explorer/$sourceId/'
+    | '/_protected/storage/'
+    | '/_protected/storage/$sourceId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -92,11 +102,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedExplorerIndexRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
-    '/_protected/explorer/$sourceId/': {
-      id: '/_protected/explorer/$sourceId/'
-      path: '/explorer/$sourceId'
-      fullPath: '/explorer/$sourceId/'
-      preLoaderRoute: typeof ProtectedExplorerSourceIdIndexRouteImport
+    '/_protected/storage/': {
+      id: '/_protected/storage/'
+      path: '/storage'
+      fullPath: '/storage/'
+      preLoaderRoute: typeof ProtectedStorageIndexRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/storage/$sourceId/': {
+      id: '/_protected/storage/$sourceId/'
+      path: '/storage/$sourceId'
+      fullPath: '/storage/$sourceId/'
+      preLoaderRoute: typeof ProtectedStorageSourceIdIndexRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
   }
@@ -105,13 +122,15 @@ declare module '@tanstack/react-router' {
 interface ProtectedRouteRouteChildren {
   ProtectedIndexRoute: typeof ProtectedIndexRoute
   ProtectedExplorerIndexRoute: typeof ProtectedExplorerIndexRoute
-  ProtectedExplorerSourceIdIndexRoute: typeof ProtectedExplorerSourceIdIndexRoute
+  ProtectedStorageIndexRoute: typeof ProtectedStorageIndexRoute
+  ProtectedStorageSourceIdIndexRoute: typeof ProtectedStorageSourceIdIndexRoute
 }
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedIndexRoute: ProtectedIndexRoute,
   ProtectedExplorerIndexRoute: ProtectedExplorerIndexRoute,
-  ProtectedExplorerSourceIdIndexRoute: ProtectedExplorerSourceIdIndexRoute,
+  ProtectedStorageIndexRoute: ProtectedStorageIndexRoute,
+  ProtectedStorageSourceIdIndexRoute: ProtectedStorageSourceIdIndexRoute,
 }
 
 const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(

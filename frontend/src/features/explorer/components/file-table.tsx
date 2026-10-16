@@ -1,4 +1,4 @@
-import type { FileItem } from '#/client/gen/index.ts'
+import type { DirectoryEntry } from '#/client/gen/index.ts'
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import { columns } from './columns'
 import { features } from './features'
 
 type FileTableProps = {
-  data: FileItem[]
+  data: DirectoryEntry[]
 }
 
 export const FileTable = ({ data }: FileTableProps) => {

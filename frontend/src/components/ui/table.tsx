@@ -31,7 +31,7 @@ function Table({
       data-slot="table-container"
       className={cn('relative w-full overflow-x-auto', divClassname)}
     >
-      <RawTable className={className} {...props} />;
+      <RawTable className={className} {...props} />
     </div>
   )
 }

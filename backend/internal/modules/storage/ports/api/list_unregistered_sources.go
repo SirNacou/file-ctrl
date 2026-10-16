@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -29,8 +28,6 @@ func ListUnregisteredSources(api huma.API, handler *app.ListUnregisteredSourcesH
 		if err != nil {
 			return nil, err
 		}
-
-		fmt.Printf("res: %q\n", res.Dirs)
 
 		return &ListUnregisteredSourcesResponse{
 			ListUnregisteredSourcesResponseBody{

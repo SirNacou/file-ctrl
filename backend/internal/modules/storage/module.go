@@ -9,7 +9,7 @@ import (
 )
 
 type StorageModule struct {
-	listFilesHandler               *app.ListDirectoryHandler
+	listDirectoryHandler           *app.ListDirectoryHandler
 	listUnregisteredSourcesHandler *app.ListUnregisteredSourcesHandler
 	listStorageSourcesHandler      *app.ListStorageSourcesHandler
 	registerStorageSourcesHandler  *app.RegisterStorageSourceHandler
@@ -20,7 +20,7 @@ func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error
 	storageRepo := adapters.NewStorageSourcesRepository(db)
 
 	return &StorageModule{
-		listFilesHandler:               app.NewListDirectoryHandler(db, storageDir),
+		listDirectoryHandler:           app.NewListDirectoryHandler(db, storageDir),
 		listUnregisteredSourcesHandler: app.NewListUnregisteredSourcesHandler(db, storageDir),
 		listStorageSourcesHandler:      app.NewListStorageSourcesHandler(db),
 		registerStorageSourcesHandler: app.NewRegisterStorageSourceHandler(
@@ -34,7 +34,7 @@ func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error
 func (m *StorageModule) RegisterAPI(humaApi huma.API) {
 	storageApi := huma.NewGroup(humaApi, "/storage")
 
-	api.ListDirectory(storageApi, m.listFilesHandler)
+	api.ListDirectory(storageApi, m.listDirectoryHandler)
 	api.ListUnregisteredSources(storageApi, m.listUnregisteredSourcesHandler)
 	api.ListStorageSources(storageApi, m.listStorageSourcesHandler)
 	api.RegisterStorageSource(storageApi, m.registerStorageSourcesHandler)

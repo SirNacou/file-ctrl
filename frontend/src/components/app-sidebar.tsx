@@ -1,10 +1,15 @@
+import { Link } from '@tanstack/react-router'
+import ArchiveDuotoneIcon from '~icons/lucide-extended/archive-duotone'
+import { ThemeToggle } from './theme-toggle'
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuButton,
   SidebarMenuItem,
 } from './ui/sidebar'
 
@@ -17,9 +22,27 @@ export const AppSidebar = () => {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup />
+        <SidebarGroup>
+          {/* <SidebarGroupLabel>Main</SidebarGroupLabel> */}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton render={<Link to="/storage" />}>
+                  <ArchiveDuotoneIcon />
+                  <span className="text-base">Storage</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <ThemeToggle />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   )
 }

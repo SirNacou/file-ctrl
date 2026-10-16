@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"os"
 	"slices"
 
@@ -42,6 +43,7 @@ func (h *ListUnregisteredSourcesHandler) Handle(
 ) (*ListUnregisteredSourcesResponse, error) {
 	entries, err := os.ReadDir(h.storageDir)
 	if err != nil {
+		slog.ErrorContext(ctx, "Failed to read directory", slog.Any("error", err))
 		return nil, domain.NewErrFailToReadDir(h.storageDir)
 	}
 

@@ -1,4 +1,5 @@
 import { devtools } from '@tanstack/devtools-vite'
+import path from 'path'
 import { defineConfig, lazyPlugins } from 'vite-plus'
 
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
@@ -7,6 +8,8 @@ import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
 import viteReact, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { nitro } from 'nitro/vite'
+import AutoImport from 'unplugin-auto-import/vite'
+import IconsResolver from 'unplugin-icons/resolver'
 import Icons from 'unplugin-icons/vite'
 
 const config = defineConfig({
@@ -18,15 +21,23 @@ const config = defineConfig({
   },
   lint: {
     jsPlugins: [{ name: 'vite-plus', specifier: 'vite-plus/oxlint-plugin' }],
-    plugins: ['react', 'react-perf'],
+    plugins: ['react', 'react-perf', 'typescript'],
     categories: {
       correctness: 'error',
     },
-    rules: { 'vite-plus/prefer-vite-plus-imports': 'error' },
+    rules: {
+      'vite-plus/prefer-vite-plus-imports': 'error',
+      'react/no-children-prop': 'allow',
+    },
     options: { typeAware: true, typeCheck: true },
     ignorePatterns: ['**/gen/', '**/*.gen.ts'],
   },
-  resolve: { tsconfigPaths: true },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+    tsconfigPaths: true,
+  },
   server: {
     host: true,
     port: 3000,
@@ -46,6 +57,14 @@ const config = defineConfig({
     }),
     viteReact(),
     babel({ presets: [reactCompilerPreset()] }),
+    AutoImport({
+      resolvers: [
+        IconsResolver({
+          prefix: 'Icon',
+          extension: 'jsx',
+        }),
+      ],
+    }),
     Icons({
       autoInstall: true,
       compiler: 'jsx',
