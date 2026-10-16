@@ -13,7 +13,8 @@ import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as ProtectedIndexRouteImport } from './routes/_protected/index'
 import { Route as ProtectedExplorerIndexRouteImport } from './routes/_protected/explorer/index'
 import { Route as ProtectedStorageIndexRouteImport } from './routes/_protected/storage/index'
-import { Route as ProtectedStorageStorage_subpathIndexRouteImport } from './routes/_protected/storage/$storage_subpath/index'
+import { Route as ProtectedStorageSubpathIndexRouteImport } from './routes/_protected/storage/$subpath/index'
+import { Route as ProtectedStorageSubpathSplatIndexRouteImport } from './routes/_protected/storage/$subpath/$/index'
 
 const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
   id: '/_protected',
@@ -34,10 +35,16 @@ const ProtectedStorageIndexRoute = ProtectedStorageIndexRouteImport.update({
   path: '/storage/',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
-const ProtectedStorageStorage_subpathIndexRoute =
-  ProtectedStorageStorage_subpathIndexRouteImport.update({
-    id: '/storage/$storage_subpath/',
-    path: '/storage/$storage_subpath/',
+const ProtectedStorageSubpathIndexRoute =
+  ProtectedStorageSubpathIndexRouteImport.update({
+    id: '/storage/$subpath/',
+    path: '/storage/$subpath/',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedStorageSubpathSplatIndexRoute =
+  ProtectedStorageSubpathSplatIndexRouteImport.update({
+    id: '/storage/$subpath/$/',
+    path: '/storage/$subpath/$/',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 
@@ -45,13 +52,15 @@ export interface FileRoutesByFullPath {
   '/': typeof ProtectedIndexRoute
   '/explorer/': typeof ProtectedExplorerIndexRoute
   '/storage/': typeof ProtectedStorageIndexRoute
-  '/storage/$storage_subpath/': typeof ProtectedStorageStorage_subpathIndexRoute
+  '/storage/$subpath/': typeof ProtectedStorageSubpathIndexRoute
+  '/storage/$subpath/$/': typeof ProtectedStorageSubpathSplatIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof ProtectedIndexRoute
   '/explorer': typeof ProtectedExplorerIndexRoute
   '/storage': typeof ProtectedStorageIndexRoute
-  '/storage/$storage_subpath': typeof ProtectedStorageStorage_subpathIndexRoute
+  '/storage/$subpath': typeof ProtectedStorageSubpathIndexRoute
+  '/storage/$subpath/$': typeof ProtectedStorageSubpathSplatIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -59,20 +68,28 @@ export interface FileRoutesById {
   '/_protected/': typeof ProtectedIndexRoute
   '/_protected/explorer/': typeof ProtectedExplorerIndexRoute
   '/_protected/storage/': typeof ProtectedStorageIndexRoute
-  '/_protected/storage/$storage_subpath/': typeof ProtectedStorageStorage_subpathIndexRoute
+  '/_protected/storage/$subpath/': typeof ProtectedStorageSubpathIndexRoute
+  '/_protected/storage/$subpath/$/': typeof ProtectedStorageSubpathSplatIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/explorer/' | '/storage/' | '/storage/$storage_subpath/'
+  fullPaths:
+    | '/'
+    | '/explorer/'
+    | '/storage/'
+    | '/storage/$subpath/'
+    | '/storage/$subpath/$/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/explorer' | '/storage' | '/storage/$storage_subpath'
+  to:
+    '/' | '/explorer' | '/storage' | '/storage/$subpath' | '/storage/$subpath/$'
   id:
     | '__root__'
     | '/_protected'
     | '/_protected/'
     | '/_protected/explorer/'
     | '/_protected/storage/'
-    | '/_protected/storage/$storage_subpath/'
+    | '/_protected/storage/$subpath/'
+    | '/_protected/storage/$subpath/$/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -109,11 +126,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedStorageIndexRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
-    '/_protected/storage/$storage_subpath/': {
-      id: '/_protected/storage/$storage_subpath/'
-      path: '/storage/$storage_subpath'
-      fullPath: '/storage/$storage_subpath/'
-      preLoaderRoute: typeof ProtectedStorageStorage_subpathIndexRouteImport
+    '/_protected/storage/$subpath/': {
+      id: '/_protected/storage/$subpath/'
+      path: '/storage/$subpath'
+      fullPath: '/storage/$subpath/'
+      preLoaderRoute: typeof ProtectedStorageSubpathIndexRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/storage/$subpath/$/': {
+      id: '/_protected/storage/$subpath/$/'
+      path: '/storage/$subpath/$'
+      fullPath: '/storage/$subpath/$/'
+      preLoaderRoute: typeof ProtectedStorageSubpathSplatIndexRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
   }
@@ -123,15 +147,17 @@ interface ProtectedRouteRouteChildren {
   ProtectedIndexRoute: typeof ProtectedIndexRoute
   ProtectedExplorerIndexRoute: typeof ProtectedExplorerIndexRoute
   ProtectedStorageIndexRoute: typeof ProtectedStorageIndexRoute
-  ProtectedStorageStorage_subpathIndexRoute: typeof ProtectedStorageStorage_subpathIndexRoute
+  ProtectedStorageSubpathIndexRoute: typeof ProtectedStorageSubpathIndexRoute
+  ProtectedStorageSubpathSplatIndexRoute: typeof ProtectedStorageSubpathSplatIndexRoute
 }
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedIndexRoute: ProtectedIndexRoute,
   ProtectedExplorerIndexRoute: ProtectedExplorerIndexRoute,
   ProtectedStorageIndexRoute: ProtectedStorageIndexRoute,
-  ProtectedStorageStorage_subpathIndexRoute:
-    ProtectedStorageStorage_subpathIndexRoute,
+  ProtectedStorageSubpathIndexRoute: ProtectedStorageSubpathIndexRoute,
+  ProtectedStorageSubpathSplatIndexRoute:
+    ProtectedStorageSubpathSplatIndexRoute,
 }
 
 const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(

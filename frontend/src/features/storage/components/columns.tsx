@@ -37,12 +37,7 @@ export const columns = columnHelper.columns([
     cell: ({ row, table }) => (
       <div className="flex gap-2">
         <Button
-          render={
-            <Link
-              to="/storage/$storage_subpath"
-              params={{ storage_subpath: row.original.subpath }}
-            />
-          }
+          render={<Link to="/storage/$subpath/$" params={{ subpath: row.original.subpath }} />}
         >
           Open
         </Button>
