@@ -1,10 +1,17 @@
 import { listDirectoryOptions } from '#/client/gen/@tanstack/react-query.gen.ts'
+import type { DirectoryEntry } from '#/client/gen/index.ts'
 import { PageHeader } from '#/components/page-header.tsx'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from '#/components/ui/breadcrumb.tsx'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from '#/components/ui/breadcrumb.tsx'
 import { FileTable } from '#/features/explorer/components/file-table.tsx'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
-
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { useMemo } from 'react'
 export const Route = createFileRoute('/_protected/storage/$subpath/$/')({
   loader: ({ params: { subpath }, context: { queryClient } }) =>
     queryClient.query({
@@ -15,20 +22,73 @@ export const Route = createFileRoute('/_protected/storage/$subpath/$/')({
 })
 
 function RouteComponent() {
+  const navigate = Route.useNavigate()
   const { subpath, _splat } = Route.useParams()
   const { data } = useSuspenseQuery(
     listDirectoryOptions({ path: { storage_subpath: subpath }, query: { path: _splat } }),
   )
 
+  async function handleItemSelected(item: DirectoryEntry) {
+    if (item.is_dir) {
+      await navigate({
+        params: {
+          subpath,
+          _splat: item.path,
+        },
+      })
+    }
+  }
+
+  const breadcrumbItems = useMemo(() => getPathItems(data.current_path), [data.current_path])
+
   return (
     <>
       <PageHeader title={`Storage: ${data.storage_name}`} />
       <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem></BreadcrumbItem>
+        <BreadcrumbList className="text-base">
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              render={
+                <Link to={Route.path} params={{ subpath, _splat: undefined }}>
+                  Storage Overview
+                </Link>
+              }
+            />
+          </BreadcrumbItem>
+          {breadcrumbItems.map((item) => (
+            <>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  render={
+                    <Link to={Route.path} params={{ subpath, _splat: item.path }}>
+                      {item.name}
+                    </Link>
+                  }
+                />
+              </BreadcrumbItem>
+            </>
+          ))}
         </BreadcrumbList>
       </Breadcrumb>
-      <FileTable data={data.items ?? []} />
+      <FileTable data={data.items ?? []} itemSelected={handleItemSelected} />
     </>
   )
+}
+type PathItem = {
+  name: string
+  path: string
+}
+
+function getPathItems(path: string): PathItem[] {
+  return path.split('/').reduce<PathItem[]>((items, segment) => {
+    const previousPath = items.at(-1)?.path ?? ''
+
+    items.push({
+      name: segment,
+      path: previousPath ? `${previousPath}/${segment}` : segment,
+    })
+
+    return items
+  }, [])
 }

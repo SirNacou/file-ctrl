@@ -41,6 +41,7 @@
       "devDependencies": {
         "@hey-api/openapi-ts": "^0.99.0",
         "@hey-api/vite-plugin": "^0.3.2",
+        "@iconify-json/boxicons": "^1.2.0",
         "@iconify-json/lucide": "^1.2.141",
         "@iconify-json/lucide-extended": "^1.2.1",
         "@rolldown/plugin-babel": "^0.2.3",
@@ -175,6 +176,8 @@
     "@hey-api/vite-plugin": ["@hey-api/vite-plugin@0.3.2", "", { "peerDependencies": { "@hey-api/openapi-ts": "<2", "vite": "^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0" } }, "sha512-r9xfyfqvWQ3LoVE0U9TYkA54J3HSXJdFbeQrnWdOcbkhI4rfUTaanj4EPpk5ygZTxoex4EJrlyzn+nPSU82cjw=="],
 
     "@hono/node-server": ["@hono/node-server@2.1.5", "", { "peerDependencies": { "hono": "^4 || ^5.0.0-0" } }, "sha512-MgP/I06GdvsilDspMk/qmRzpk8LOUStP6jFAbSRi40W09DhoyUn+Mj7eyKICPqeYKybOjVFLVIAQzvu1bfIa7Q=="],
+
+    "@iconify-json/boxicons": ["@iconify-json/boxicons@1.2.0", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-yAfCVaiZ5t2bC1xNVEdkWUI94e3u15IrytO2XFh8/7Y45M1i51adQpi42OhH2pUdsYM0/KY4Gklrb+XB+oZS/w=="],
 
     "@iconify-json/lucide": ["@iconify-json/lucide@1.2.144", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-b1+e91RGPd4lLck6nTXeoQFiu8z/G3pXNl/tbsqfleTSzDdI9hUzKYQSGiA6T86NmaI0FtrCDM9MjMhoCwtTMg=="],
 

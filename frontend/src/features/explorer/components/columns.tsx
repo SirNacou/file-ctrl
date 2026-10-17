@@ -33,16 +33,15 @@ export const columns = columnHelper.columns([
   }),
   columnHelper.accessor('name', {
     header: () => <span>Name</span>,
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const item = row.original
       const Icon = getFileIcon(item.name, item.is_dir)
 
       return (
         <div
           className="group flex items-center gap-2.5 py-0.5 cursor-pointer select-none"
-          onDoubleClick={() => {
-            row.table.options.meta?.itemSelected(item)
-          }}
+          onClick={() => table.options.meta?.itemSelected(item)}
+          onTouchEnd={() => table.options.meta?.itemSelected(item)}
         >
           <Icon
             className={`h-4 w-4 shrink-0 transition-transform group-hover:scale-110 ${

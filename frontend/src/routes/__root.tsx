@@ -5,6 +5,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
+import favicon from '@/public/favicon.ico?url'
 import appCss from '../styles.css?url'
 
 import { ThemeProvider } from '#/components/theme-provider.tsx'
@@ -33,6 +34,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
     links: [
+      {
+        rel: 'icon',
+        href: favicon,
+      },
       {
         rel: 'stylesheet',
         href: appCss,
