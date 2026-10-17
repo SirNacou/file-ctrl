@@ -11,13 +11,14 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
+import TrashIcon from '~icons/lucide/trash-2'
 
 type ConfirmDeleteProps = {
   buttonText?: string
   onConfirm: () => void
 }
 
-export function ConfirmDelete({ buttonText = 'Delete', onConfirm }: ConfirmDeleteProps) {
+export function ConfirmDeleteDialog({ buttonText = 'Delete', onConfirm }: ConfirmDeleteProps) {
   const [open, setOpen] = useState(false)
   const handleDelete = () => {
     onConfirm()
@@ -25,7 +26,14 @@ export function ConfirmDelete({ buttonText = 'Delete', onConfirm }: ConfirmDelet
   }
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger render={<Button variant="destructive">{buttonText}</Button>} />
+      <AlertDialogTrigger
+        render={
+          <Button variant="destructive">
+            <TrashIcon />
+            {buttonText}
+          </Button>
+        }
+      />
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

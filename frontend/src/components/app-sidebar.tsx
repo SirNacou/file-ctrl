@@ -1,5 +1,4 @@
-import { Link } from '@tanstack/react-router'
-import ArchiveDuotoneIcon from '~icons/lucide-extended/archive-duotone'
+import { Link, useMatchRoute, type LinkProps } from '@tanstack/react-router'
 import { ThemeToggle } from './theme-toggle'
 import {
   Sidebar,
@@ -7,13 +6,36 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from './ui/sidebar'
 
+type NavItem = {
+  label: string
+} & LinkProps
+
+type NavGroup = {
+  label?: string
+  navItems: NavItem[]
+}
+
+const navGroups: NavGroup[] = [
+  {
+    navItems: [
+      {
+        to: '/storage',
+        label: 'Storage',
+      },
+    ],
+  },
+]
+
 export const AppSidebar = () => {
+  const matchRoute = useMatchRoute()
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -23,17 +45,27 @@ export const AppSidebar = () => {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          {/* <SidebarGroupLabel>Main</SidebarGroupLabel> */}
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton render={<Link to="/storage" />}>
-                  <ArchiveDuotoneIcon />
-                  <span className="text-base">Storage</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
+          {navGroups.map(({ label, navItems }) => (
+            <SidebarGroup key={label}>
+              {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {navItems.map(({ label, to, ...props }) => (
+                    <SidebarMenuItem key={label}>
+                      <SidebarMenuButton
+                        isActive={!!matchRoute({ to, fuzzy: true })}
+                        render={
+                          <Link className="text-base" to={to} {...props}>
+                            {label}
+                          </Link>
+                        }
+                      />
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ))}
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>

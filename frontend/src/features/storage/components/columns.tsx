@@ -1,10 +1,10 @@
 import type { Source } from '#/client/gen/index.ts'
-import { ConfirmDelete } from '#/components/confirm-detele.tsx'
+import { ConfirmDeleteDialog } from '#/components/confirm-detele-dialog.tsx'
 import { Button } from '#/components/ui/button.tsx'
 import { Link } from '@tanstack/react-router'
 import { createColumnHelper } from '@tanstack/react-table'
 import type { Features } from './features'
-import { RenameStorageDialog } from './rename-storage.dialog'
+import { RenameStorageDialog } from './rename-storage-dialog'
 
 const columnHelper = createColumnHelper<Features, Source>()
 
@@ -51,8 +51,8 @@ export const columns = columnHelper.columns([
         >
           Open
         </Button>
-        <RenameStorageDialog subpath={row.original.subpath} cur_name={row.original.name} />
-        <ConfirmDelete
+        <RenameStorageDialog storage={row.original} />
+        <ConfirmDeleteDialog
           buttonText="Remove"
           onConfirm={() => table.options.meta?.handleRemove(row.original.subpath)}
         />
