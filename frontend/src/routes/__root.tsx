@@ -5,12 +5,14 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
+import favicon from '@/public/favicon.ico?url'
 import appCss from '../styles.css?url'
 
 import { ThemeProvider } from '#/components/theme-provider.tsx'
 import { Toaster } from '#/components/ui/toast.tsx'
 import { TooltipProvider } from '#/components/ui/tooltip.tsx'
 import type { QueryClient } from '@tanstack/react-query'
+import { ErrorComponent } from './-components/error-component'
 import { NotFound } from './-components/not-found'
 
 interface MyRouterContext {
@@ -33,6 +35,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
     links: [
       {
+        rel: 'icon',
+        href: favicon,
+      },
+      {
         rel: 'stylesheet',
         href: appCss,
       },
@@ -40,6 +46,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   }),
   shellComponent: RootDocument,
   notFoundComponent: NotFound,
+  errorComponent: ErrorComponent,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {

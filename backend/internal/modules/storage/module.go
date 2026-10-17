@@ -14,6 +14,7 @@ type StorageModule struct {
 	listStorageSourcesHandler      *app.ListStorageSourcesHandler
 	registerStorageSourcesHandler  *app.RegisterStorageSourceHandler
 	removeStorageSourceHandler     *app.RemoveStorageSourceHandler
+	renameStorageHandler           *app.RenameStorageHandler
 }
 
 func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error) {
@@ -28,6 +29,7 @@ func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error
 			storageDir,
 		),
 		removeStorageSourceHandler: app.NewRemoveStorageSourceHandler(db),
+		renameStorageHandler:       app.NewRenameStorageHandler(storageRepo, db, storageDir),
 	}, nil
 }
 
@@ -39,4 +41,5 @@ func (m *StorageModule) RegisterAPI(humaApi huma.API) {
 	api.ListStorageSources(storageApi, m.listStorageSourcesHandler)
 	api.RegisterStorageSource(storageApi, m.registerStorageSourcesHandler)
 	api.RemoveStorageSource(storageApi, m.removeStorageSourceHandler)
+	api.RenameStorage(storageApi, m.renameStorageHandler)
 }

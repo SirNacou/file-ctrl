@@ -10,7 +10,6 @@ import (
 	"slices"
 	"strings"
 	"time"
-	"uuid"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
@@ -18,11 +17,11 @@ import (
 )
 
 type ListDirectoryRequest struct {
-	Path      string
-	StorageID uuid.UUID
+	Path           string
+	StorageSubpath string
 }
 type ListDirectoryResponse struct {
-	StorageName string `json:"storage_name"`
+	StorageName string           `json:"storage_name"`
 	CurrentPath string           `json:"current_path"`
 	Items       []DirectoryEntry `json:"items"`
 }
@@ -40,10 +39,10 @@ type ListDirectoryHandler struct {
 	storageDir string
 }
 
-func NewListDirectoryHandler(db bob.Executor, storageRoot string) *ListDirectoryHandler {
+func NewListDirectoryHandler(db bob.Executor, storageDir string) *ListDirectoryHandler {
 	return &ListDirectoryHandler{
 		db:         db,
-		storageDir: storageRoot,
+		storageDir: storageDir,
 	}
 }
 
@@ -51,7 +50,7 @@ func (h *ListDirectoryHandler) Handle(
 	ctx context.Context,
 	req *ListDirectoryRequest,
 ) (*ListDirectoryResponse, error) {
-	source, err := models.FindStorageSource(ctx, h.db, req.StorageID.String())
+	source, err := models.FindStorageSource(ctx, h.db, req.StorageSubpath)
 	if err != nil {
 		return nil, domain.ErrStorageSourceNotFound
 	}

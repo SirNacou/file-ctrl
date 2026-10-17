@@ -3,15 +3,15 @@ package api
 import (
 	"context"
 	"net/http"
-	"uuid"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/app"
 )
 
 type ListDirectoryRequest struct {
-	Path string    `query:"path" default:"."`
-	ID   uuid.UUID `                         path:"id" format:"uuid"`
+	Path string `query:"path" default:"."`
+
+	StorageSubpath string `path:"storage_subpath"`
 }
 
 type ListDirectoryResponse struct {
@@ -20,14 +20,14 @@ type ListDirectoryResponse struct {
 
 func ListDirectory(api huma.API, handler *app.ListDirectoryHandler) {
 	huma.Register(api, huma.Operation{
-		OperationID:   "ListDirectory",
+		OperationID:   "list-directory",
 		Method:        http.MethodGet,
-		Path:          "/{id}/files",
+		Path:          "/{storage_subpath}/files",
 		DefaultStatus: http.StatusOK,
 	}, func(ctx context.Context, i *ListDirectoryRequest) (*ListDirectoryResponse, error) {
 		res, err := handler.Handle(ctx, &app.ListDirectoryRequest{
-			StorageID: i.ID,
-			Path:      i.Path,
+			StorageSubpath: i.StorageSubpath,
+			Path:           i.Path,
 		})
 		if err != nil {
 			return nil, err

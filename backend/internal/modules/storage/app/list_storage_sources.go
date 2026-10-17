@@ -19,9 +19,8 @@ type (
 
 type Source struct {
 	CreatedAt time.Time `json:"created_at"`
-	ID        string    `json:"id"`
+	Subpath   string    `json:"subpath"`
 	Name      string    `json:"name"`
-	Subpath   string    `json:"sub_path"`
 }
 
 type ListStorageSourcesHandler struct {
@@ -45,9 +44,8 @@ func (h *ListStorageSourcesHandler) Handle(
 	sources := make([]Source, 0, len(res))
 	for _, s := range res {
 		sources = append(sources, Source{
-			ID:        s.ID,
-			Name:      s.Name,
 			Subpath:   s.Subpath,
+			Name:      s.Name,
 			CreatedAt: s.CreatedAt,
 		})
 	}

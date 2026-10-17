@@ -54,6 +54,7 @@
   "devDependencies": {
     "@hey-api/openapi-ts": "^0.99.0",
     "@hey-api/vite-plugin": "^0.3.2",
+    "@iconify-json/boxicons": "^1.2.0",
     "@iconify-json/lucide": "^1.2.141",
     "@iconify-json/lucide-extended": "^1.2.1",
     "@rolldown/plugin-babel": "^0.2.3",

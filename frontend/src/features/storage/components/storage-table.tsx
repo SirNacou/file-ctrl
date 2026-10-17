@@ -55,8 +55,8 @@ export const StorageTable = ({ data }: StorageTableProps) => {
       },
     },
     meta: {
-      handleRemove: async (id) => {
-        await removeStorage.mutateAsync({ path: { id } })
+      handleRemove: async (subpath) => {
+        await removeStorage.mutateAsync({ path: { subpath } })
       },
     },
   })

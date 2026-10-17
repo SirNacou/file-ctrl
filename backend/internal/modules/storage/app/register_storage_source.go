@@ -6,7 +6,6 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
-	"uuid"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
 )
@@ -26,7 +25,7 @@ type RegisterStorageSourceRequest struct {
 }
 
 type RegisterStorageSourceResponse struct {
-	ID uuid.UUID
+	Subpath domain.StorageSubpath
 }
 
 func NewRegisterStorageSourceHandler(
@@ -52,7 +51,7 @@ func (h *RegisterStorageSourceHandler) Handle(
 		return nil, err
 	}
 
-	source, err := domain.NewStorageSource(req.Name, subpath)
+	source, err := domain.NewStorageSource(subpath, req.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +60,7 @@ func (h *RegisterStorageSourceHandler) Handle(
 		return nil, err
 	}
 
-	return &RegisterStorageSourceResponse{ID: source.ID}, nil
+	return &RegisterStorageSourceResponse{Subpath: source.Subpath}, nil
 }
 
 // assertDirectoryExists checks that subPath (relative, already validated)

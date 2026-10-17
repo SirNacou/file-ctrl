@@ -77,11 +77,14 @@ export type RegisterStorageSourceResponseBody = {
   id: string;
 };
 
+export type RenameStorageRequestBody = {
+  new_name: string;
+};
+
 export type Source = {
   created_at: Date;
-  id: string;
   name: string;
-  sub_path: string;
+  subpath: string;
 };
 
 export type GetApiStorageData = {
@@ -161,13 +164,42 @@ export type GetApiStorageListUnregisteredSourcesResponses = {
 export type GetApiStorageListUnregisteredSourcesResponse =
   GetApiStorageListUnregisteredSourcesResponses[keyof GetApiStorageListUnregisteredSourcesResponses];
 
+export type ListDirectoryData = {
+  body?: never;
+  path: {
+    storage_subpath: string;
+  };
+  query?: {
+    path?: string;
+  };
+  url: "/api/storage/{storage_subpath}/files";
+};
+
+export type ListDirectoryErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type ListDirectoryError = ListDirectoryErrors[keyof ListDirectoryErrors];
+
+export type ListDirectoryResponses = {
+  /**
+   * OK
+   */
+  200: ListDirectoryResponse;
+};
+
+export type ListDirectoryResponse2 = ListDirectoryResponses[keyof ListDirectoryResponses];
+
 export type RemoveStorageData = {
   body?: never;
   path: {
-    id: string;
+    subpath: string;
   };
   query?: never;
-  url: "/api/storage/{id}";
+  url: "/api/storage/{subpath}";
 };
 
 export type RemoveStorageErrors = {
@@ -188,31 +220,27 @@ export type RemoveStorageResponses = {
 
 export type RemoveStorageResponse = RemoveStorageResponses[keyof RemoveStorageResponses];
 
-export type ListDirectoryData = {
-  body?: never;
+export type StorageRenameData = {
+  body: RenameStorageRequestBody;
   path: {
-    id: string;
+    subpath: string;
   };
-  query?: {
-    path?: string;
-  };
-  url: "/api/storage/{id}/files";
+  query?: never;
+  url: "/api/storage/{subpath}/rename";
 };
 
-export type ListDirectoryErrors = {
+export type StorageRenameErrors = {
   /**
    * Error
    */
   default: ErrorModel;
 };
 
-export type ListDirectoryError = ListDirectoryErrors[keyof ListDirectoryErrors];
+export type StorageRenameError = StorageRenameErrors[keyof StorageRenameErrors];
 
-export type ListDirectoryResponses = {
+export type StorageRenameResponses = {
   /**
    * OK
    */
-  200: ListDirectoryResponse;
+  200: unknown;
 };
-
-export type ListDirectoryResponse2 = ListDirectoryResponses[keyof ListDirectoryResponses];

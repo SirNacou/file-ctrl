@@ -13,16 +13,19 @@ import { features } from './features'
 
 type FileTableProps = {
   data: DirectoryEntry[]
+  itemSelected?: (item: DirectoryEntry) => void
 }
 
-export const FileTable = ({ data }: FileTableProps) => {
+export const FileTable = ({ data, itemSelected }: FileTableProps) => {
   const table = useTable({
     key: 'file-table',
     features,
     columns,
     data,
     meta: {
-      itemSelected: (item) => console.log(item),
+      itemSelected: (item) => {
+        itemSelected?.(item)
+      },
     },
   })
 

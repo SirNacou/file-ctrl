@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"net/http"
-	"uuid"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/app"
@@ -21,7 +20,7 @@ type RegisterStorageSourceResponse struct {
 }
 
 type RegisterStorageSourceResponseBody struct {
-	ID uuid.UUID `json:"id"`
+	Subpath string `json:"id"`
 }
 
 func RegisterStorageSource(api huma.API, handler *app.RegisterStorageSourceHandler) {
@@ -40,7 +39,7 @@ func RegisterStorageSource(api huma.API, handler *app.RegisterStorageSourceHandl
 
 		return &RegisterStorageSourceResponse{
 			Body: RegisterStorageSourceResponseBody{
-				ID: res.ID,
+				Subpath: res.Subpath.String(),
 			},
 		}, nil
 	})

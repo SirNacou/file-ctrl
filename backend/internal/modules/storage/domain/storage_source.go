@@ -3,26 +3,34 @@ package domain
 import (
 	"strings"
 	"time"
-	"uuid"
 )
 
 type StorageSource struct {
+	Subpath   StorageSubpath
 	CreatedAt time.Time
-	Subpath   SourceSubpath
 	Name      string
-	ID        uuid.UUID
 }
 
-func NewStorageSource(name string, subPath SourceSubpath) (*StorageSource, error) {
+func NewStorageSource(subpath StorageSubpath, name string) (*StorageSource, error) {
 	name = strings.TrimSpace(name)
 	if len(name) == 0 {
 		return nil, ErrNameMustNotBeEmpty
 	}
 
 	return &StorageSource{
-		ID:        uuid.NewV7(),
+		Subpath:   subpath,
 		Name:      name,
-		Subpath:   subPath,
 		CreatedAt: time.Now().UTC(),
 	}, nil
+}
+
+func (s *StorageSource) Rename(name string) error {
+	name = strings.TrimSpace(name)
+	if len(name) == 0 {
+		return ErrNameMustNotBeEmpty
+	}
+
+	s.Name = name
+
+	return nil
 }

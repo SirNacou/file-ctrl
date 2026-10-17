@@ -25,7 +25,7 @@ export const NotFound = () => {
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent className="flex-row justify-center">
-        <Button render={<Link to="/">Go to home</Link>} />
+        <Button nativeButton={false} render={<Link to="/">Go to home</Link>} />
         {router.history.canGoBack() && (
           <Button variant="outline" onClick={() => router.history.back()}>
             Go back
