@@ -11,7 +11,7 @@ import {
 import { FileTable } from '#/features/explorer/components/file-table.tsx'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 export const Route = createFileRoute('/_protected/storage/$subpath/$/')({
   loader: ({ params: { subpath }, context: { queryClient } }) =>
     queryClient.query({
@@ -50,13 +50,13 @@ function RouteComponent() {
             <BreadcrumbLink
               render={
                 <Link to={Route.path} params={{ subpath, _splat: undefined }}>
-                  Storage Overview
+                  {subpath}
                 </Link>
               }
             />
           </BreadcrumbItem>
           {breadcrumbItems.map((item) => (
-            <>
+            <Fragment key={item.path}>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink
@@ -67,7 +67,7 @@ function RouteComponent() {
                   }
                 />
               </BreadcrumbItem>
-            </>
+            </Fragment>
           ))}
         </BreadcrumbList>
       </Breadcrumb>
@@ -81,14 +81,10 @@ type PathItem = {
 }
 
 function getPathItems(path: string): PathItem[] {
-  return path.split('/').reduce<PathItem[]>((items, segment) => {
-    const previousPath = items.at(-1)?.path ?? ''
+  const segments = path.split('/').filter(Boolean)
 
-    items.push({
-      name: segment,
-      path: previousPath ? `${previousPath}/${segment}` : segment,
-    })
-
-    return items
-  }, [])
+  return segments.map((name, index) => ({
+    name,
+    path: segments.slice(0, index + 1).join('/'),
+  }))
 }

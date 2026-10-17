@@ -24,6 +24,9 @@ import type {
   RemoveStorageData,
   RemoveStorageErrors,
   RemoveStorageResponses,
+  StorageRenameData,
+  StorageRenameErrors,
+  StorageRenameResponses,
 } from "./types.gen";
 import {
   zGetApiStorageListUnregisteredSourcesResponse,
@@ -35,6 +38,8 @@ import {
   zPostApiStorageResponse,
   zRemoveStoragePath,
   zRemoveStorageResponse,
+  zStorageRenameBody,
+  zStorageRenamePath,
 } from "./zod.gen";
 
 export type Options<
@@ -153,4 +158,24 @@ export const removeStorage = <ThrowOnError extends boolean = false>(
     responseValidator: async (data) => await zRemoveStorageResponse.parseAsync(data),
     url: "/api/storage/{subpath}",
     ...options,
+  });
+
+export const storageRename = <ThrowOnError extends boolean = false>(
+  options: Options<StorageRenameData, ThrowOnError>,
+): RequestResult<StorageRenameResponses, StorageRenameErrors, ThrowOnError> =>
+  (options.client ?? client).post<StorageRenameResponses, StorageRenameErrors, ThrowOnError>({
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: zStorageRenameBody,
+          path: zStorageRenamePath,
+          query: z.never().optional(),
+        })
+        .parseAsync(data),
+    url: "/api/storage/{subpath}/rename",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
   });

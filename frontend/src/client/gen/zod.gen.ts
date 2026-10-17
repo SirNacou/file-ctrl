@@ -119,6 +119,16 @@ export type RegisterStorageSourceResponseBodyZodOutput = z.output<
   typeof zRegisterStorageSourceResponseBody
 >;
 
+export const zRenameStorageRequestBody = z.object({
+  new_name: z.string(),
+});
+
+export type RenameStorageRequestBodyZodType = z.infer<typeof zRenameStorageRequestBody>;
+
+export type RenameStorageRequestBodyZodInput = z.input<typeof zRenameStorageRequestBody>;
+
+export type RenameStorageRequestBodyZodOutput = z.output<typeof zRenameStorageRequestBody>;
+
 export const zSource = z.object({
   created_at: z.iso.datetime({ offset: true }),
   name: z.string(),
@@ -243,3 +253,21 @@ export type RemoveStorageResponseZodType = z.infer<typeof zRemoveStorageResponse
 export type RemoveStorageResponseZodInput = z.input<typeof zRemoveStorageResponse>;
 
 export type RemoveStorageResponseZodOutput = z.output<typeof zRemoveStorageResponse>;
+
+export const zStorageRenameBody = zRenameStorageRequestBody;
+
+export type StorageRenameBodyZodType = z.infer<typeof zStorageRenameBody>;
+
+export type StorageRenameBodyZodInput = z.input<typeof zStorageRenameBody>;
+
+export type StorageRenameBodyZodOutput = z.output<typeof zStorageRenameBody>;
+
+export const zStorageRenamePath = z.object({
+  subpath: z.string(),
+});
+
+export type StorageRenamePathZodType = z.infer<typeof zStorageRenamePath>;
+
+export type StorageRenamePathZodInput = z.input<typeof zStorageRenamePath>;
+
+export type StorageRenamePathZodOutput = z.output<typeof zStorageRenamePath>;

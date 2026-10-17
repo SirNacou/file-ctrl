@@ -7,6 +7,7 @@ export {
   type Options,
   postApiStorage,
   removeStorage,
+  storageRename,
 } from "./sdk.gen";
 export type {
   ClientOptions,
@@ -43,5 +44,10 @@ export type {
   RemoveStorageErrors,
   RemoveStorageResponse,
   RemoveStorageResponses,
+  RenameStorageRequestBody,
   Source,
+  StorageRenameData,
+  StorageRenameError,
+  StorageRenameErrors,
+  StorageRenameResponses,
 } from "./types.gen";

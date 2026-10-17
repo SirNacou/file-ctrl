@@ -18,6 +18,10 @@ type StorageSubpath struct {
 	value string
 }
 
+func NewSourceSubpathWithDefault(raw string) (StorageSubpath, error) {
+	return NewSourceSubpath(raw, false)
+}
+
 func NewSourceSubpath(raw string, allowNested bool) (StorageSubpath, error) {
 	raw = strings.TrimSpace(raw)
 	if raw == "" {

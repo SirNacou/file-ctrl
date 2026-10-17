@@ -39,10 +39,10 @@ type ListDirectoryHandler struct {
 	storageDir string
 }
 
-func NewListDirectoryHandler(db bob.Executor, storageRoot string) *ListDirectoryHandler {
+func NewListDirectoryHandler(db bob.Executor, storageDir string) *ListDirectoryHandler {
 	return &ListDirectoryHandler{
 		db:         db,
-		storageDir: storageRoot,
+		storageDir: storageDir,
 	}
 }
 

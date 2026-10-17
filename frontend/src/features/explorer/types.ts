@@ -9,8 +9,6 @@ import FileVideoIcon from '~icons/lucide/file-video'
 import FolderIcon from '~icons/lucide/folder'
 
 export const formatBytes = (bytes: number | bigint, decimals = 0): string => {
-  if (bytes === 0 || bytes === 0n) return '--'
-
   const k = 1024n
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB']
   const dm = Math.max(0, decimals)

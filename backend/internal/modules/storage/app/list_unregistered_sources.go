@@ -29,11 +29,11 @@ type ListUnregisteredSourcesHandler struct {
 
 func NewListUnregisteredSourcesHandler(
 	db bob.Executor,
-	storageRoot string,
+	storageDir string,
 ) *ListUnregisteredSourcesHandler {
 	return &ListUnregisteredSourcesHandler{
 		db:         db,
-		storageDir: storageRoot,
+		storageDir: storageDir,
 	}
 }
 

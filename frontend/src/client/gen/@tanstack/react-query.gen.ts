@@ -10,6 +10,7 @@ import {
   type Options,
   postApiStorage,
   removeStorage,
+  storageRename,
 } from "../sdk.gen";
 import type {
   GetApiStorageData,
@@ -27,6 +28,8 @@ import type {
   RemoveStorageData,
   RemoveStorageError,
   RemoveStorageResponse,
+  StorageRenameData,
+  StorageRenameError,
 } from "../types.gen";
 
 export type QueryKey<TOptions extends Options> = [
@@ -167,6 +170,26 @@ export const removeStorageMutation = (
   > = {
     mutationFn: async (fnOptions) => {
       const { data } = await removeStorage({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const storageRenameMutation = (
+  options?: Partial<Options<StorageRenameData>>,
+): UseMutationOptions<unknown, StorageRenameError, Options<StorageRenameData>> => {
+  const mutationOptions: UseMutationOptions<
+    unknown,
+    StorageRenameError,
+    Options<StorageRenameData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await storageRename({
         ...options,
         ...fnOptions,
         throwOnError: true,

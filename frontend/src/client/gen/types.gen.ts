@@ -77,6 +77,10 @@ export type RegisterStorageSourceResponseBody = {
   id: string;
 };
 
+export type RenameStorageRequestBody = {
+  new_name: string;
+};
+
 export type Source = {
   created_at: Date;
   name: string;
@@ -215,3 +219,28 @@ export type RemoveStorageResponses = {
 };
 
 export type RemoveStorageResponse = RemoveStorageResponses[keyof RemoveStorageResponses];
+
+export type StorageRenameData = {
+  body: RenameStorageRequestBody;
+  path: {
+    subpath: string;
+  };
+  query?: never;
+  url: "/api/storage/{subpath}/rename";
+};
+
+export type StorageRenameErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type StorageRenameError = StorageRenameErrors[keyof StorageRenameErrors];
+
+export type StorageRenameResponses = {
+  /**
+   * OK
+   */
+  200: unknown;
+};

@@ -23,3 +23,14 @@ func NewStorageSource(subpath StorageSubpath, name string) (*StorageSource, erro
 		CreatedAt: time.Now().UTC(),
 	}, nil
 }
+
+func (s *StorageSource) Rename(name string) error {
+	name = strings.TrimSpace(name)
+	if len(name) == 0 {
+		return ErrNameMustNotBeEmpty
+	}
+
+	s.Name = name
+
+	return nil
+}
