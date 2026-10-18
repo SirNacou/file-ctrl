@@ -7,45 +7,45 @@ import (
 )
 
 var (
-	ErrEmptySubpath           = errors.New("storage subpath cannot be empty")
+	ErrEmptyPath              = errors.New("storage path cannot be empty")
 	ErrInvalidSubpathChars    = errors.New("subpath contains illegal characters or null bytes")
 	ErrNestedSubpathForbidden = errors.New("subpath must be a single top-level directory")
 	ErrPathEscapesSandbox     = errors.New("subpath attempts to escape sandbox")
 )
 
-// StorageSubpath is a pure domain value object representing a safe, normalized subpath.
-type StorageSubpath struct {
+// StoragePath is a pure domain value object representing a safe, normalized subpath.
+type StoragePath struct {
 	value string
 }
 
-func NewSourceSubpathWithDefault(raw string) (StorageSubpath, error) {
-	return NewSourceSubpath(raw, false)
+func NewSourcePathWithDefault(raw string) (StoragePath, error) {
+	return NewSourcePath(raw, false)
 }
 
-func NewSourceSubpath(raw string, allowNested bool) (StorageSubpath, error) {
+func NewSourcePath(raw string, allowNested bool) (StoragePath, error) {
 	raw = strings.TrimSpace(raw)
 	if raw == "" {
-		return StorageSubpath{}, ErrEmptySubpath
+		return StoragePath{}, ErrEmptyPath
 	}
 
 	if err := validateChars(raw); err != nil {
-		return StorageSubpath{}, err
+		return StoragePath{}, err
 	}
 
 	segments := strings.Split(raw, "/")
 	if err := validateSegments(segments); err != nil {
-		return StorageSubpath{}, err
+		return StoragePath{}, err
 	}
 
 	if !filepath.IsLocal(filepath.FromSlash(raw)) {
-		return StorageSubpath{}, ErrPathEscapesSandbox
+		return StoragePath{}, ErrPathEscapesSandbox
 	}
 
 	if !allowNested && len(segments) > 1 {
-		return StorageSubpath{}, ErrNestedSubpathForbidden
+		return StoragePath{}, ErrNestedSubpathForbidden
 	}
 
-	return StorageSubpath{value: raw}, nil
+	return StoragePath{value: raw}, nil
 }
 
 // validateChars rejects control characters and backslashes.
@@ -71,6 +71,6 @@ func validateSegments(segments []string) error {
 	return nil
 }
 
-func (s StorageSubpath) String() string {
+func (s StoragePath) String() string {
 	return s.value
 }

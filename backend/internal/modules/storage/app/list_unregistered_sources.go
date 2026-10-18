@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"log/slog"
-	"os"
-	"slices"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
@@ -23,17 +21,17 @@ type (
 )
 
 type ListUnregisteredSourcesHandler struct {
-	db         bob.Executor
-	storageDir string
+	db               bob.Executor
+	storageDirLister StorageDirLister
 }
 
 func NewListUnregisteredSourcesHandler(
 	db bob.Executor,
-	storageDir string,
+	storageDirLister StorageDirLister,
 ) *ListUnregisteredSourcesHandler {
 	return &ListUnregisteredSourcesHandler{
-		db:         db,
-		storageDir: storageDir,
+		db:               db,
+		storageDirLister: storageDirLister,
 	}
 }
 
@@ -41,21 +39,26 @@ func (h *ListUnregisteredSourcesHandler) Handle(
 	ctx context.Context,
 	req *ListUnregisteredSourcesRequest,
 ) (*ListUnregisteredSourcesResponse, error) {
-	entries, err := os.ReadDir(h.storageDir)
+	dirs, err := h.storageDirLister.ListDirs()
 	if err != nil {
-		slog.ErrorContext(ctx, "Failed to read directory", slog.Any("error", err))
-		return nil, domain.NewErrFailToReadDir(h.storageDir)
+		slog.ErrorContext(ctx, "failed to read storage directory", slog.Any("error", err))
+		return nil, domain.NewErrFailToReadDir("storage root")
 	}
 
-	sourcePaths, err := h.getSourcePathsFromDB(ctx)
+	registered, err := h.getSourcePathsFromDB(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	dirs := make([]string, 0, len(entries))
-	for _, entry := range entries {
-		if entry.IsDir() && !slices.Contains(sourcePaths, entry.Name()) {
-			dirs = append(dirs, entry.Name())
+	taken := make(map[string]struct{}, len(registered))
+	for _, p := range registered {
+		taken[p] = struct{}{}
+	}
+
+	unregistered := make([]string, 0, len(dirs))
+	for _, d := range dirs {
+		if _, ok := taken[d]; !ok {
+			unregistered = append(unregistered, d)
 		}
 	}
 
@@ -68,7 +71,7 @@ func (h *ListUnregisteredSourcesHandler) getSourcePathsFromDB(
 	ctx context.Context,
 ) ([]string, error) {
 	q := sqlite.Select(
-		sm.Columns(models.StorageSources.Columns.Subpath.Name()),
+		sm.Columns(models.StorageSources.Columns.Path.Name()),
 		sm.From(models.StorageSources.Name()))
 
 	sourcePaths, err := bob.All(ctx, h.db, q, scan.SingleColumnMapper[string])

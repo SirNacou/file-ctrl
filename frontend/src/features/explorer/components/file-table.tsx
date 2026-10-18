@@ -1,5 +1,11 @@
 import type { DirectoryEntry } from '#/client/gen/index.ts'
 import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from '#/components/ui/context-menu.tsx'
+import {
   Table,
   TableBody,
   TableCell,
@@ -60,21 +66,30 @@ export const FileTable = ({ data, itemSelected }: FileTableProps) => {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                {row.getAllCells().map((cell) => {
-                  const hasExplicitSize = cell.column.columnDef.size !== undefined
-                  return (
-                    <TableCell
-                      key={cell.id}
-                      style={{
-                        width: hasExplicitSize ? cell.column.getSize() : 'auto',
-                      }}
-                    >
-                      <table.FlexRender cell={cell} />
-                    </TableCell>
-                  )
-                })}
-              </TableRow>
+              <ContextMenu key={row.id}>
+                <ContextMenuTrigger
+                  render={
+                    <TableRow data-state={row.getIsSelected() && 'selected'}>
+                      {row.getAllCells().map((cell) => {
+                        const hasExplicitSize = cell.column.columnDef.size !== undefined
+                        return (
+                          <TableCell
+                            key={cell.id}
+                            style={{
+                              width: hasExplicitSize ? cell.column.getSize() : 'auto',
+                            }}
+                          >
+                            <table.FlexRender cell={cell} />
+                          </TableCell>
+                        )
+                      })}
+                    </TableRow>
+                  }
+                />
+                <ContextMenuContent>
+                  <ContextMenuItem>Test</ContextMenuItem>
+                </ContextMenuContent>
+              </ContextMenu>
             ))
           ) : (
             <TableRow>

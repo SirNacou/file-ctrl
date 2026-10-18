@@ -10,7 +10,7 @@ import (
 
 type (
 	RenameStorageRequest struct {
-		Subpath string `path:"subpath"`
+		Path string `path:"path"`
 		Body    RenameStorageRequestBody
 	}
 	RenameStorageResponse struct{}
@@ -24,11 +24,11 @@ func RenameStorage(api huma.API, handler *app.RenameStorageHandler) {
 	huma.Register(api, huma.Operation{
 		OperationID:   "storage-rename",
 		Method:        http.MethodPost,
-		Path:          "/{subpath}/rename",
+		Path:          "/{path}/rename",
 		DefaultStatus: http.StatusOK,
 	}, func(ctx context.Context, i *RenameStorageRequest) (*RenameStorageResponse, error) {
 		_, err := handler.Handle(ctx, &app.RenameStorageRequest{
-			Subpath: i.Subpath,
+			Path: i.Path,
 			NewName: i.Body.NewName,
 		})
 

@@ -45,8 +45,8 @@ export const AppSidebar = () => {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          {navGroups.map(({ label, navItems }) => (
-            <SidebarGroup key={label}>
+          {navGroups.map(({ label, navItems }, i) => (
+            <SidebarGroup key={i}>
               {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
               <SidebarGroupContent>
                 <SidebarMenu>

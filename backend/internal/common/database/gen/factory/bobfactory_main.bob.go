@@ -41,7 +41,7 @@ func (f *Factory) FromExistingStorageSource(ctx context.Context, m *models.Stora
 func (f *Factory) fromExistingStorageSource(ctx context.Context, m *models.StorageSource) *StorageSourceTemplate {
 	o := &StorageSourceTemplate{f: f, alreadyPersisted: true}
 
-	o.Subpath = func() string { return m.Subpath }
+	o.Path = func() string { return m.Path }
 	o.Name = func() string { return m.Name }
 	o.CreatedAt = func() time.Time { return m.CreatedAt }
 

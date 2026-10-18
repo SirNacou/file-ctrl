@@ -4,27 +4,30 @@ import { queryOptions, type UseMutationOptions } from "@tanstack/react-query";
 
 import { client } from "../client.gen";
 import {
-  getApiStorage,
-  getApiStorageListUnregisteredSources,
+  createStorageFolder,
   listDirectory,
+  listStorageSources,
+  listUnregisteredSources,
   type Options,
-  postApiStorage,
+  registerStorage,
   removeStorage,
   storageRename,
 } from "../sdk.gen";
 import type {
-  GetApiStorageData,
-  GetApiStorageError,
-  GetApiStorageListUnregisteredSourcesData,
-  GetApiStorageListUnregisteredSourcesError,
-  GetApiStorageListUnregisteredSourcesResponse,
-  GetApiStorageResponse,
+  CreateStorageFolderData,
+  CreateStorageFolderError,
   ListDirectoryData,
   ListDirectoryError,
   ListDirectoryResponse2,
-  PostApiStorageData,
-  PostApiStorageError,
-  PostApiStorageResponse,
+  ListStorageSourcesData,
+  ListStorageSourcesError,
+  ListStorageSourcesResponse,
+  ListUnregisteredSourcesData,
+  ListUnregisteredSourcesError,
+  ListUnregisteredSourcesResponse,
+  RegisterStorageData,
+  RegisterStorageError,
+  RegisterStorageResponse,
   RemoveStorageData,
   RemoveStorageError,
   RemoveStorageResponse,
@@ -71,18 +74,18 @@ const createQueryKey = <TOptions extends Options>(
   return [params];
 };
 
-export const getApiStorageQueryKey = (options?: Options<GetApiStorageData>) =>
-  createQueryKey("getApiStorage", options);
+export const listStorageSourcesQueryKey = (options?: Options<ListStorageSourcesData>) =>
+  createQueryKey("listStorageSources", options);
 
-export const getApiStorageOptions = (options?: Options<GetApiStorageData>) =>
+export const listStorageSourcesOptions = (options?: Options<ListStorageSourcesData>) =>
   queryOptions<
-    GetApiStorageResponse,
-    GetApiStorageError,
-    GetApiStorageResponse,
-    ReturnType<typeof getApiStorageQueryKey>
+    ListStorageSourcesResponse,
+    ListStorageSourcesError,
+    ListStorageSourcesResponse,
+    ReturnType<typeof listStorageSourcesQueryKey>
   >({
     queryFn: async ({ queryKey, signal }) => {
-      const { data } = await getApiStorage({
+      const { data } = await listStorageSources({
         ...options,
         ...queryKey[0],
         signal,
@@ -90,19 +93,23 @@ export const getApiStorageOptions = (options?: Options<GetApiStorageData>) =>
       });
       return data;
     },
-    queryKey: getApiStorageQueryKey(options),
+    queryKey: listStorageSourcesQueryKey(options),
   });
 
-export const postApiStorageMutation = (
-  options?: Partial<Options<PostApiStorageData>>,
-): UseMutationOptions<PostApiStorageResponse, PostApiStorageError, Options<PostApiStorageData>> => {
+export const registerStorageMutation = (
+  options?: Partial<Options<RegisterStorageData>>,
+): UseMutationOptions<
+  RegisterStorageResponse,
+  RegisterStorageError,
+  Options<RegisterStorageData>
+> => {
   const mutationOptions: UseMutationOptions<
-    PostApiStorageResponse,
-    PostApiStorageError,
-    Options<PostApiStorageData>
+    RegisterStorageResponse,
+    RegisterStorageError,
+    Options<RegisterStorageData>
   > = {
     mutationFn: async (fnOptions) => {
-      const { data } = await postApiStorage({
+      const { data } = await registerStorage({
         ...options,
         ...fnOptions,
         throwOnError: true,
@@ -113,21 +120,38 @@ export const postApiStorageMutation = (
   return mutationOptions;
 };
 
-export const getApiStorageListUnregisteredSourcesQueryKey = (
-  options?: Options<GetApiStorageListUnregisteredSourcesData>,
-) => createQueryKey("getApiStorageListUnregisteredSources", options);
+export const createStorageFolderMutation = (
+  options?: Partial<Options<CreateStorageFolderData>>,
+): UseMutationOptions<unknown, CreateStorageFolderError, Options<CreateStorageFolderData>> => {
+  const mutationOptions: UseMutationOptions<
+    unknown,
+    CreateStorageFolderError,
+    Options<CreateStorageFolderData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await createStorageFolder({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
 
-export const getApiStorageListUnregisteredSourcesOptions = (
-  options?: Options<GetApiStorageListUnregisteredSourcesData>,
-) =>
+export const listUnregisteredSourcesQueryKey = (options?: Options<ListUnregisteredSourcesData>) =>
+  createQueryKey("listUnregisteredSources", options);
+
+export const listUnregisteredSourcesOptions = (options?: Options<ListUnregisteredSourcesData>) =>
   queryOptions<
-    GetApiStorageListUnregisteredSourcesResponse,
-    GetApiStorageListUnregisteredSourcesError,
-    GetApiStorageListUnregisteredSourcesResponse,
-    ReturnType<typeof getApiStorageListUnregisteredSourcesQueryKey>
+    ListUnregisteredSourcesResponse,
+    ListUnregisteredSourcesError,
+    ListUnregisteredSourcesResponse,
+    ReturnType<typeof listUnregisteredSourcesQueryKey>
   >({
     queryFn: async ({ queryKey, signal }) => {
-      const { data } = await getApiStorageListUnregisteredSources({
+      const { data } = await listUnregisteredSources({
         ...options,
         ...queryKey[0],
         signal,
@@ -135,29 +159,7 @@ export const getApiStorageListUnregisteredSourcesOptions = (
       });
       return data;
     },
-    queryKey: getApiStorageListUnregisteredSourcesQueryKey(options),
-  });
-
-export const listDirectoryQueryKey = (options: Options<ListDirectoryData>) =>
-  createQueryKey("listDirectory", options);
-
-export const listDirectoryOptions = (options: Options<ListDirectoryData>) =>
-  queryOptions<
-    ListDirectoryResponse2,
-    ListDirectoryError,
-    ListDirectoryResponse2,
-    ReturnType<typeof listDirectoryQueryKey>
-  >({
-    queryFn: async ({ queryKey, signal }) => {
-      const { data } = await listDirectory({
-        ...options,
-        ...queryKey[0],
-        signal,
-        throwOnError: true,
-      });
-      return data;
-    },
-    queryKey: listDirectoryQueryKey(options),
+    queryKey: listUnregisteredSourcesQueryKey(options),
   });
 
 export const removeStorageMutation = (
@@ -199,3 +201,25 @@ export const storageRenameMutation = (
   };
   return mutationOptions;
 };
+
+export const listDirectoryQueryKey = (options: Options<ListDirectoryData>) =>
+  createQueryKey("listDirectory", options);
+
+export const listDirectoryOptions = (options: Options<ListDirectoryData>) =>
+  queryOptions<
+    ListDirectoryResponse2,
+    ListDirectoryError,
+    ListDirectoryResponse2,
+    ReturnType<typeof listDirectoryQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await listDirectory({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: listDirectoryQueryKey(options),
+  });

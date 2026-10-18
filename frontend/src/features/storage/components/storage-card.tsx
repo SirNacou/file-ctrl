@@ -1,5 +1,5 @@
 import {
-  getApiStorageQueryKey,
+  listStorageSourcesQueryKey,
   removeStorageMutation,
 } from '#/client/gen/@tanstack/react-query.gen.ts'
 import { type Source } from '#/client/gen/index.ts'
@@ -41,13 +41,13 @@ export function StorageCard({ storage }: StorageCardProps) {
     onSuccess: async () => {
       toast.add({ type: 'success', title: 'Remove successfully.' })
       await queryClient.invalidateQueries({
-        queryKey: getApiStorageQueryKey(),
+        queryKey: listStorageSourcesQueryKey(),
       })
     },
   })
 
   async function handleRemove() {
-    await removeStorage.mutateAsync({ path: { subpath: storage.subpath } })
+    await removeStorage.mutateAsync({ path: { path: storage.path } })
   }
 
   return (
@@ -55,8 +55,8 @@ export function StorageCard({ storage }: StorageCardProps) {
       <CardHeader>
         <CardTitle>
           <Link
-            to="/storage/$subpath/$"
-            params={{ subpath: storage.subpath }}
+            to="/storage/$path/$"
+            params={{ path: storage.path }}
             className="after:absolute after:inset-0 after:rounded-[inherit] after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-primary"
           >
             {storage.name}
@@ -64,7 +64,7 @@ export function StorageCard({ storage }: StorageCardProps) {
         </CardTitle>
         <CardDescription className="inline-flex gap-1">
           <ArchiveIcon />
-          {storage.subpath}
+          {storage.path}
         </CardDescription>
         <CardAction className="relative z-10 flex gap-2">
           <RenameStorageDialog storage={storage} />

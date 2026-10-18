@@ -9,7 +9,7 @@ import (
 )
 
 type RemoveStorageSourceRequest struct {
-	Subpath string `path:"subpath"`
+	Path string `path:"path"`
 }
 type RemoveStorageSourceResponse struct{}
 
@@ -17,11 +17,11 @@ func RemoveStorageSource(api huma.API, handler *app.RemoveStorageSourceHandler) 
 	huma.Register(api, huma.Operation{
 		OperationID:   "remove-storage",
 		Method:        http.MethodDelete,
-		Path:          "/{subpath}",
+		Path:          "/{path}",
 		DefaultStatus: http.StatusNoContent,
 	}, func(ctx context.Context, i *RemoveStorageSourceRequest) (*RemoveStorageSourceResponse, error) {
 		_, err := handler.Handle(ctx, &app.RemoveStorageSourceRequest{
-			Subpath: i.Subpath,
+			Path: i.Path,
 		})
 		if err != nil {
 			return nil, err

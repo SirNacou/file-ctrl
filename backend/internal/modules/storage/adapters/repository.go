@@ -25,11 +25,11 @@ func (r *StorageSourcesRepository) WithTx(tx *bob.Tx) *StorageSourcesRepository 
 
 func (r *StorageSourcesRepository) Find(
 	ctx context.Context,
-	subpath string,
+	path string,
 ) (*domain.StorageSource, error) {
-	m, err := models.FindStorageSource(ctx, r.db, subpath)
+	m, err := models.FindStorageSource(ctx, r.db, path)
 	if err != nil {
-		return nil, fmt.Errorf("failed to find storage source %s: %v", subpath, err)
+		return nil, fmt.Errorf("failed to find storage source %s: %v", path, err)
 	}
 
 	return toStorageSourceDomain(m)
@@ -38,7 +38,7 @@ func (r *StorageSourcesRepository) Find(
 func (r *StorageSourcesRepository) Insert(ctx context.Context, model *domain.StorageSource) error {
 	_, err := models.StorageSources.Insert(&models.StorageSourceSetter{
 		Name:      omit.From(model.Name),
-		Subpath:   omit.From(model.Subpath.String()),
+		Path:      omit.From(model.Path.String()),
 		CreatedAt: omit.From(model.CreatedAt),
 	}).Exec(ctx, r.db)
 	if err != nil {
@@ -50,26 +50,26 @@ func (r *StorageSourcesRepository) Insert(ctx context.Context, model *domain.Sto
 
 func (r *StorageSourcesRepository) Update(ctx context.Context, model *domain.StorageSource) error {
 	_, err := models.StorageSources.
-		Update(models.UpdateWhere.StorageSources.Subpath.EQ(model.Subpath.String()),
+		Update(models.UpdateWhere.StorageSources.Path.EQ(model.Path.String()),
 			models.StorageSourceSetter{
-				Name:    omit.From(model.Name),
-				Subpath: omit.From(model.Subpath.String()),
+				Name: omit.From(model.Name),
+				Path: omit.From(model.Path.String()),
 			}.UpdateMod()).
 		Exec(ctx, r.db)
 	if err != nil {
-		return fmt.Errorf("failed to update Storage Source \"%s\":w%v", model.Subpath, err)
+		return fmt.Errorf("failed to update Storage Source \"%s\":w%v", model.Path, err)
 	}
 
 	return nil
 }
 
 func toStorageSourceDomain(m *models.StorageSource) (*domain.StorageSource, error) {
-	subpath, err := domain.NewSourceSubpathWithDefault(m.Subpath)
+	subpath, err := domain.NewSourcePathWithDefault(m.Path)
 	if err != nil {
 		return nil, err
 	}
 	return &domain.StorageSource{
-		Subpath:   subpath,
+		Path:      subpath,
 		CreatedAt: m.CreatedAt,
 		Name:      m.Name,
 	}, nil

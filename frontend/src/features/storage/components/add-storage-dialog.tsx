@@ -1,8 +1,8 @@
 import {
-  getApiStorageListUnregisteredSourcesOptions,
-  getApiStorageListUnregisteredSourcesQueryKey,
-  getApiStorageQueryKey,
-  postApiStorageMutation,
+  listStorageSourcesQueryKey,
+  listUnregisteredSourcesOptions,
+  listUnregisteredSourcesQueryKey,
+  registerStorageMutation,
 } from '#/client/gen/@tanstack/react-query.gen.ts'
 import { type RegisterStorageSourceRequestBody } from '#/client/gen/index.ts'
 import { zRegisterStorageSourceRequestBody } from '#/client/gen/zod.gen.ts'
@@ -27,7 +27,7 @@ import LucidePlusIcon from '~icons/lucide/plus'
 
 const defaultValues: RegisterStorageSourceRequestBody = {
   name: '',
-  sub_path: '',
+  path: '',
 }
 
 const formOpts = formOptions({
@@ -65,12 +65,12 @@ export const AddStorageDialog = () => {
   const queryClient = useQueryClient()
 
   const registerStorageSource = useMutation({
-    ...postApiStorageMutation(),
+    ...registerStorageMutation(),
     onError: (e) => {
       toast.add({
         type: 'error',
         title: e.title,
-        description: e.errors?.at(0)?.message ?? '',
+        description: e.errors?.at(0)?.message,
       })
     },
     onSuccess: async () => {
@@ -82,10 +82,10 @@ export const AddStorageDialog = () => {
 
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: getApiStorageQueryKey(),
+          queryKey: listStorageSourcesQueryKey(),
         }),
         queryClient.invalidateQueries({
-          queryKey: getApiStorageListUnregisteredSourcesQueryKey(),
+          queryKey: listUnregisteredSourcesQueryKey(),
         }),
       ])
 
@@ -94,7 +94,7 @@ export const AddStorageDialog = () => {
     },
   })
 
-  const { data } = useQuery(getApiStorageListUnregisteredSourcesOptions())
+  const { data } = useQuery(listUnregisteredSourcesOptions())
 
   const selectItems = useMemo(
     () =>
@@ -139,7 +139,7 @@ export const AddStorageDialog = () => {
                 children={(field) => <field.TextField label="Storage name" />}
               />
               <form.AppField
-                name="sub_path"
+                name="path"
                 children={(field) => (
                   <field.SelectField label="Directory" items={selectItems} disabled={!data} />
                 )}

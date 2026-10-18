@@ -3,22 +3,20 @@ package app
 import (
 	"context"
 	"io/fs"
-	"log/slog"
 	"os"
-	"path"
-	"path/filepath"
 	"slices"
 	"strings"
 	"time"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
+	"github.com/sirnacou/file-ctrl/backend/internal/common/localfs"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
 	"github.com/stephenafamo/bob"
 )
 
 type ListDirectoryRequest struct {
-	Path           string
-	StorageSubpath string
+	Subpath     string
+	StoragePath string
 }
 type ListDirectoryResponse struct {
 	StorageName string           `json:"storage_name"`
@@ -35,14 +33,14 @@ type DirectoryEntry struct {
 }
 
 type ListDirectoryHandler struct {
-	db         bob.Executor
-	storageDir string
+	db           bob.Executor
+	sourceOpener SourceOpener
 }
 
-func NewListDirectoryHandler(db bob.Executor, storageDir string) *ListDirectoryHandler {
+func NewListDirectoryHandler(db bob.Executor, sourceOpener SourceOpener) *ListDirectoryHandler {
 	return &ListDirectoryHandler{
 		db:         db,
-		storageDir: storageDir,
+		sourceOpener: sourceOpener,
 	}
 }
 
@@ -50,76 +48,41 @@ func (h *ListDirectoryHandler) Handle(
 	ctx context.Context,
 	req *ListDirectoryRequest,
 ) (*ListDirectoryResponse, error) {
-	source, err := models.FindStorageSource(ctx, h.db, req.StorageSubpath)
+	source, err := models.FindStorageSource(ctx, h.db, req.StoragePath)
 	if err != nil {
 		return nil, domain.ErrStorageSourceNotFound
 	}
 
-	subpath, err := domain.NewSourceSubpath(source.Subpath, false)
+	entryPath, err := domain.NewEntryPath(req.Subpath)
+	if err != nil {
+		return nil, domain.ErrInvalidPath
+	}
+
+	root, err := h.sourceOpener.OpenSource(source.Path)
 	if err != nil {
 		return nil, domain.ErrStorageSourceNotFound
 	}
+	defer localfs.CloseLog(ctx, root, "source root")
 
-	userPath, err := normalizeUserPath(req.Path)
+	dir, err := root.Open(entryPath.FS())
 	if err != nil {
 		return nil, domain.ErrInvalidPath
 	}
+	defer localfs.CloseLog(ctx, dir, "directory")
 
-	dir, err := h.openDir(ctx, subpath.String(), userPath)
-	if err != nil {
-		return nil, domain.ErrInvalidPath
-	}
-	defer func() {
-		err = dir.Close()
-		if err != nil {
-			slog.ErrorContext(ctx, "failed to close the dir", slog.Any("error", err))
-		}
-	}()
-
-	items, err := readItems(dir, userPath)
+	items, err := readItems(dir, entryPath)
 	if err != nil {
 		return nil, domain.ErrInvalidPath
 	}
 
 	return &ListDirectoryResponse{
 		StorageName: source.Name,
-		CurrentPath: displayPath(userPath),
+		CurrentPath: entryPath.Display(),
 		Items:       items,
 	}, nil
 }
 
-// openDir chains storageDir -> source subpath -> user path.
-// Each level is an os.Root, so nothing can escape the one above it.
-func (h *ListDirectoryHandler) openDir(
-	ctx context.Context,
-	subpath, userPath string,
-) (*os.File, error) {
-	outer, err := os.OpenRoot(h.storageDir)
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		err = outer.Close()
-		if err != nil {
-			slog.ErrorContext(ctx, "failed to open root dir", slog.Any("error", err))
-		}
-	}()
-
-	src, err := outer.OpenRoot(filepath.FromSlash(subpath))
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		err = src.Close()
-		if err != nil {
-			slog.ErrorContext(ctx, "failed to open sub dir", slog.Any("error", err))
-		}
-	}()
-
-	return src.Open(filepath.FromSlash(userPath))
-}
-
-func readItems(dir *os.File, userPath string) ([]DirectoryEntry, error) {
+func readItems(dir *os.File, entryPath domain.EntryPath) ([]DirectoryEntry, error) {
 	entries, err := dir.ReadDir(-1) // fails if dir is not a directory
 	if err != nil {
 		return nil, err
@@ -132,7 +95,7 @@ func readItems(dir *os.File, userPath string) ([]DirectoryEntry, error) {
 			continue // removed between ReadDir and Info
 		}
 
-		items = append(items, toFileItem(userPath, e, info))
+		items = append(items, toFileItem(entryPath, e, info))
 	}
 
 	// Directories first, then by name
@@ -151,39 +114,12 @@ func readItems(dir *os.File, userPath string) ([]DirectoryEntry, error) {
 	return items, nil
 }
 
-func toFileItem(parent string, e fs.DirEntry, info fs.FileInfo) DirectoryEntry {
+func toFileItem(parent domain.EntryPath, e fs.DirEntry, info fs.FileInfo) DirectoryEntry {
 	return DirectoryEntry{
 		ModTime: info.ModTime(),
 		Name:    e.Name(),
-		Path:    path.Join(parent, e.Name()), // path.Join(".", "a") == "a"
+		Path:    parent.Child(e.Name()),
 		Size:    info.Size(),
 		IsDir:   e.IsDir(),
 	}
-}
-
-// normalizeUserPath validates the shape of the user path. os.Root still
-// enforces the boundary; this just rejects obviously bad input early.
-func normalizeUserPath(raw string) (string, error) {
-	raw = strings.TrimPrefix(raw, "/")
-	if raw == "" {
-		return ".", nil
-	}
-
-	if strings.ContainsRune(raw, 0) || strings.Contains(raw, `\`) {
-		return "", domain.ErrInvalidPath
-	}
-
-	if !filepath.IsLocal(filepath.FromSlash(raw)) {
-		return "", domain.ErrInvalidPath
-	}
-
-	return path.Clean(raw), nil
-}
-
-func displayPath(userPath string) string {
-	if userPath == "." {
-		return ""
-	}
-
-	return userPath
 }

@@ -10,8 +10,8 @@ import (
 
 type RegisterStorageSourceRequest struct {
 	Body struct {
-		Name    string `json:"name"`
-		SubPath string `json:"sub_path"`
+		Name string `json:"name"`
+		Path string `json:"path"`
 	}
 }
 
@@ -20,18 +20,19 @@ type RegisterStorageSourceResponse struct {
 }
 
 type RegisterStorageSourceResponseBody struct {
-	Subpath string `json:"id"`
+	Path string `json:"path"`
 }
 
 func RegisterStorageSource(api huma.API, handler *app.RegisterStorageSourceHandler) {
 	huma.Register(api, huma.Operation{
+		OperationID:   "register-storage",
 		Method:        http.MethodPost,
 		Path:          "",
 		DefaultStatus: http.StatusCreated,
 	}, func(ctx context.Context, i *RegisterStorageSourceRequest) (*RegisterStorageSourceResponse, error) {
 		res, err := handler.Handle(ctx, &app.RegisterStorageSourceRequest{
-			Name:    i.Body.Name,
-			SubPath: i.Body.SubPath,
+			Name: i.Body.Name,
+			Path: i.Body.Path,
 		})
 		if err != nil {
 			return nil, err
@@ -39,7 +40,7 @@ func RegisterStorageSource(api huma.API, handler *app.RegisterStorageSourceHandl
 
 		return &RegisterStorageSourceResponse{
 			Body: RegisterStorageSourceResponseBody{
-				Subpath: res.Subpath.String(),
+				Path: res.Path.String(),
 			},
 		}, nil
 	})

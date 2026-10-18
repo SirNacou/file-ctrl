@@ -10,6 +10,7 @@ var (
 	ErrStorageSourceNotFound  = errors.New("storage source not found")
 	ErrInvalidSourceDirectory = errors.New("source directory is invalid or does not exist")
 	ErrInvalidPath            = errors.New("invalid path")
+	ErrAlreadyExists          = errors.New("already exists")
 )
 
 type ErrFailToReadDir struct {

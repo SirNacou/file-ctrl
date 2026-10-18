@@ -9,9 +9,9 @@ import (
 )
 
 type ListDirectoryRequest struct {
-	Path string `query:"path" default:"."`
+	Subpath string `query:"subpath" default:"."`
 
-	StorageSubpath string `path:"storage_subpath"`
+	StoragePath string `path:"storage_path"`
 }
 
 type ListDirectoryResponse struct {
@@ -22,12 +22,12 @@ func ListDirectory(api huma.API, handler *app.ListDirectoryHandler) {
 	huma.Register(api, huma.Operation{
 		OperationID:   "list-directory",
 		Method:        http.MethodGet,
-		Path:          "/{storage_subpath}/files",
+		Path:          "/{storage_path}/files",
 		DefaultStatus: http.StatusOK,
 	}, func(ctx context.Context, i *ListDirectoryRequest) (*ListDirectoryResponse, error) {
 		res, err := handler.Handle(ctx, &app.ListDirectoryRequest{
-			StorageSubpath: i.StorageSubpath,
-			Path:           i.Path,
+			StoragePath: i.StoragePath,
+			Subpath:     i.Subpath,
 		})
 		if err != nil {
 			return nil, err
