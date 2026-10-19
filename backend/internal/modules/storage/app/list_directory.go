@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
-	"github.com/sirnacou/file-ctrl/backend/internal/common/localfs"
+	"github.com/sirnacou/file-ctrl/backend/internal/common/utils"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
 	"github.com/stephenafamo/bob"
 )
@@ -39,7 +39,7 @@ type ListDirectoryHandler struct {
 
 func NewListDirectoryHandler(db bob.Executor, sourceOpener SourceOpener) *ListDirectoryHandler {
 	return &ListDirectoryHandler{
-		db:         db,
+		db:           db,
 		sourceOpener: sourceOpener,
 	}
 }
@@ -62,13 +62,13 @@ func (h *ListDirectoryHandler) Handle(
 	if err != nil {
 		return nil, domain.ErrStorageSourceNotFound
 	}
-	defer localfs.CloseLog(ctx, root, "source root")
+	defer utils.CloseLog(ctx, root, "source root")
 
 	dir, err := root.Open(entryPath.FS())
 	if err != nil {
 		return nil, domain.ErrInvalidPath
 	}
-	defer localfs.CloseLog(ctx, dir, "directory")
+	defer utils.CloseLog(ctx, dir, "directory")
 
 	items, err := readItems(dir, entryPath)
 	if err != nil {

@@ -1,11 +1,5 @@
 import type { DirectoryEntry } from '#/client/gen/index.ts'
 import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from '#/components/ui/context-menu.tsx'
-import {
   Table,
   TableBody,
   TableCell,
@@ -16,13 +10,16 @@ import {
 import { useTable } from '@tanstack/react-table'
 import { columns } from './columns'
 import { features } from './features'
+import { FileTableContextMenu } from './file-table-context-menu'
 
 type FileTableProps = {
+  storagePath: string
+  subpath?: string
   data: DirectoryEntry[]
   itemSelected?: (item: DirectoryEntry) => void
 }
 
-export const FileTable = ({ data, itemSelected }: FileTableProps) => {
+export const FileTable = ({ storagePath, subpath, data, itemSelected }: FileTableProps) => {
   const table = useTable({
     key: 'file-table',
     features,
@@ -34,10 +31,6 @@ export const FileTable = ({ data, itemSelected }: FileTableProps) => {
       },
     },
   })
-
-  function handleRename(path: string) {
-    console.log(path)
-  }
 
   return (
     <div
@@ -70,32 +63,28 @@ export const FileTable = ({ data, itemSelected }: FileTableProps) => {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <ContextMenu key={row.id}>
-                <ContextMenuTrigger
-                  render={
-                    <TableRow data-state={row.getIsSelected() && 'selected'}>
-                      {row.getAllCells().map((cell) => {
-                        const hasExplicitSize = cell.column.columnDef.size !== undefined
-                        return (
-                          <TableCell
-                            key={cell.id}
-                            style={{
-                              width: hasExplicitSize ? cell.column.getSize() : 'auto',
-                            }}
-                          >
-                            <table.FlexRender cell={cell} />
-                          </TableCell>
-                        )
-                      })}
-                    </TableRow>
-                  }
-                />
-                <ContextMenuContent>
-                  <ContextMenuItem onClick={() => handleRename(row.original.path)}>
-                    Rename
-                  </ContextMenuItem>
-                </ContextMenuContent>
-              </ContextMenu>
+              <FileTableContextMenu
+                key={row.id}
+                fileName={row.original.name}
+                storagePath={storagePath}
+                subpath={subpath}
+              >
+                <TableRow data-state={row.getIsSelected() && 'selected'}>
+                  {row.getAllCells().map((cell) => {
+                    const hasExplicitSize = cell.column.columnDef.size !== undefined
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        style={{
+                          width: hasExplicitSize ? cell.column.getSize() : 'auto',
+                        }}
+                      >
+                        <table.FlexRender cell={cell} />
+                      </TableCell>
+                    )
+                  })}
+                </TableRow>
+              </FileTableContextMenu>
             ))
           ) : (
             <TableRow>

@@ -3,7 +3,7 @@ package app
 import (
 	"context"
 
-	"github.com/sirnacou/file-ctrl/backend/internal/common/localfs"
+	"github.com/sirnacou/file-ctrl/backend/internal/common/utils"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
 )
 
@@ -44,7 +44,7 @@ func (h *RegisterStorageSourceHandler) Handle(
 	if err != nil {
 		return nil, domain.ErrInvalidSourceDirectory
 	}
-	localfs.CloseLog(ctx, root, "source root")
+	utils.CloseLog(ctx, root, "source root")
 
 	source, err := domain.NewStorageSource(path, req.Name)
 	if err != nil {

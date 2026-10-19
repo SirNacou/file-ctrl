@@ -41,7 +41,12 @@ function RouteComponent() {
         actions={<CreateFolderDialog storagePath={path} parentPath={subpath} />}
       />
       <FileBreadcrumbs />
-      <FileTable data={data.items ?? []} itemSelected={handleItemSelected} />
+      <FileTable
+        storagePath={path}
+        subpath={subpath}
+        data={data.items ?? []}
+        itemSelected={handleItemSelected}
+      />
     </>
   )
 }

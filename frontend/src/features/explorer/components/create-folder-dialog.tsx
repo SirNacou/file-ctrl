@@ -56,6 +56,7 @@ export function CreateFolderDialog({ parentPath, storagePath }: CreateFolderDial
     ...createStorageFolderMutation(),
     onSuccess: async () => {
       notify.success('Create successfully!')
+      form.reset()
       await queryClient.invalidateQueries({
         queryKey: listDirectoryQueryKey({ path: { storage_path: storagePath } }),
       })

@@ -27,6 +27,9 @@ import type {
   RemoveStorageData,
   RemoveStorageErrors,
   RemoveStorageResponses,
+  RenameFileData,
+  RenameFileErrors,
+  RenameFileResponses,
   StorageRenameData,
   StorageRenameErrors,
   StorageRenameResponses,
@@ -43,6 +46,8 @@ import {
   zRegisterStorageResponse,
   zRemoveStoragePath,
   zRemoveStorageResponse,
+  zRenameFileBody,
+  zRenameFilePath,
   zStorageRenameBody,
   zStorageRenamePath,
 } from "./zod.gen";
@@ -182,6 +187,26 @@ export const listDirectory = <ThrowOnError extends boolean = false>(
     responseValidator: async (data) => await zListDirectoryResponse2.parseAsync(data),
     url: "/api/storage/{storage_path}/files",
     ...options,
+  });
+
+export const renameFile = <ThrowOnError extends boolean = false>(
+  options: Options<RenameFileData, ThrowOnError>,
+): RequestResult<RenameFileResponses, RenameFileErrors, ThrowOnError> =>
+  (options.client ?? client).post<RenameFileResponses, RenameFileErrors, ThrowOnError>({
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: zRenameFileBody,
+          path: zRenameFilePath,
+          query: z.never().optional(),
+        })
+        .parseAsync(data),
+    url: "/api/storage/{storage_path}/files/rename",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
   });
 
 export const createStorageFolder = <ThrowOnError extends boolean = false>(

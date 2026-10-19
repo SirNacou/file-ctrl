@@ -11,6 +11,7 @@ import {
   type Options,
   registerStorage,
   removeStorage,
+  renameFile,
   storageRename,
 } from "../sdk.gen";
 import type {
@@ -31,6 +32,8 @@ import type {
   RemoveStorageData,
   RemoveStorageError,
   RemoveStorageResponse,
+  RenameFileData,
+  RenameFileError,
   StorageRenameData,
   StorageRenameError,
 } from "../types.gen";
@@ -203,6 +206,22 @@ export const listDirectoryOptions = (options: Options<ListDirectoryData>) =>
     },
     queryKey: listDirectoryQueryKey(options),
   });
+
+export const renameFileMutation = (
+  options?: Partial<Options<RenameFileData>>,
+): UseMutationOptions<unknown, RenameFileError, Options<RenameFileData>> => {
+  const mutationOptions: UseMutationOptions<unknown, RenameFileError, Options<RenameFileData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await renameFile({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
 
 export const createStorageFolderMutation = (
   options?: Partial<Options<CreateStorageFolderData>>,

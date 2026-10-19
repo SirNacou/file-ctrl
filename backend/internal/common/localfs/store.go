@@ -1,21 +1,17 @@
 package localfs
 
 import (
-	"context"
-	"fmt"
-	"io"
-	"log/slog"
 	"os"
 	"path/filepath"
 )
 
-type Store struct {
+type SourceStore struct {
 	baseDir string
 }
 
-func NewStore(baseDir string) *Store { return &Store{baseDir: baseDir} }
+func NewSourceStore(baseDir string) *SourceStore { return &SourceStore{baseDir: baseDir} }
 
-func (s *Store) OpenSource(sourcePath string) (*os.Root, error) {
+func (s *SourceStore) OpenSource(sourcePath string) (*os.Root, error) {
 	base, err := os.OpenRoot(s.baseDir)
 	if err != nil {
 		return nil, err
@@ -25,7 +21,7 @@ func (s *Store) OpenSource(sourcePath string) (*os.Root, error) {
 	return base.OpenRoot(filepath.FromSlash(sourcePath))
 }
 
-func (s *Store) ListDirs() ([]string, error) {
+func (s *SourceStore) ListDirs() ([]string, error) {
 	entries, err := os.ReadDir(s.baseDir)
 	if err != nil {
 		return nil, err
@@ -38,10 +34,4 @@ func (s *Store) ListDirs() ([]string, error) {
 		}
 	}
 	return dirs, nil
-}
-
-func CloseLog(ctx context.Context, c io.Closer, what string) {
-	if err := c.Close(); err != nil {
-		slog.ErrorContext(ctx, fmt.Sprintf("failed to close %s", what), slog.Any("error", err))
-	}
 }

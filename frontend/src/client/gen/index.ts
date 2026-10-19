@@ -8,6 +8,7 @@ export {
   type Options,
   registerStorage,
   removeStorage,
+  renameFile,
   storageRename,
 } from "./sdk.gen";
 export type {
@@ -50,6 +51,11 @@ export type {
   RemoveStorageErrors,
   RemoveStorageResponse,
   RemoveStorageResponses,
+  RenameFileData,
+  RenameFileError,
+  RenameFileErrors,
+  RenameFileRequestBody,
+  RenameFileResponses,
   RenameStorageRequestBody,
   Source,
   StorageRenameData,

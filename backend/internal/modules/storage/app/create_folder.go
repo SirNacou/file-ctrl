@@ -5,7 +5,7 @@ import (
 	"errors"
 	"io/fs"
 
-	"github.com/sirnacou/file-ctrl/backend/internal/common/localfs"
+	"github.com/sirnacou/file-ctrl/backend/internal/common/utils"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
 )
 
@@ -51,7 +51,7 @@ func (h *CreateFolderHandler) Handle(
 	if err != nil {
 		return nil, domain.ErrStorageSourceNotFound
 	}
-	defer localfs.CloseLog(ctx, root, "source root")
+	defer utils.CloseLog(ctx, root, "source root")
 
 	if err := root.Mkdir(target.FS(), 0o755); err != nil {
 		if errors.Is(err, fs.ErrExist) {

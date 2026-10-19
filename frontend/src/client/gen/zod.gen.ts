@@ -130,6 +130,18 @@ export type RegisterStorageSourceResponseBodyZodOutput = z.output<
   typeof zRegisterStorageSourceResponseBody
 >;
 
+export const zRenameFileRequestBody = z.object({
+  new_name: z.string(),
+  old_name: z.string(),
+  parent_path: z.string(),
+});
+
+export type RenameFileRequestBodyZodType = z.infer<typeof zRenameFileRequestBody>;
+
+export type RenameFileRequestBodyZodInput = z.input<typeof zRenameFileRequestBody>;
+
+export type RenameFileRequestBodyZodOutput = z.output<typeof zRenameFileRequestBody>;
+
 export const zRenameStorageRequestBody = z.object({
   new_name: z.string(),
 });
@@ -282,6 +294,24 @@ export type ListDirectoryResponseZodType2 = z.infer<typeof zListDirectoryRespons
 export type ListDirectoryResponseZodInput2 = z.input<typeof zListDirectoryResponse2>;
 
 export type ListDirectoryResponseZodOutput2 = z.output<typeof zListDirectoryResponse2>;
+
+export const zRenameFileBody = zRenameFileRequestBody;
+
+export type RenameFileBodyZodType = z.infer<typeof zRenameFileBody>;
+
+export type RenameFileBodyZodInput = z.input<typeof zRenameFileBody>;
+
+export type RenameFileBodyZodOutput = z.output<typeof zRenameFileBody>;
+
+export const zRenameFilePath = z.object({
+  storage_path: z.string(),
+});
+
+export type RenameFilePathZodType = z.infer<typeof zRenameFilePath>;
+
+export type RenameFilePathZodInput = z.input<typeof zRenameFilePath>;
+
+export type RenameFilePathZodOutput = z.output<typeof zRenameFilePath>;
 
 export const zCreateStorageFolderBody = zCreateFolderRequestBody;
 

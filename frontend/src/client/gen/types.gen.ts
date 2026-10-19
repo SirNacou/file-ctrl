@@ -82,6 +82,12 @@ export type RegisterStorageSourceResponseBody = {
   path: string;
 };
 
+export type RenameFileRequestBody = {
+  new_name: string;
+  old_name: string;
+  parent_path: string;
+};
+
 export type RenameStorageRequestBody = {
   new_name: string;
 };
@@ -250,6 +256,31 @@ export type ListDirectoryResponses = {
 };
 
 export type ListDirectoryResponse2 = ListDirectoryResponses[keyof ListDirectoryResponses];
+
+export type RenameFileData = {
+  body: RenameFileRequestBody;
+  path: {
+    storage_path: string;
+  };
+  query?: never;
+  url: "/api/storage/{storage_path}/files/rename";
+};
+
+export type RenameFileErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type RenameFileError = RenameFileErrors[keyof RenameFileErrors];
+
+export type RenameFileResponses = {
+  /**
+   * OK
+   */
+  200: unknown;
+};
 
 export type CreateStorageFolderData = {
   body: CreateFolderRequestBody;

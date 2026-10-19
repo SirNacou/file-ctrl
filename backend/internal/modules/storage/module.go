@@ -17,20 +17,25 @@ type StorageModule struct {
 	removeStorageSourceHandler     *app.RemoveStorageSourceHandler
 	renameStorageHandler           *app.RenameStorageHandler
 	createFolderHandler            *app.CreateFolderHandler
+	renameFileHandler              *app.RenameFileHandler
 }
 
 func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error) {
 	storageRepo := adapters.NewStorageSourcesRepository(db)
-	storagefs := localfs.NewStore(storageDir)
+	sourceStore := localfs.NewSourceStore(storageDir)
 
 	return &StorageModule{
-		listDirectoryHandler:           app.NewListDirectoryHandler(db, storagefs),
-		listUnregisteredSourcesHandler: app.NewListUnregisteredSourcesHandler(db, storagefs),
+		listDirectoryHandler:           app.NewListDirectoryHandler(db, sourceStore),
+		listUnregisteredSourcesHandler: app.NewListUnregisteredSourcesHandler(db, sourceStore),
 		listStorageSourcesHandler:      app.NewListStorageSourcesHandler(db),
-		registerStorageSourcesHandler:  app.NewRegisterStorageSourceHandler(storageRepo, storagefs),
-		removeStorageSourceHandler:     app.NewRemoveStorageSourceHandler(db),
-		renameStorageHandler:           app.NewRenameStorageHandler(storageRepo, storageRepo),
-		createFolderHandler:            app.NewCreateFolderHandler(storageRepo, storagefs),
+		registerStorageSourcesHandler: app.NewRegisterStorageSourceHandler(
+			storageRepo,
+			sourceStore,
+		),
+		removeStorageSourceHandler: app.NewRemoveStorageSourceHandler(db),
+		renameStorageHandler:       app.NewRenameStorageHandler(storageRepo, storageRepo),
+		createFolderHandler:        app.NewCreateFolderHandler(storageRepo, sourceStore),
+		renameFileHandler:          app.NewRenameFileHandler(storageRepo, sourceStore),
 	}, nil
 }
 
@@ -44,4 +49,5 @@ func (m *StorageModule) RegisterAPI(humaApi huma.API) {
 	api.RemoveStorageSource(storageApi, m.removeStorageSourceHandler)
 	api.RenameStorage(storageApi, m.renameStorageHandler)
 	api.CreateFolder(storageApi, m.createFolderHandler)
+	api.RenameFile(storageApi, m.renameFileHandler)
 }
