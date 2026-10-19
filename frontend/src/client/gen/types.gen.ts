@@ -143,31 +143,6 @@ export type RegisterStorageResponses = {
 
 export type RegisterStorageResponse = RegisterStorageResponses[keyof RegisterStorageResponses];
 
-export type CreateStorageFolderData = {
-  body: CreateFolderRequestBody;
-  path: {
-    storage_path: string;
-  };
-  query?: never;
-  url: "/api/storage/folder";
-};
-
-export type CreateStorageFolderErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type CreateStorageFolderError = CreateStorageFolderErrors[keyof CreateStorageFolderErrors];
-
-export type CreateStorageFolderResponses = {
-  /**
-   * OK
-   */
-  200: unknown;
-};
-
 export type ListUnregisteredSourcesData = {
   body?: never;
   path?: never;
@@ -275,3 +250,28 @@ export type ListDirectoryResponses = {
 };
 
 export type ListDirectoryResponse2 = ListDirectoryResponses[keyof ListDirectoryResponses];
+
+export type CreateStorageFolderData = {
+  body: CreateFolderRequestBody;
+  path: {
+    storage_path: string;
+  };
+  query?: never;
+  url: "/api/storage/{storage_path}/folder";
+};
+
+export type CreateStorageFolderErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type CreateStorageFolderError = CreateStorageFolderErrors[keyof CreateStorageFolderErrors];
+
+export type CreateStorageFolderResponses = {
+  /**
+   * OK
+   */
+  200: unknown;
+};

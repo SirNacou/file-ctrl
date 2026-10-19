@@ -11,7 +11,7 @@ import (
 type CreateFolderRequest struct {
 	StoragePath string `path:"storage_path"`
 	Body        struct {
-		ParentPath string `json:"parent_path"`
+		ParentPath string `json:"parent_path" default:"."`
 		Name       string `json:"name"`
 	}
 }
@@ -21,7 +21,7 @@ func CreateFolder(api huma.API, handler *app.CreateFolderHandler) {
 	huma.Register(api, huma.Operation{
 		OperationID:   "create-storage-folder",
 		Method:        http.MethodPost,
-		Path:          "/folder",
+		Path:          "/{storage_path}/folder",
 		DefaultStatus: http.StatusOK,
 	}, func(ctx context.Context, i *CreateFolderRequest) (*CreateFolderResponse, error) {
 		_, err := handler.Handle(ctx, &app.CreateFolderRequest{

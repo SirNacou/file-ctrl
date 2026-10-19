@@ -35,6 +35,10 @@ export const FileTable = ({ data, itemSelected }: FileTableProps) => {
     },
   })
 
+  function handleRename(path: string) {
+    console.log(path)
+  }
+
   return (
     <div
       className="bg-card shadow border-2 overflow-auto"
@@ -87,7 +91,9 @@ export const FileTable = ({ data, itemSelected }: FileTableProps) => {
                   }
                 />
                 <ContextMenuContent>
-                  <ContextMenuItem>Test</ContextMenuItem>
+                  <ContextMenuItem onClick={() => handleRename(row.original.path)}>
+                    Rename
+                  </ContextMenuItem>
                 </ContextMenuContent>
               </ContextMenu>
             ))

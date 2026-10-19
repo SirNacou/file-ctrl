@@ -120,26 +120,6 @@ export const registerStorageMutation = (
   return mutationOptions;
 };
 
-export const createStorageFolderMutation = (
-  options?: Partial<Options<CreateStorageFolderData>>,
-): UseMutationOptions<unknown, CreateStorageFolderError, Options<CreateStorageFolderData>> => {
-  const mutationOptions: UseMutationOptions<
-    unknown,
-    CreateStorageFolderError,
-    Options<CreateStorageFolderData>
-  > = {
-    mutationFn: async (fnOptions) => {
-      const { data } = await createStorageFolder({
-        ...options,
-        ...fnOptions,
-        throwOnError: true,
-      });
-      return data;
-    },
-  };
-  return mutationOptions;
-};
-
 export const listUnregisteredSourcesQueryKey = (options?: Options<ListUnregisteredSourcesData>) =>
   createQueryKey("listUnregisteredSources", options);
 
@@ -223,3 +203,23 @@ export const listDirectoryOptions = (options: Options<ListDirectoryData>) =>
     },
     queryKey: listDirectoryQueryKey(options),
   });
+
+export const createStorageFolderMutation = (
+  options?: Partial<Options<CreateStorageFolderData>>,
+): UseMutationOptions<unknown, CreateStorageFolderError, Options<CreateStorageFolderData>> => {
+  const mutationOptions: UseMutationOptions<
+    unknown,
+    CreateStorageFolderError,
+    Options<CreateStorageFolderData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await createStorageFolder({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};

@@ -108,30 +108,6 @@ export const registerStorage = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const createStorageFolder = <ThrowOnError extends boolean = false>(
-  options: Options<CreateStorageFolderData, ThrowOnError>,
-): RequestResult<CreateStorageFolderResponses, CreateStorageFolderErrors, ThrowOnError> =>
-  (options.client ?? client).post<
-    CreateStorageFolderResponses,
-    CreateStorageFolderErrors,
-    ThrowOnError
-  >({
-    requestValidator: async (data) =>
-      await z
-        .object({
-          body: zCreateStorageFolderBody,
-          path: zCreateStorageFolderPath,
-          query: z.never().optional(),
-        })
-        .parseAsync(data),
-    url: "/api/storage/folder",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  });
-
 export const listUnregisteredSources = <ThrowOnError extends boolean = false>(
   options?: Options<ListUnregisteredSourcesData, ThrowOnError>,
 ): RequestResult<ListUnregisteredSourcesResponses, ListUnregisteredSourcesErrors, ThrowOnError> =>
@@ -206,4 +182,28 @@ export const listDirectory = <ThrowOnError extends boolean = false>(
     responseValidator: async (data) => await zListDirectoryResponse2.parseAsync(data),
     url: "/api/storage/{storage_path}/files",
     ...options,
+  });
+
+export const createStorageFolder = <ThrowOnError extends boolean = false>(
+  options: Options<CreateStorageFolderData, ThrowOnError>,
+): RequestResult<CreateStorageFolderResponses, CreateStorageFolderErrors, ThrowOnError> =>
+  (options.client ?? client).post<
+    CreateStorageFolderResponses,
+    CreateStorageFolderErrors,
+    ThrowOnError
+  >({
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: zCreateStorageFolderBody,
+          path: zCreateStorageFolderPath,
+          query: z.never().optional(),
+        })
+        .parseAsync(data),
+    url: "/api/storage/{storage_path}/folder",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
   });

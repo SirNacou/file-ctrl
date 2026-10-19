@@ -4,7 +4,7 @@ import * as z from "zod";
 
 export const zCreateFolderRequestBody = z.object({
   name: z.string(),
-  parent_path: z.string(),
+  parent_path: z.string().default("."),
 });
 
 export type CreateFolderRequestBodyZodType = z.infer<typeof zCreateFolderRequestBody>;
@@ -196,24 +196,6 @@ export type RegisterStorageResponseZodInput = z.input<typeof zRegisterStorageRes
 
 export type RegisterStorageResponseZodOutput = z.output<typeof zRegisterStorageResponse>;
 
-export const zCreateStorageFolderBody = zCreateFolderRequestBody;
-
-export type CreateStorageFolderBodyZodType = z.infer<typeof zCreateStorageFolderBody>;
-
-export type CreateStorageFolderBodyZodInput = z.input<typeof zCreateStorageFolderBody>;
-
-export type CreateStorageFolderBodyZodOutput = z.output<typeof zCreateStorageFolderBody>;
-
-export const zCreateStorageFolderPath = z.object({
-  storage_path: z.string(),
-});
-
-export type CreateStorageFolderPathZodType = z.infer<typeof zCreateStorageFolderPath>;
-
-export type CreateStorageFolderPathZodInput = z.input<typeof zCreateStorageFolderPath>;
-
-export type CreateStorageFolderPathZodOutput = z.output<typeof zCreateStorageFolderPath>;
-
 /**
  * OK
  */
@@ -300,3 +282,21 @@ export type ListDirectoryResponseZodType2 = z.infer<typeof zListDirectoryRespons
 export type ListDirectoryResponseZodInput2 = z.input<typeof zListDirectoryResponse2>;
 
 export type ListDirectoryResponseZodOutput2 = z.output<typeof zListDirectoryResponse2>;
+
+export const zCreateStorageFolderBody = zCreateFolderRequestBody;
+
+export type CreateStorageFolderBodyZodType = z.infer<typeof zCreateStorageFolderBody>;
+
+export type CreateStorageFolderBodyZodInput = z.input<typeof zCreateStorageFolderBody>;
+
+export type CreateStorageFolderBodyZodOutput = z.output<typeof zCreateStorageFolderBody>;
+
+export const zCreateStorageFolderPath = z.object({
+  storage_path: z.string(),
+});
+
+export type CreateStorageFolderPathZodType = z.infer<typeof zCreateStorageFolderPath>;
+
+export type CreateStorageFolderPathZodInput = z.input<typeof zCreateStorageFolderPath>;
+
+export type CreateStorageFolderPathZodOutput = z.output<typeof zCreateStorageFolderPath>;
