@@ -8,7 +8,8 @@ import (
 var (
 	ErrNameMustNotBeEmpty     = errors.New("name must not be empty")
 	ErrStorageSourceNotFound  = errors.New("storage source not found")
-	ErrInvalidSourceDirectory = errors.New("source directory is invalid or does not exist")
+	ErrInvalidSourceDirectory = errors.New("source directory is invalid")
+	ErrSourceDirectoryNotFound = errors.New("source directory is not exists")
 	ErrInvalidPath            = errors.New("invalid path")
 	ErrAlreadyExists          = errors.New("already exists")
 	ErrNotFound               = errors.New("not found")

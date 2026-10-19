@@ -9,40 +9,58 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { useState } from 'react'
-import TrashIcon from '~icons/lucide/trash-2'
+import { useState, type ReactElement } from 'react'
+import LoaderCircleIcon from '~icons/lucide/loader-circle'
 
 type ConfirmDeleteProps = {
-  buttonText?: string
-  onConfirm: () => void
+  onConfirm: () => void | Promise<void>
+  trigger?: ReactElement
+  open?: boolean
+  onOpenChanged?: (open: boolean) => void
+  title?: string
+  description?: string
 }
 
-export function ConfirmDeleteDialog({ buttonText = 'Delete', onConfirm }: ConfirmDeleteProps) {
-  const [open, setOpen] = useState(false)
-  const handleDelete = () => {
-    onConfirm()
-    setOpen(false)
+export function ConfirmDeleteDialog({
+  onConfirm,
+  open,
+  onOpenChanged,
+  trigger,
+  title = 'Are you sure?',
+  description = 'This action cannot be undone.',
+}: ConfirmDeleteProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const isControlled = open !== undefined
+  const actualOpen = isControlled ? open : internalOpen
+  const setActualOpen = isControlled ? (onOpenChanged ?? (() => {})) : setInternalOpen
+
+  async function handleConfirm() {
+    setLoading(true)
+    try {
+      await onConfirm()
+      setActualOpen(false)
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setLoading(false)
+    }
   }
+
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger
-        render={
-          <Button variant="destructive">
-            <TrashIcon />
-            {buttonText}
-          </Button>
-        }
-      />
+    <AlertDialog open={actualOpen} onOpenChange={setActualOpen}>
+      {trigger && <AlertDialogTrigger render={trigger} />}
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant={'destructive'} onClick={handleDelete}>
-            {buttonText}
+          <AlertDialogAction variant={'destructive'} onClick={handleConfirm} disabled={loading}>
+            {loading && <LoaderCircleIcon className="mr-2 h-4 w-4 animate-spin" />}
+            {loading ? 'Deleting...' : 'Delete'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

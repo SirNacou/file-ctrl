@@ -13,39 +13,39 @@ var (
 	ErrPathEscapesSandbox     = errors.New("subpath attempts to escape sandbox")
 )
 
-// StoragePath is a pure domain value object representing a safe, normalized subpath.
-type StoragePath struct {
+// SourcePath is a pure domain value object representing a safe, normalized subpath.
+type SourcePath struct {
 	value string
 }
 
-func NewSourcePathWithDefault(raw string) (StoragePath, error) {
+func NewSourcePathWithDefault(raw string) (SourcePath, error) {
 	return NewSourcePath(raw, false)
 }
 
-func NewSourcePath(raw string, allowNested bool) (StoragePath, error) {
+func NewSourcePath(raw string, allowNested bool) (SourcePath, error) {
 	raw = strings.TrimSpace(raw)
 	if raw == "" {
-		return StoragePath{}, ErrEmptyPath
+		return SourcePath{}, ErrEmptyPath
 	}
 
 	if err := validateChars(raw); err != nil {
-		return StoragePath{}, err
+		return SourcePath{}, err
 	}
 
 	segments := strings.Split(raw, "/")
 	if err := validateSegments(segments); err != nil {
-		return StoragePath{}, err
+		return SourcePath{}, err
 	}
 
 	if !filepath.IsLocal(filepath.FromSlash(raw)) {
-		return StoragePath{}, ErrPathEscapesSandbox
+		return SourcePath{}, ErrPathEscapesSandbox
 	}
 
 	if !allowNested && len(segments) > 1 {
-		return StoragePath{}, ErrNestedSubpathForbidden
+		return SourcePath{}, ErrNestedSubpathForbidden
 	}
 
-	return StoragePath{value: raw}, nil
+	return SourcePath{value: raw}, nil
 }
 
 // validateChars rejects control characters and backslashes.
@@ -71,6 +71,6 @@ func validateSegments(segments []string) error {
 	return nil
 }
 
-func (s StoragePath) String() string {
+func (s SourcePath) String() string {
 	return s.value
 }

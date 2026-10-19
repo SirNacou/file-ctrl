@@ -18,24 +18,26 @@ type StorageModule struct {
 	renameStorageHandler           *app.RenameStorageHandler
 	createFolderHandler            *app.CreateFolderHandler
 	renameFileHandler              *app.RenameFileHandler
+	deleteFileHandler              *app.DeleteFileHandler
 }
 
 func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error) {
 	storageRepo := adapters.NewStorageSourcesRepository(db)
-	sourceStore := localfs.NewSourceStore(storageDir)
+	fsStore := localfs.NewStore(storageDir)
 
 	return &StorageModule{
-		listDirectoryHandler:           app.NewListDirectoryHandler(db, sourceStore),
-		listUnregisteredSourcesHandler: app.NewListUnregisteredSourcesHandler(db, sourceStore),
+		listDirectoryHandler:           app.NewListDirectoryHandler(db, fsStore),
+		listUnregisteredSourcesHandler: app.NewListUnregisteredSourcesHandler(db, fsStore),
 		listStorageSourcesHandler:      app.NewListStorageSourcesHandler(db),
 		registerStorageSourcesHandler: app.NewRegisterStorageSourceHandler(
 			storageRepo,
-			sourceStore,
+			fsStore,
 		),
 		removeStorageSourceHandler: app.NewRemoveStorageSourceHandler(db),
 		renameStorageHandler:       app.NewRenameStorageHandler(storageRepo, storageRepo),
-		createFolderHandler:        app.NewCreateFolderHandler(storageRepo, sourceStore),
-		renameFileHandler:          app.NewRenameFileHandler(storageRepo, sourceStore),
+		createFolderHandler:        app.NewCreateFolderHandler(storageRepo, fsStore),
+		renameFileHandler:          app.NewRenameFileHandler(storageRepo, fsStore),
+		deleteFileHandler:          app.NewDeleteFileHandler(storageRepo, fsStore),
 	}, nil
 }
 
@@ -50,4 +52,5 @@ func (m *StorageModule) RegisterAPI(humaApi huma.API) {
 	api.RenameStorage(storageApi, m.renameStorageHandler)
 	api.CreateFolder(storageApi, m.createFolderHandler)
 	api.RenameFile(storageApi, m.renameFileHandler)
+	api.DeleteFile(storageApi, m.deleteFileHandler)
 }

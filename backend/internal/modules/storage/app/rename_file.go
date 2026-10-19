@@ -2,10 +2,7 @@ package app
 
 import (
 	"context"
-	"errors"
-	"io/fs"
 
-	"github.com/sirnacou/file-ctrl/backend/internal/common/utils"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
 )
 
@@ -18,15 +15,18 @@ type RenameFileRequest struct {
 type (
 	RenameFileResponse struct{}
 	RenameFileHandler  struct {
-		finder StorageSourcesFinder
-		opener SourceOpener
+		finder        StorageSourcesFinder
+		fsFileRenamer FSFileRenamer
 	}
 )
 
-func NewRenameFileHandler(finder StorageSourcesFinder, opener SourceOpener) *RenameFileHandler {
+func NewRenameFileHandler(
+	finder StorageSourcesFinder,
+	fsFileRenamer FSFileRenamer,
+) *RenameFileHandler {
 	return &RenameFileHandler{
-		finder: finder,
-		opener: opener,
+		finder:        finder,
+		fsFileRenamer: fsFileRenamer,
 	}
 }
 
@@ -55,32 +55,8 @@ func (h *RenameFileHandler) Handle(
 		return nil, domain.ErrAlreadyExists
 	}
 
-	root, err := h.opener.OpenSource(source.Path.String())
-	if err != nil {
-		return nil, domain.ErrStorageSourceNotFound
-	}
-	defer utils.CloseLog(ctx, root, "source root")
-
-	// Source must exist.
-	if _, err := root.Lstat(oldPath.FS()); err != nil {
-		if errors.Is(err, fs.ErrNotExist) {
-			return nil, domain.ErrNotFound
-		}
-		return nil, domain.ErrInvalidPath
-	}
-
-	// Rename silently overwrites files on Unix, so refuse if the target exists.
-	if _, err := root.Lstat(newPath.FS()); err == nil {
-		return nil, domain.ErrAlreadyExists
-	} else if !errors.Is(err, fs.ErrNotExist) {
-		return nil, domain.ErrInvalidPath
-	}
-
-	if err := root.Rename(oldPath.FS(), newPath.FS()); err != nil {
-		if errors.Is(err, fs.ErrExist) {
-			return nil, domain.ErrAlreadyExists
-		}
-		return nil, domain.ErrInvalidPath
+	if err = h.fsFileRenamer.Rename(ctx, source.Path, oldPath, newPath); err != nil {
+		return nil, err
 	}
 
 	return &RenameFileResponse{}, nil

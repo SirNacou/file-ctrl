@@ -9,6 +9,10 @@ export type CreateFolderRequestBody = {
   parent_path: string;
 };
 
+export type DeleteFileRequestBody = {
+  file_path: string;
+};
+
 export type DirectoryEntry = {
   is_dir: boolean;
   mod_time: Date;
@@ -226,6 +230,31 @@ export type StorageRenameResponses = {
    * OK
    */
   200: unknown;
+};
+
+export type StorageDeleteFileData = {
+  body: DeleteFileRequestBody;
+  path: {
+    storage_path: string;
+  };
+  query?: never;
+  url: "/api/storage/{storage_path}/files";
+};
+
+export type StorageDeleteFileErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type StorageDeleteFileError = StorageDeleteFileErrors[keyof StorageDeleteFileErrors];
+
+export type StorageDeleteFileResponses = {
+  /**
+   * Accepted
+   */
+  202: unknown;
 };
 
 export type ListDirectoryData = {

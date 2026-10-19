@@ -12,6 +12,7 @@ import {
   registerStorage,
   removeStorage,
   renameFile,
+  storageDeleteFile,
   storageRename,
 } from "../sdk.gen";
 import type {
@@ -34,6 +35,8 @@ import type {
   RemoveStorageResponse,
   RenameFileData,
   RenameFileError,
+  StorageDeleteFileData,
+  StorageDeleteFileError,
   StorageRenameData,
   StorageRenameError,
 } from "../types.gen";
@@ -175,6 +178,26 @@ export const storageRenameMutation = (
   > = {
     mutationFn: async (fnOptions) => {
       const { data } = await storageRename({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const storageDeleteFileMutation = (
+  options?: Partial<Options<StorageDeleteFileData>>,
+): UseMutationOptions<unknown, StorageDeleteFileError, Options<StorageDeleteFileData>> => {
+  const mutationOptions: UseMutationOptions<
+    unknown,
+    StorageDeleteFileError,
+    Options<StorageDeleteFileData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await storageDeleteFile({
         ...options,
         ...fnOptions,
         throwOnError: true,

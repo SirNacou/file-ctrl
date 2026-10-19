@@ -30,6 +30,9 @@ import type {
   RenameFileData,
   RenameFileErrors,
   RenameFileResponses,
+  StorageDeleteFileData,
+  StorageDeleteFileErrors,
+  StorageDeleteFileResponses,
   StorageRenameData,
   StorageRenameErrors,
   StorageRenameResponses,
@@ -48,6 +51,8 @@ import {
   zRemoveStorageResponse,
   zRenameFileBody,
   zRenameFilePath,
+  zStorageDeleteFileBody,
+  zStorageDeleteFilePath,
   zStorageRenameBody,
   zStorageRenamePath,
 } from "./zod.gen";
@@ -164,6 +169,30 @@ export const storageRename = <ThrowOnError extends boolean = false>(
         })
         .parseAsync(data),
     url: "/api/storage/{path}/rename",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const storageDeleteFile = <ThrowOnError extends boolean = false>(
+  options: Options<StorageDeleteFileData, ThrowOnError>,
+): RequestResult<StorageDeleteFileResponses, StorageDeleteFileErrors, ThrowOnError> =>
+  (options.client ?? client).delete<
+    StorageDeleteFileResponses,
+    StorageDeleteFileErrors,
+    ThrowOnError
+  >({
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: zStorageDeleteFileBody,
+          path: zStorageDeleteFilePath,
+          query: z.never().optional(),
+        })
+        .parseAsync(data),
+    url: "/api/storage/{storage_path}/files",
     ...options,
     headers: {
       "Content-Type": "application/json",

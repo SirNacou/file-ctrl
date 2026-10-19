@@ -41,7 +41,6 @@ export const columns = columnHelper.columns([
         <div
           className="group flex items-center gap-2.5 py-0.5 cursor-pointer select-none"
           onClick={() => table.options.meta?.itemSelected(item)}
-          onTouchEnd={() => table.options.meta?.itemSelected(item)}
         >
           <Icon
             className={`h-4 w-4 shrink-0 transition-transform group-hover:scale-110 ${

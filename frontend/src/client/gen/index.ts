@@ -9,6 +9,7 @@ export {
   registerStorage,
   removeStorage,
   renameFile,
+  storageDeleteFile,
   storageRename,
 } from "./sdk.gen";
 export type {
@@ -18,6 +19,7 @@ export type {
   CreateStorageFolderError,
   CreateStorageFolderErrors,
   CreateStorageFolderResponses,
+  DeleteFileRequestBody,
   DirectoryEntry,
   ErrorDetail,
   ErrorModel,
@@ -58,6 +60,10 @@ export type {
   RenameFileResponses,
   RenameStorageRequestBody,
   Source,
+  StorageDeleteFileData,
+  StorageDeleteFileError,
+  StorageDeleteFileErrors,
+  StorageDeleteFileResponses,
   StorageRenameData,
   StorageRenameError,
   StorageRenameErrors,

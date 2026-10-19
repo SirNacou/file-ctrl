@@ -65,7 +65,7 @@ export const FileTable = ({ storagePath, subpath, data, itemSelected }: FileTabl
             table.getRowModel().rows.map((row) => (
               <FileTableContextMenu
                 key={row.id}
-                fileName={row.original.name}
+                entry={row.original}
                 storagePath={storagePath}
                 subpath={subpath}
               >

@@ -2,6 +2,7 @@ import {
   listDirectoryQueryKey,
   renameFileMutation,
 } from '#/client/gen/@tanstack/react-query.gen.ts'
+import type { DirectoryEntry } from '#/client/gen/index.ts'
 import { zRenameFileBody, type RenameFileBodyZodInput } from '#/client/gen/zod.gen.ts'
 import { Button } from '#/components/ui/button.tsx'
 import {
@@ -11,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '#/components/ui/dialog.tsx'
-import { Field } from '#/components/ui/field.tsx'
+import { Field, FieldGroup } from '#/components/ui/field.tsx'
 import { useAppForm } from '#/hooks/use-form.ts'
 import { notify } from '#/lib/notify.ts'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -19,15 +20,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 type Props = {
   storagePath: string
   subpath?: string
-  fileName: string
+  entry: DirectoryEntry
   open: boolean
-  openChanged: (isOpened: boolean) => void
+  openChanged: (isOpen: boolean) => void
 }
-export const RenameFileDialog = ({ storagePath, subpath, fileName, open, openChanged }: Props) => {
+export const RenameFileDialog = ({ storagePath, subpath, entry, open, openChanged }: Props) => {
   const defaultValues: RenameFileBodyZodInput = {
-    old_name: fileName,
+    old_name: entry.name,
     parent_path: subpath || '',
-    new_name: fileName,
+    new_name: entry.name,
   }
 
   const form = useAppForm({
@@ -77,17 +78,19 @@ export const RenameFileDialog = ({ storagePath, subpath, fileName, open, openCha
           }}
           className="flex flex-col gap-4"
         >
-          <form.AppField name="new_name" children={(field) => <field.TextField label="Name" />} />
-          <DialogFooter>
-            <form.AppForm>
-              <Field orientation={'horizontal'}>
-                <Button type="button" variant={'outline'} onClick={handleCancel}>
-                  Cancel
-                </Button>
-                <form.SubscribeButton label="Confirm" />
-              </Field>
-            </form.AppForm>
-          </DialogFooter>
+          <FieldGroup>
+            <form.AppField name="new_name" children={(field) => <field.TextField label="Name" />} />
+            <DialogFooter>
+              <form.AppForm>
+                <Field orientation={'horizontal'}>
+                  <Button type="button" variant={'outline'} onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                  <form.SubscribeButton label="Confirm" />
+                </Field>
+              </form.AppForm>
+            </DialogFooter>
+          </FieldGroup>
         </form>
       </DialogContent>
     </Dialog>

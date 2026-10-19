@@ -51,7 +51,6 @@ export const columns = columnHelper.columns([
         </Button>
         <RenameStorageDialog storage={row.original} />
         <ConfirmDeleteDialog
-          buttonText="Remove"
           onConfirm={() => table.options.meta?.handleRemove(row.original.path)}
         />
       </div>

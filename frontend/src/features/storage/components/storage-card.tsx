@@ -4,6 +4,7 @@ import {
 } from '#/client/gen/@tanstack/react-query.gen.ts'
 import { type Source } from '#/client/gen/index.ts'
 import { ConfirmDeleteDialog } from '#/components/confirm-detele-dialog.tsx'
+import { Button } from '#/components/ui/button.tsx'
 import {
   Card,
   CardAction,
@@ -16,6 +17,7 @@ import { toast } from '#/components/ui/toast.tsx'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import ArchiveIcon from '~icons/lucide/archive'
+import TrashIcon from '~icons/lucide/trash'
 import { RenameStorageDialog } from './rename-storage-dialog'
 
 type StorageCardProps = {
@@ -68,7 +70,15 @@ export function StorageCard({ storage }: StorageCardProps) {
         </CardDescription>
         <CardAction className="relative z-10 flex gap-2">
           <RenameStorageDialog storage={storage} />
-          <ConfirmDeleteDialog buttonText="Remove" onConfirm={handleRemove} />
+          <ConfirmDeleteDialog
+            trigger={
+              <Button variant={'destructive'}>
+                <TrashIcon />
+                Remove
+              </Button>
+            }
+            onConfirm={handleRemove}
+          />
         </CardAction>
       </CardHeader>
       <CardFooter>{created}</CardFooter>

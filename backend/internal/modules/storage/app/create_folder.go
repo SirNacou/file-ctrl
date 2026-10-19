@@ -2,10 +2,7 @@ package app
 
 import (
 	"context"
-	"errors"
-	"io/fs"
 
-	"github.com/sirnacou/file-ctrl/backend/internal/common/utils"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
 )
 
@@ -17,15 +14,18 @@ type CreateFolderRequest struct {
 type (
 	CreateFolderResponse struct{}
 	CreateFolderHandler  struct {
-		finder StorageSourcesFinder
-		opener SourceOpener
+		finder       StorageSourcesFinder
+		fsDirCreator FSDirCreator
 	}
 )
 
-func NewCreateFolderHandler(finder StorageSourcesFinder, opener SourceOpener) *CreateFolderHandler {
+func NewCreateFolderHandler(
+	finder StorageSourcesFinder,
+	fsDirCreator FSDirCreator,
+) *CreateFolderHandler {
 	return &CreateFolderHandler{
-		finder: finder,
-		opener: opener,
+		finder:       finder,
+		fsDirCreator: fsDirCreator,
 	}
 }
 
@@ -47,17 +47,9 @@ func (h *CreateFolderHandler) Handle(
 		return nil, err
 	}
 
-	root, err := h.opener.OpenSource(source.Path.String())
+	err = h.fsDirCreator.Mkdir(ctx, source.Path, target)
 	if err != nil {
-		return nil, domain.ErrStorageSourceNotFound
-	}
-	defer utils.CloseLog(ctx, root, "source root")
-
-	if err := root.Mkdir(target.FS(), 0o755); err != nil {
-		if errors.Is(err, fs.ErrExist) {
-			return nil, domain.ErrAlreadyExists
-		}
-		return nil, domain.ErrInvalidPath
+		return nil, err
 	}
 
 	return &CreateFolderResponse{}, nil

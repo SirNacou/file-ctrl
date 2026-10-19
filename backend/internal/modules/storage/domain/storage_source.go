@@ -6,12 +6,12 @@ import (
 )
 
 type StorageSource struct {
-	Path      StoragePath
+	Path      SourcePath
 	CreatedAt time.Time
 	Name      string
 }
 
-func NewStorageSource(path StoragePath, name string) (*StorageSource, error) {
+func NewStorageSource(path SourcePath, name string) (*StorageSource, error) {
 	name = strings.TrimSpace(name)
 	if len(name) == 0 {
 		return nil, ErrNameMustNotBeEmpty

@@ -3,13 +3,12 @@ package app
 import (
 	"context"
 
-	"github.com/sirnacou/file-ctrl/backend/internal/common/utils"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
 )
 
 type RegisterStorageSourceHandler struct {
-	inserter     StorageSourcesInserter
-	sourceOpener SourceOpener
+	inserter           StorageSourcesInserter
+	fsDirExistsChecker FSDirExistsChecker
 }
 
 type RegisterStorageSourceRequest struct {
@@ -18,16 +17,16 @@ type RegisterStorageSourceRequest struct {
 }
 
 type RegisterStorageSourceResponse struct {
-	Path domain.StoragePath
+	Path domain.SourcePath
 }
 
 func NewRegisterStorageSourceHandler(
 	inserter StorageSourcesInserter,
-	sourceOpener SourceOpener,
+	fsDirExistsChecker FSDirExistsChecker,
 ) *RegisterStorageSourceHandler {
 	return &RegisterStorageSourceHandler{
-		inserter:     inserter,
-		sourceOpener: sourceOpener,
+		inserter:           inserter,
+		fsDirExistsChecker: fsDirExistsChecker,
 	}
 }
 
@@ -40,11 +39,13 @@ func (h *RegisterStorageSourceHandler) Handle(
 		return nil, err
 	}
 
-	root, err := h.sourceOpener.OpenSource(path.String())
+	exists, err := h.fsDirExistsChecker.DirExists(ctx, path.String())
 	if err != nil {
 		return nil, domain.ErrInvalidSourceDirectory
 	}
-	utils.CloseLog(ctx, root, "source root")
+	if !exists {
+		return nil, domain.ErrSourceDirectoryNotFound
+	}
 
 	source, err := domain.NewStorageSource(path, req.Name)
 	if err != nil {
