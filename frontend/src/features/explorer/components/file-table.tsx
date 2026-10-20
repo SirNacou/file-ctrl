@@ -7,7 +7,8 @@ import {
   TableHeader,
   TableRow,
 } from '#/components/ui/table.tsx'
-import { useTable } from '@tanstack/react-table'
+import { createAtom } from '@tanstack/react-store'
+import { useTable, type RowSelectionState } from '@tanstack/react-table'
 import { columns } from './columns'
 import { features } from './features'
 import { FileTableContextMenu } from './file-table-context-menu'
@@ -19,16 +20,22 @@ type FileTableProps = {
   itemSelected?: (item: DirectoryEntry) => void
 }
 
+export const rowSelectionAtom = createAtom<RowSelectionState>({})
+
 export const FileTable = ({ storagePath, subpath, data, itemSelected }: FileTableProps) => {
   const table = useTable({
     key: 'file-table',
     features,
     columns,
     data,
+    getRowId: (row) => row.path,
     meta: {
       itemSelected: (item) => {
         itemSelected?.(item)
       },
+    },
+    atoms: {
+      rowSelection: rowSelectionAtom,
     },
   })
 

@@ -1,6 +1,6 @@
 import {
   listDirectoryQueryKey,
-  storageDeleteFileMutation,
+  storageDeleteFilesMutation,
 } from '#/client/gen/@tanstack/react-query.gen.ts'
 import type { DirectoryEntry } from '#/client/gen/index.ts'
 import { ConfirmDeleteDialog } from '#/components/confirm-detele-dialog.tsx'
@@ -30,8 +30,8 @@ export const FileTableContextMenu = ({ children, entry, storagePath, subpath = '
   const [dialog, setDialog] = useState<Dialog>(null)
 
   const queryClient = useQueryClient()
-  const deleteFile = useMutation({
-    ...storageDeleteFileMutation(),
+  const deleteFiles = useMutation({
+    ...storageDeleteFilesMutation(),
     onError: (error) => {
       notify.error(error.title, error.errors?.at(0)?.message)
     },
@@ -44,10 +44,10 @@ export const FileTableContextMenu = ({ children, entry, storagePath, subpath = '
   })
 
   async function handleDelete() {
-    await deleteFile.mutateAsync({
+    await deleteFiles.mutateAsync({
       path: { storage_path: storagePath },
       body: {
-        file_path: entry.path,
+        file_paths: [entry.path],
       },
     })
   }

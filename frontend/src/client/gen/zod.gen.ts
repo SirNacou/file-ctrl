@@ -13,15 +13,15 @@ export type CreateFolderRequestBodyZodInput = z.input<typeof zCreateFolderReques
 
 export type CreateFolderRequestBodyZodOutput = z.output<typeof zCreateFolderRequestBody>;
 
-export const zDeleteFileRequestBody = z.object({
-  file_path: z.string(),
+export const zDeleteFilesRequestBody = z.object({
+  file_paths: z.array(z.string().min(1)).nullable(),
 });
 
-export type DeleteFileRequestBodyZodType = z.infer<typeof zDeleteFileRequestBody>;
+export type DeleteFilesRequestBodyZodType = z.infer<typeof zDeleteFilesRequestBody>;
 
-export type DeleteFileRequestBodyZodInput = z.input<typeof zDeleteFileRequestBody>;
+export type DeleteFilesRequestBodyZodInput = z.input<typeof zDeleteFilesRequestBody>;
 
-export type DeleteFileRequestBodyZodOutput = z.output<typeof zDeleteFileRequestBody>;
+export type DeleteFilesRequestBodyZodOutput = z.output<typeof zDeleteFilesRequestBody>;
 
 export const zDirectoryEntry = z.object({
   is_dir: z.boolean(),
@@ -274,23 +274,23 @@ export type StorageRenamePathZodInput = z.input<typeof zStorageRenamePath>;
 
 export type StorageRenamePathZodOutput = z.output<typeof zStorageRenamePath>;
 
-export const zStorageDeleteFileBody = zDeleteFileRequestBody;
+export const zStorageDeleteFilesBody = zDeleteFilesRequestBody;
 
-export type StorageDeleteFileBodyZodType = z.infer<typeof zStorageDeleteFileBody>;
+export type StorageDeleteFilesBodyZodType = z.infer<typeof zStorageDeleteFilesBody>;
 
-export type StorageDeleteFileBodyZodInput = z.input<typeof zStorageDeleteFileBody>;
+export type StorageDeleteFilesBodyZodInput = z.input<typeof zStorageDeleteFilesBody>;
 
-export type StorageDeleteFileBodyZodOutput = z.output<typeof zStorageDeleteFileBody>;
+export type StorageDeleteFilesBodyZodOutput = z.output<typeof zStorageDeleteFilesBody>;
 
-export const zStorageDeleteFilePath = z.object({
+export const zStorageDeleteFilesPath = z.object({
   storage_path: z.string(),
 });
 
-export type StorageDeleteFilePathZodType = z.infer<typeof zStorageDeleteFilePath>;
+export type StorageDeleteFilesPathZodType = z.infer<typeof zStorageDeleteFilesPath>;
 
-export type StorageDeleteFilePathZodInput = z.input<typeof zStorageDeleteFilePath>;
+export type StorageDeleteFilesPathZodInput = z.input<typeof zStorageDeleteFilesPath>;
 
-export type StorageDeleteFilePathZodOutput = z.output<typeof zStorageDeleteFilePath>;
+export type StorageDeleteFilesPathZodOutput = z.output<typeof zStorageDeleteFilesPath>;
 
 export const zListDirectoryPath = z.object({
   storage_path: z.string(),
