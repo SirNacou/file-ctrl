@@ -15,13 +15,13 @@ type (
 	CreateFolderResponse struct{}
 	CreateFolderHandler  struct {
 		finder       StorageSourcesFinder
-		fsDirCreator FSDirCreator
+		fsDirCreator DirCreator
 	}
 )
 
 func NewCreateFolderHandler(
 	finder StorageSourcesFinder,
-	fsDirCreator FSDirCreator,
+	fsDirCreator DirCreator,
 ) *CreateFolderHandler {
 	return &CreateFolderHandler{
 		finder:       finder,

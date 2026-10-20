@@ -16,13 +16,13 @@ type (
 	RenameFileResponse struct{}
 	RenameFileHandler  struct {
 		finder        StorageSourcesFinder
-		fsFileRenamer FSFileRenamer
+		fsFileRenamer FileRenamer
 	}
 )
 
 func NewRenameFileHandler(
 	finder StorageSourcesFinder,
-	fsFileRenamer FSFileRenamer,
+	fsFileRenamer FileRenamer,
 ) *RenameFileHandler {
 	return &RenameFileHandler{
 		finder:        finder,

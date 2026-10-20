@@ -6,13 +6,15 @@ import (
 )
 
 var (
-	ErrNameMustNotBeEmpty     = errors.New("name must not be empty")
-	ErrStorageSourceNotFound  = errors.New("storage source not found")
-	ErrInvalidSourceDirectory = errors.New("source directory is invalid")
+	ErrNameMustNotBeEmpty      = errors.New("name must not be empty")
+	ErrStorageSourceNotFound   = errors.New("storage source not found")
+	ErrInvalidSourceDirectory  = errors.New("source directory is invalid")
 	ErrSourceDirectoryNotFound = errors.New("source directory is not exists")
-	ErrInvalidPath            = errors.New("invalid path")
-	ErrAlreadyExists          = errors.New("already exists")
-	ErrNotFound               = errors.New("not found")
+	ErrInvalidPath             = errors.New("invalid path")
+	ErrAlreadyExists           = errors.New("already exists")
+	ErrFileNotFound            = errors.New("file not found")
+	ErrNotFound                = errors.New("not found")
+	ErrIsDirectory             = errors.New("target path is a directory")
 )
 
 type ErrFailToReadDir struct {

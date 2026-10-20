@@ -153,6 +153,39 @@ func (s *Store) Rename(
 	return nil
 }
 
+func (s *Store) OpenFile(
+	ctx context.Context,
+	sourcePath domain.SourcePath,
+	target domain.EntryPath,
+) (*os.File, os.FileInfo, error) {
+	root, err := s.openRoot(sourcePath.String())
+	if err != nil {
+		return nil, nil, domain.ErrStorageSourceNotFound
+	}
+	defer closeLog(ctx, root, sourcePath.String())
+
+	file, err := root.Open(target.FS())
+	if err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			return nil, nil, domain.ErrFileNotFound
+		}
+		return nil, nil, domain.ErrInvalidPath
+	}
+
+	info, err := file.Stat()
+	if err != nil {
+		closeLog(ctx, file, target.FS())
+		return nil, nil, domain.ErrInvalidPath
+	}
+
+	if info.IsDir() {
+		closeLog(ctx, file, target.FS())
+		return nil, nil, domain.ErrIsDirectory // Neutral domain error
+	}
+
+	return file, info, nil
+}
+
 func mapFSError(err error) error {
 	switch {
 	case errors.Is(err, fs.ErrNotExist):
