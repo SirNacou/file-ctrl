@@ -1,10 +1,10 @@
 import type { Source } from '#/client/gen/index.ts'
-import { ConfirmDelete } from '#/components/confirm-detele.tsx'
+import { ConfirmDeleteDialog } from '#/components/confirm-detele-dialog.tsx'
 import { Button } from '#/components/ui/button.tsx'
 import { Link } from '@tanstack/react-router'
 import { createColumnHelper } from '@tanstack/react-table'
 import type { Features } from './features'
-import { RenameStorageDialog } from './rename-storage.dialog'
+import { RenameStorageDialog } from './rename-storage-dialog'
 
 const columnHelper = createColumnHelper<Features, Source>()
 
@@ -13,15 +13,15 @@ export const columns = columnHelper.columns([
     header: () => <span>Name</span>,
     cell: ({ row }) => (
       <Link
-        to="/storage/$subpath/$"
-        params={{ subpath: row.original.subpath }}
+        to="/storage/$path/$"
+        params={{ path: row.original.path }}
         className={`block px-3 py-2 text-inherit no-underline hover:underline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue-500`}
       >
         {row.original.name}
       </Link>
     ),
   }),
-  columnHelper.accessor('subpath', {
+  columnHelper.accessor('path', {
     header: () => <span>Path</span>,
   }),
   columnHelper.accessor('created_at', {
@@ -46,15 +46,12 @@ export const columns = columnHelper.columns([
     header: () => <span>Actions</span>,
     cell: ({ row, table }) => (
       <div className="flex gap-2">
-        <Button
-          render={<Link to="/storage/$subpath/$" params={{ subpath: row.original.subpath }} />}
-        >
+        <Button render={<Link to="/storage/$path/$" params={{ path: row.original.path }} />}>
           Open
         </Button>
-        <RenameStorageDialog subpath={row.original.subpath} cur_name={row.original.name} />
-        <ConfirmDelete
-          buttonText="Remove"
-          onConfirm={() => table.options.meta?.handleRemove(row.original.subpath)}
+        <RenameStorageDialog storage={row.original} />
+        <ConfirmDeleteDialog
+          onConfirm={() => table.options.meta?.handleRemove(row.original.path)}
         />
       </div>
     ),

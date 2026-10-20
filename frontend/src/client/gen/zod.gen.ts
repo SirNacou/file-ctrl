@@ -2,6 +2,27 @@
 
 import * as z from "zod";
 
+export const zCreateFolderRequestBody = z.object({
+  name: z.string(),
+  parent_path: z.string().default("."),
+});
+
+export type CreateFolderRequestBodyZodType = z.infer<typeof zCreateFolderRequestBody>;
+
+export type CreateFolderRequestBodyZodInput = z.input<typeof zCreateFolderRequestBody>;
+
+export type CreateFolderRequestBodyZodOutput = z.output<typeof zCreateFolderRequestBody>;
+
+export const zDeleteFilesRequestBody = z.object({
+  file_paths: z.array(z.string().min(1)).nullable(),
+});
+
+export type DeleteFilesRequestBodyZodType = z.infer<typeof zDeleteFilesRequestBody>;
+
+export type DeleteFilesRequestBodyZodInput = z.input<typeof zDeleteFilesRequestBody>;
+
+export type DeleteFilesRequestBodyZodOutput = z.output<typeof zDeleteFilesRequestBody>;
+
 export const zDirectoryEntry = z.object({
   is_dir: z.boolean(),
   mod_time: z.iso.datetime({ offset: true }),
@@ -88,7 +109,7 @@ export type ListUnregisteredSourcesResponseBodyZodOutput = z.output<
 
 export const zRegisterStorageSourceRequestBody = z.object({
   name: z.string(),
-  sub_path: z.string(),
+  path: z.string(),
 });
 
 export type RegisterStorageSourceRequestBodyZodType = z.infer<
@@ -104,7 +125,7 @@ export type RegisterStorageSourceRequestBodyZodOutput = z.output<
 >;
 
 export const zRegisterStorageSourceResponseBody = z.object({
-  id: z.string(),
+  path: z.string(),
 });
 
 export type RegisterStorageSourceResponseBodyZodType = z.infer<
@@ -119,6 +140,18 @@ export type RegisterStorageSourceResponseBodyZodOutput = z.output<
   typeof zRegisterStorageSourceResponseBody
 >;
 
+export const zRenameFileRequestBody = z.object({
+  new_name: z.string(),
+  old_name: z.string(),
+  parent_path: z.string(),
+});
+
+export type RenameFileRequestBodyZodType = z.infer<typeof zRenameFileRequestBody>;
+
+export type RenameFileRequestBodyZodInput = z.input<typeof zRenameFileRequestBody>;
+
+export type RenameFileRequestBodyZodOutput = z.output<typeof zRenameFileRequestBody>;
+
 export const zRenameStorageRequestBody = z.object({
   new_name: z.string(),
 });
@@ -132,7 +165,7 @@ export type RenameStorageRequestBodyZodOutput = z.output<typeof zRenameStorageRe
 export const zSource = z.object({
   created_at: z.iso.datetime({ offset: true }),
   name: z.string(),
-  subpath: z.string(),
+  path: z.string(),
 });
 
 export type SourceZodType = z.infer<typeof zSource>;
@@ -158,83 +191,52 @@ export type ListStorageSourcesResponseBodyZodOutput = z.output<
 /**
  * OK
  */
-export const zGetApiStorageResponse = zListStorageSourcesResponseBody;
+export const zListStorageSourcesResponse = zListStorageSourcesResponseBody;
 
-export type GetApiStorageResponseZodType = z.infer<typeof zGetApiStorageResponse>;
+export type ListStorageSourcesResponseZodType = z.infer<typeof zListStorageSourcesResponse>;
 
-export type GetApiStorageResponseZodInput = z.input<typeof zGetApiStorageResponse>;
+export type ListStorageSourcesResponseZodInput = z.input<typeof zListStorageSourcesResponse>;
 
-export type GetApiStorageResponseZodOutput = z.output<typeof zGetApiStorageResponse>;
+export type ListStorageSourcesResponseZodOutput = z.output<typeof zListStorageSourcesResponse>;
 
-export const zPostApiStorageBody = zRegisterStorageSourceRequestBody;
+export const zRegisterStorageBody = zRegisterStorageSourceRequestBody;
 
-export type PostApiStorageBodyZodType = z.infer<typeof zPostApiStorageBody>;
+export type RegisterStorageBodyZodType = z.infer<typeof zRegisterStorageBody>;
 
-export type PostApiStorageBodyZodInput = z.input<typeof zPostApiStorageBody>;
+export type RegisterStorageBodyZodInput = z.input<typeof zRegisterStorageBody>;
 
-export type PostApiStorageBodyZodOutput = z.output<typeof zPostApiStorageBody>;
+export type RegisterStorageBodyZodOutput = z.output<typeof zRegisterStorageBody>;
 
 /**
  * Created
  */
-export const zPostApiStorageResponse = zRegisterStorageSourceResponseBody;
+export const zRegisterStorageResponse = zRegisterStorageSourceResponseBody;
 
-export type PostApiStorageResponseZodType = z.infer<typeof zPostApiStorageResponse>;
+export type RegisterStorageResponseZodType = z.infer<typeof zRegisterStorageResponse>;
 
-export type PostApiStorageResponseZodInput = z.input<typeof zPostApiStorageResponse>;
+export type RegisterStorageResponseZodInput = z.input<typeof zRegisterStorageResponse>;
 
-export type PostApiStorageResponseZodOutput = z.output<typeof zPostApiStorageResponse>;
-
-/**
- * OK
- */
-export const zGetApiStorageListUnregisteredSourcesResponse = zListUnregisteredSourcesResponseBody;
-
-export type GetApiStorageListUnregisteredSourcesResponseZodType = z.infer<
-  typeof zGetApiStorageListUnregisteredSourcesResponse
->;
-
-export type GetApiStorageListUnregisteredSourcesResponseZodInput = z.input<
-  typeof zGetApiStorageListUnregisteredSourcesResponse
->;
-
-export type GetApiStorageListUnregisteredSourcesResponseZodOutput = z.output<
-  typeof zGetApiStorageListUnregisteredSourcesResponse
->;
-
-export const zListDirectoryPath = z.object({
-  storage_subpath: z.string(),
-});
-
-export type ListDirectoryPathZodType = z.infer<typeof zListDirectoryPath>;
-
-export type ListDirectoryPathZodInput = z.input<typeof zListDirectoryPath>;
-
-export type ListDirectoryPathZodOutput = z.output<typeof zListDirectoryPath>;
-
-export const zListDirectoryQuery = z.object({
-  path: z.string().optional().default("."),
-});
-
-export type ListDirectoryQueryZodType = z.infer<typeof zListDirectoryQuery>;
-
-export type ListDirectoryQueryZodInput = z.input<typeof zListDirectoryQuery>;
-
-export type ListDirectoryQueryZodOutput = z.output<typeof zListDirectoryQuery>;
+export type RegisterStorageResponseZodOutput = z.output<typeof zRegisterStorageResponse>;
 
 /**
  * OK
  */
-export const zListDirectoryResponse2 = zListDirectoryResponse;
+export const zListUnregisteredSourcesResponse = zListUnregisteredSourcesResponseBody;
 
-export type ListDirectoryResponseZodType2 = z.infer<typeof zListDirectoryResponse2>;
+export type ListUnregisteredSourcesResponseZodType = z.infer<
+  typeof zListUnregisteredSourcesResponse
+>;
 
-export type ListDirectoryResponseZodInput2 = z.input<typeof zListDirectoryResponse2>;
+export type ListUnregisteredSourcesResponseZodInput = z.input<
+  typeof zListUnregisteredSourcesResponse
+>;
 
-export type ListDirectoryResponseZodOutput2 = z.output<typeof zListDirectoryResponse2>;
+export type ListUnregisteredSourcesResponseZodOutput = z.output<
+  typeof zListUnregisteredSourcesResponse
+>;
 
 export const zRemoveStoragePath = z.object({
-  subpath: z.string(),
+  path: z.string(),
 });
 
 export type RemoveStoragePathZodType = z.infer<typeof zRemoveStoragePath>;
@@ -263,7 +265,7 @@ export type StorageRenameBodyZodInput = z.input<typeof zStorageRenameBody>;
 export type StorageRenameBodyZodOutput = z.output<typeof zStorageRenameBody>;
 
 export const zStorageRenamePath = z.object({
-  subpath: z.string(),
+  path: z.string(),
 });
 
 export type StorageRenamePathZodType = z.infer<typeof zStorageRenamePath>;
@@ -271,3 +273,88 @@ export type StorageRenamePathZodType = z.infer<typeof zStorageRenamePath>;
 export type StorageRenamePathZodInput = z.input<typeof zStorageRenamePath>;
 
 export type StorageRenamePathZodOutput = z.output<typeof zStorageRenamePath>;
+
+export const zStorageDeleteFilesBody = zDeleteFilesRequestBody;
+
+export type StorageDeleteFilesBodyZodType = z.infer<typeof zStorageDeleteFilesBody>;
+
+export type StorageDeleteFilesBodyZodInput = z.input<typeof zStorageDeleteFilesBody>;
+
+export type StorageDeleteFilesBodyZodOutput = z.output<typeof zStorageDeleteFilesBody>;
+
+export const zStorageDeleteFilesPath = z.object({
+  storage_path: z.string(),
+});
+
+export type StorageDeleteFilesPathZodType = z.infer<typeof zStorageDeleteFilesPath>;
+
+export type StorageDeleteFilesPathZodInput = z.input<typeof zStorageDeleteFilesPath>;
+
+export type StorageDeleteFilesPathZodOutput = z.output<typeof zStorageDeleteFilesPath>;
+
+export const zListDirectoryPath = z.object({
+  storage_path: z.string(),
+});
+
+export type ListDirectoryPathZodType = z.infer<typeof zListDirectoryPath>;
+
+export type ListDirectoryPathZodInput = z.input<typeof zListDirectoryPath>;
+
+export type ListDirectoryPathZodOutput = z.output<typeof zListDirectoryPath>;
+
+export const zListDirectoryQuery = z.object({
+  subpath: z.string().optional().default("."),
+});
+
+export type ListDirectoryQueryZodType = z.infer<typeof zListDirectoryQuery>;
+
+export type ListDirectoryQueryZodInput = z.input<typeof zListDirectoryQuery>;
+
+export type ListDirectoryQueryZodOutput = z.output<typeof zListDirectoryQuery>;
+
+/**
+ * OK
+ */
+export const zListDirectoryResponse2 = zListDirectoryResponse;
+
+export type ListDirectoryResponseZodType2 = z.infer<typeof zListDirectoryResponse2>;
+
+export type ListDirectoryResponseZodInput2 = z.input<typeof zListDirectoryResponse2>;
+
+export type ListDirectoryResponseZodOutput2 = z.output<typeof zListDirectoryResponse2>;
+
+export const zRenameFileBody = zRenameFileRequestBody;
+
+export type RenameFileBodyZodType = z.infer<typeof zRenameFileBody>;
+
+export type RenameFileBodyZodInput = z.input<typeof zRenameFileBody>;
+
+export type RenameFileBodyZodOutput = z.output<typeof zRenameFileBody>;
+
+export const zRenameFilePath = z.object({
+  storage_path: z.string(),
+});
+
+export type RenameFilePathZodType = z.infer<typeof zRenameFilePath>;
+
+export type RenameFilePathZodInput = z.input<typeof zRenameFilePath>;
+
+export type RenameFilePathZodOutput = z.output<typeof zRenameFilePath>;
+
+export const zCreateStorageFolderBody = zCreateFolderRequestBody;
+
+export type CreateStorageFolderBodyZodType = z.infer<typeof zCreateStorageFolderBody>;
+
+export type CreateStorageFolderBodyZodInput = z.input<typeof zCreateStorageFolderBody>;
+
+export type CreateStorageFolderBodyZodOutput = z.output<typeof zCreateStorageFolderBody>;
+
+export const zCreateStorageFolderPath = z.object({
+  storage_path: z.string(),
+});
+
+export type CreateStorageFolderPathZodType = z.infer<typeof zCreateStorageFolderPath>;
+
+export type CreateStorageFolderPathZodInput = z.input<typeof zCreateStorageFolderPath>;
+
+export type CreateStorageFolderPathZodOutput = z.output<typeof zCreateStorageFolderPath>;

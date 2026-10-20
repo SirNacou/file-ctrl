@@ -25,8 +25,8 @@ func TestNewSourceSubpath(t *testing.T) {
 		{name: "nested allowed", raw: "a/b/c", allowNested: true, want: "a/b/c"},
 
 		// empty
-		{name: "empty", raw: "", wantErr: domain.ErrEmptySubpath},
-		{name: "only spaces", raw: "   ", wantErr: domain.ErrEmptySubpath},
+		{name: "empty", raw: "", wantErr: domain.ErrEmptyPath},
+		{name: "only spaces", raw: "   ", wantErr: domain.ErrEmptyPath},
 
 		// traversal and non-canonical shapes
 		{name: "double dot", raw: "..", wantErr: domain.ErrPathEscapesSandbox},
@@ -74,7 +74,7 @@ func TestNewSourceSubpath(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			got, err := domain.NewSourceSubpath(tt.raw, tt.allowNested)
+			got, err := domain.NewSourcePath(tt.raw, tt.allowNested)
 
 			if tt.wantErr != nil {
 				if !errors.Is(err, tt.wantErr) {

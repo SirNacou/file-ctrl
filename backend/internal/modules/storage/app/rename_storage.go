@@ -4,38 +4,27 @@ import (
 	"context"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
-	"github.com/stephenafamo/bob"
 )
 
 type (
 	RenameStorageRequest struct {
-		Subpath string
+		Path    string
 		NewName string
 	}
 	RenameStorageResponse struct{}
 	RenameStorageHandler  struct {
-		db                bob.Executor
-		storageSourceRepo StorageSourceRepo
-		storageDir        string
-	}
-	StorageSourceRepo interface {
-		Find(
-			ctx context.Context,
-			subpath string,
-		) (*domain.StorageSource, error)
-		Update(ctx context.Context, model *domain.StorageSource) error
+		finder  StorageSourcesFinder
+		updater StorageSourcesUpdater
 	}
 )
 
 func NewRenameStorageHandler(
-	repo StorageSourceRepo,
-	db bob.Executor,
-	storageDir string,
+	finder StorageSourcesFinder,
+	updater StorageSourcesUpdater,
 ) *RenameStorageHandler {
 	return &RenameStorageHandler{
-		storageSourceRepo: repo,
-		db:                db,
-		storageDir:        storageDir,
+		finder:  finder,
+		updater: updater,
 	}
 }
 
@@ -43,7 +32,7 @@ func (h *RenameStorageHandler) Handle(
 	ctx context.Context,
 	req *RenameStorageRequest,
 ) (*RenameStorageResponse, error) {
-	storage, err := h.storageSourceRepo.Find(ctx, req.Subpath)
+	storage, err := h.finder.Find(ctx, req.Path)
 	if err != nil {
 		return nil, domain.ErrStorageSourceNotFound
 	}
@@ -53,7 +42,7 @@ func (h *RenameStorageHandler) Handle(
 		return nil, err
 	}
 
-	err = h.storageSourceRepo.Update(ctx, storage)
+	err = h.updater.Update(ctx, storage)
 	if err != nil {
 		return nil, err
 	}

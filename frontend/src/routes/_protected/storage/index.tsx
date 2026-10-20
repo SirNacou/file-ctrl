@@ -1,7 +1,7 @@
-import { getApiStorageOptions } from '#/client/gen/@tanstack/react-query.gen.ts'
+import { listStorageSourcesOptions } from '#/client/gen/@tanstack/react-query.gen.ts'
 import { PageHeader } from '#/components/page-header.tsx'
 import { AddStorageDialog } from '#/features/storage/components/add-storage-dialog.tsx'
-import { StorageTable } from '#/features/storage/components/storage-table.tsx'
+import { StorageCard } from '#/features/storage/components/storage-card.tsx'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -10,12 +10,16 @@ export const Route = createFileRoute('/_protected/storage/')({
 })
 
 function RouteComponent() {
-  const { data } = useQuery(getApiStorageOptions())
+  const { data } = useQuery(listStorageSourcesOptions())
 
   return (
     <>
       <PageHeader title="Storage" actions={<AddStorageDialog />} />
-      <StorageTable data={data?.sources ?? []} />
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {data?.sources?.map((s) => (
+          <StorageCard key={s.path} storage={s} onEdit={() => {}} onRemove={() => {}} />
+        ))}
+      </div>
     </>
   )
 }

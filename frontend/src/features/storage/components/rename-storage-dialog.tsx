@@ -1,7 +1,8 @@
 import {
-  getApiStorageQueryKey,
+  listStorageSourcesQueryKey,
   storageRenameMutation,
 } from '#/client/gen/@tanstack/react-query.gen.ts'
+import { type Source } from '#/client/gen/index.ts'
 import {
   zRenameStorageRequestBody,
   type RenameStorageRequestBodyZodInput,
@@ -36,15 +37,14 @@ const { useAppForm } = createFormHook({
 })
 
 type RenameStorageDialogProps = {
-  subpath: string
-  cur_name: string
+  storage: Source
 }
 
-export function RenameStorageDialog({ subpath, cur_name }: RenameStorageDialogProps) {
+export function RenameStorageDialog({ storage }: RenameStorageDialogProps) {
   const [open, setOpen] = useState(false)
 
   const defaultValues: RenameStorageRequestBodyZodInput = {
-    new_name: cur_name,
+    new_name: storage.name,
   }
 
   const form = useAppForm({
@@ -56,7 +56,7 @@ export function RenameStorageDialog({ subpath, cur_name }: RenameStorageDialogPr
     onSubmit: async ({ value }) => {
       await renameStorage.mutateAsync({
         path: {
-          subpath,
+          path: storage.path,
         },
         body: {
           new_name: value.new_name,
@@ -75,7 +75,7 @@ export function RenameStorageDialog({ subpath, cur_name }: RenameStorageDialogPr
     onSuccess: async () => {
       toast.add({ type: 'success', title: 'Rename successfully' })
       await queryClient.invalidateQueries({
-        queryKey: getApiStorageQueryKey(),
+        queryKey: listStorageSourcesQueryKey(),
       })
       form.reset()
       setOpen(false)

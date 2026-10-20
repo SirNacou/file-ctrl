@@ -35,7 +35,7 @@ func (mods StorageSourceModSlice) Apply(ctx context.Context, n *StorageSourceTem
 // StorageSourceTemplate is an object representing the database table.
 // all columns are optional and should be set by mods
 type StorageSourceTemplate struct {
-	Subpath   func() string
+	Path      func() string
 	Name      func() string
 	CreatedAt func() time.Time
 
@@ -60,9 +60,9 @@ func (t StorageSourceTemplate) setModelRels(o *models.StorageSource) {}
 func (o StorageSourceTemplate) BuildSetter() *models.StorageSourceSetter {
 	m := &models.StorageSourceSetter{}
 
-	if o.Subpath != nil {
-		val := o.Subpath()
-		m.Subpath = omit.From(val)
+	if o.Path != nil {
+		val := o.Path()
+		m.Path = omit.From(val)
 	}
 	if o.Name != nil {
 		val := o.Name()
@@ -94,8 +94,8 @@ func (o StorageSourceTemplate) BuildManySetter(number int) []*models.StorageSour
 func (o StorageSourceTemplate) Build() *models.StorageSource {
 	m := &models.StorageSource{}
 
-	if o.Subpath != nil {
-		m.Subpath = o.Subpath()
+	if o.Path != nil {
+		m.Path = o.Path()
 	}
 	if o.Name != nil {
 		m.Name = o.Name()
@@ -123,9 +123,9 @@ func (o StorageSourceTemplate) BuildMany(number int) models.StorageSourceSlice {
 }
 
 func ensureCreatableStorageSource(m *models.StorageSourceSetter) {
-	if m.Subpath.IsUnset() {
+	if m.Path.IsUnset() {
 		val := random_string(nil)
-		m.Subpath = omit.From(val)
+		m.Path = omit.From(val)
 	}
 	if m.Name.IsUnset() {
 		val := random_string(nil)
@@ -247,38 +247,38 @@ type storageSourceMods struct{}
 
 func (m storageSourceMods) RandomizeAllColumns(f *faker.Faker) StorageSourceMod {
 	return StorageSourceModSlice{
-		StorageSourceMods.RandomSubpath(f),
+		StorageSourceMods.RandomPath(f),
 		StorageSourceMods.RandomName(f),
 		StorageSourceMods.RandomCreatedAt(f),
 	}
 }
 
 // Set the model columns to this value
-func (m storageSourceMods) Subpath(val string) StorageSourceMod {
+func (m storageSourceMods) Path(val string) StorageSourceMod {
 	return StorageSourceModFunc(func(_ context.Context, o *StorageSourceTemplate) {
-		o.Subpath = func() string { return val }
+		o.Path = func() string { return val }
 	})
 }
 
 // Set the Column from the function
-func (m storageSourceMods) SubpathFunc(f func() string) StorageSourceMod {
+func (m storageSourceMods) PathFunc(f func() string) StorageSourceMod {
 	return StorageSourceModFunc(func(_ context.Context, o *StorageSourceTemplate) {
-		o.Subpath = f
+		o.Path = f
 	})
 }
 
 // Clear any values for the column
-func (m storageSourceMods) UnsetSubpath() StorageSourceMod {
+func (m storageSourceMods) UnsetPath() StorageSourceMod {
 	return StorageSourceModFunc(func(_ context.Context, o *StorageSourceTemplate) {
-		o.Subpath = nil
+		o.Path = nil
 	})
 }
 
 // Generates a random value for the column using the given faker
 // if faker is nil, a default faker is used
-func (m storageSourceMods) RandomSubpath(f *faker.Faker) StorageSourceMod {
+func (m storageSourceMods) RandomPath(f *faker.Faker) StorageSourceMod {
 	return StorageSourceModFunc(func(_ context.Context, o *StorageSourceTemplate) {
-		o.Subpath = func() string {
+		o.Path = func() string {
 			return random_string(f)
 		}
 	})

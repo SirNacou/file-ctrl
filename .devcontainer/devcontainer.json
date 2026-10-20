@@ -19,7 +19,8 @@
         "elagil.pre-commit-helper",
         "renesaarsoo.sql-formatter-vsc",
         "ms-azuretools.vscode-docker",
-        "mhutchie.git-graph"
+        "mhutchie.git-graph",
+        "burkeholland.simple-react-snippets"
       ],
       "settings": {
         "debug.javascript.autoAttachFilter": "disabled",

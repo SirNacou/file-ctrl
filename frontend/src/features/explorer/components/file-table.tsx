@@ -7,25 +7,35 @@ import {
   TableHeader,
   TableRow,
 } from '#/components/ui/table.tsx'
-import { useTable } from '@tanstack/react-table'
+import { createAtom } from '@tanstack/react-store'
+import { useTable, type RowSelectionState } from '@tanstack/react-table'
 import { columns } from './columns'
 import { features } from './features'
+import { FileTableContextMenu } from './file-table-context-menu'
 
 type FileTableProps = {
+  storagePath: string
+  subpath?: string
   data: DirectoryEntry[]
   itemSelected?: (item: DirectoryEntry) => void
 }
 
-export const FileTable = ({ data, itemSelected }: FileTableProps) => {
+export const rowSelectionAtom = createAtom<RowSelectionState>({})
+
+export const FileTable = ({ storagePath, subpath, data, itemSelected }: FileTableProps) => {
   const table = useTable({
     key: 'file-table',
     features,
     columns,
     data,
+    getRowId: (row) => row.path,
     meta: {
       itemSelected: (item) => {
         itemSelected?.(item)
       },
+    },
+    atoms: {
+      rowSelection: rowSelectionAtom,
     },
   })
 
@@ -60,21 +70,28 @@ export const FileTable = ({ data, itemSelected }: FileTableProps) => {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                {row.getAllCells().map((cell) => {
-                  const hasExplicitSize = cell.column.columnDef.size !== undefined
-                  return (
-                    <TableCell
-                      key={cell.id}
-                      style={{
-                        width: hasExplicitSize ? cell.column.getSize() : 'auto',
-                      }}
-                    >
-                      <table.FlexRender cell={cell} />
-                    </TableCell>
-                  )
-                })}
-              </TableRow>
+              <FileTableContextMenu
+                key={row.id}
+                entry={row.original}
+                storagePath={storagePath}
+                subpath={subpath}
+              >
+                <TableRow data-state={row.getIsSelected() && 'selected'}>
+                  {row.getAllCells().map((cell) => {
+                    const hasExplicitSize = cell.column.columnDef.size !== undefined
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        style={{
+                          width: hasExplicitSize ? cell.column.getSize() : 'auto',
+                        }}
+                      >
+                        <table.FlexRender cell={cell} />
+                      </TableCell>
+                    )
+                  })}
+                </TableRow>
+              </FileTableContextMenu>
             ))
           ) : (
             <TableRow>

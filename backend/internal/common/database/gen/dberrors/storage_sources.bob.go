@@ -7,7 +7,7 @@ var StorageSourceErrors = &storageSourceErrors{
 	ErrUniquePkMainStorageSources: &UniqueConstraintError{
 		schema:  "",
 		table:   "storage_sources",
-		columns: []string{"subpath"},
+		columns: []string{"path"},
 		s:       "pk_main_storage_sources",
 	},
 }

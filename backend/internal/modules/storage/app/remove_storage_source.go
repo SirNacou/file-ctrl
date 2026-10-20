@@ -12,7 +12,7 @@ type RemoveStorageSourceHandler struct {
 	db bob.Executor
 }
 type RemoveStorageSourceRequest struct {
-	Subpath string
+	Path string
 }
 type RemoveStorageSourceResponse struct{}
 
@@ -24,7 +24,7 @@ func (h *RemoveStorageSourceHandler) Handle(
 	ctx context.Context,
 	req *RemoveStorageSourceRequest,
 ) (*RemoveStorageSourceResponse, error) {
-	_, err := models.StorageSources.Delete(models.DeleteWhere.StorageSources.Subpath.EQ(req.Subpath)).
+	_, err := models.StorageSources.Delete(models.DeleteWhere.StorageSources.Path.EQ(req.Path)).
 		Exec(ctx, h.db)
 	if err != nil {
 		return nil, errors.New("failed to remove source")

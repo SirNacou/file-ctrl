@@ -20,8 +20,9 @@ type (
 
 func ListUnregisteredSources(api huma.API, handler *app.ListUnregisteredSourcesHandler) {
 	huma.Register(api, huma.Operation{
+		OperationID:   "list-unregistered-sources",
 		Method:        http.MethodGet,
-		Path:          "/list-unregistered-sources",
+		Path:          "/unregistered-sources",
 		DefaultStatus: http.StatusOK,
 	}, func(ctx context.Context, i *ListUnregisteredSourcesRequest) (*ListUnregisteredSourcesResponse, error) {
 		res, err := handler.Handle(ctx, &app.ListUnregisteredSourcesRequest{})

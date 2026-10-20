@@ -1,6 +1,6 @@
 -- +goose Up
 CREATE TABLE IF NOT EXISTS storage_sources (
-  subpath TEXT PRIMARY KEY,
+  path TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

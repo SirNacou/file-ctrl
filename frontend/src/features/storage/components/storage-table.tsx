@@ -1,6 +1,6 @@
 import {
-  getApiStorageListUnregisteredSourcesQueryKey,
-  getApiStorageQueryKey,
+  listStorageSourcesQueryKey,
+  listUnregisteredSourcesQueryKey,
   removeStorageMutation,
 } from '#/client/gen/@tanstack/react-query.gen.ts'
 import { type Source } from '#/client/gen/index.ts'
@@ -35,10 +35,10 @@ export const StorageTable = ({ data }: StorageTableProps) => {
       toast.add({ title: 'Success' })
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: getApiStorageQueryKey(),
+          queryKey: listStorageSourcesQueryKey(),
         }),
         queryClient.invalidateQueries({
-          queryKey: getApiStorageListUnregisteredSourcesQueryKey(),
+          queryKey: listUnregisteredSourcesQueryKey(),
         }),
       ])
     },
@@ -55,8 +55,8 @@ export const StorageTable = ({ data }: StorageTableProps) => {
       },
     },
     meta: {
-      handleRemove: async (subpath) => {
-        await removeStorage.mutateAsync({ path: { subpath } })
+      handleRemove: async (path) => {
+        await removeStorage.mutateAsync({ path: { path } })
       },
     },
   })

@@ -20,6 +20,7 @@ type (
 
 func ListStorageSources(api huma.API, handler *app.ListStorageSourcesHandler) {
 	huma.Register(api, huma.Operation{
+		OperationID: "list-storage-sources",
 		Method:        http.MethodGet,
 		Path:          "",
 		DefaultStatus: http.StatusOK,
