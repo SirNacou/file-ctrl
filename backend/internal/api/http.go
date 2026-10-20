@@ -22,6 +22,7 @@ type HttpRouter struct {
 func NewHttpRouter() *HttpRouter {
 	router := echo.New()
 
+	huma.DefaultArrayNullable = false
 	humaConfig := huma.DefaultConfig("File Ctrl API", "v1")
 	humaConfig.DocsRenderer = huma.DocsRendererScalar
 	humaConfig.CreateHooks = nil

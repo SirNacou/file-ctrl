@@ -14,7 +14,7 @@ export type CreateFolderRequestBodyZodInput = z.input<typeof zCreateFolderReques
 export type CreateFolderRequestBodyZodOutput = z.output<typeof zCreateFolderRequestBody>;
 
 export const zDeleteFilesRequestBody = z.object({
-  file_paths: z.array(z.string().min(1)).nullable(),
+  file_paths: z.array(z.string().min(1)),
 });
 
 export type DeleteFilesRequestBodyZodType = z.infer<typeof zDeleteFilesRequestBody>;
@@ -58,7 +58,7 @@ export type ErrorDetailZodOutput = z.output<typeof zErrorDetail>;
 
 export const zErrorModel = z.object({
   detail: z.string().optional(),
-  errors: z.array(zErrorDetail).nullish(),
+  errors: z.array(zErrorDetail).optional(),
   instance: z.url().optional(),
   status: z.coerce
     .bigint()
@@ -81,7 +81,7 @@ export type ErrorModelZodOutput = z.output<typeof zErrorModel>;
 
 export const zListDirectoryResponse = z.object({
   current_path: z.string(),
-  items: z.array(zDirectoryEntry).nullable(),
+  items: z.array(zDirectoryEntry),
   storage_name: z.string(),
 });
 
@@ -92,7 +92,7 @@ export type ListDirectoryResponseZodInput = z.input<typeof zListDirectoryRespons
 export type ListDirectoryResponseZodOutput = z.output<typeof zListDirectoryResponse>;
 
 export const zListUnregisteredSourcesResponseBody = z.object({
-  dirs: z.array(z.string()).nullable(),
+  dirs: z.array(z.string()),
 });
 
 export type ListUnregisteredSourcesResponseBodyZodType = z.infer<
@@ -175,7 +175,7 @@ export type SourceZodInput = z.input<typeof zSource>;
 export type SourceZodOutput = z.output<typeof zSource>;
 
 export const zListStorageSourcesResponseBody = z.object({
-  sources: z.array(zSource).nullable(),
+  sources: z.array(zSource),
 });
 
 export type ListStorageSourcesResponseBodyZodType = z.infer<typeof zListStorageSourcesResponseBody>;

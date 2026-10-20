@@ -102,7 +102,7 @@ function RouteComponent() {
       <FileTable
         storagePath={path}
         subpath={subpath}
-        data={data.items ?? []}
+        data={data.items}
         itemSelected={handleItemSelected}
       />
     </>

@@ -12,8 +12,6 @@ import { ThemeProvider } from '#/components/theme-provider.tsx'
 import { Toaster } from '#/components/ui/toast.tsx'
 import { TooltipProvider } from '#/components/ui/tooltip.tsx'
 import type { QueryClient } from '@tanstack/react-query'
-import { ErrorComponent } from './-components/error-component'
-import { NotFound } from './-components/not-found'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -45,8 +43,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
   shellComponent: RootDocument,
-  notFoundComponent: NotFound,
-  errorComponent: ErrorComponent,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
