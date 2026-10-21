@@ -19,7 +19,7 @@ type StorageModule struct {
 	createFolderHandler            *app.CreateFolderHandler
 	renameFileHandler              *app.RenameFileHandler
 	deleteFilesHandler             *app.DeleteFilesHandler
-	downloadFileHandler            *app.DownloadFileHandler
+	openFileHandler                *app.OpenFileHandler
 }
 
 func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error) {
@@ -39,7 +39,7 @@ func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error
 		createFolderHandler:        app.NewCreateFolderHandler(storageRepo, fsStore),
 		renameFileHandler:          app.NewRenameFileHandler(storageRepo, fsStore),
 		deleteFilesHandler:         app.NewDeleteFilesHandler(storageRepo, fsStore),
-		downloadFileHandler:        app.NewDownloadFileHandler(storageRepo, fsStore),
+		openFileHandler:            app.NewOpenFileHandler(storageRepo, fsStore),
 	}, nil
 }
 
@@ -55,5 +55,5 @@ func (m *StorageModule) RegisterAPI(humaApi huma.API) {
 	api.CreateFolder(storageApi, m.createFolderHandler)
 	api.RenameFile(storageApi, m.renameFileHandler)
 	api.DeleteFiles(storageApi, m.deleteFilesHandler)
-	api.DownloadFile(storageApi, m.downloadFileHandler)
+	api.DownloadFile(storageApi, m.openFileHandler)
 }

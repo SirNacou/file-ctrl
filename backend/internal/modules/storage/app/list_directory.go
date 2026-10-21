@@ -76,7 +76,7 @@ func (h *ListDirectoryHandler) Handle(
 	}, nil
 }
 
-func readItems(entries []domain.FileEntry, entryPath domain.EntryPath) []DirectoryEntry {
+func readItems(entries []domain.FileMeta, entryPath domain.EntryPath) []DirectoryEntry {
 	items := make([]DirectoryEntry, 0, len(entries))
 	for _, e := range entries {
 		items = append(items, toFileItem(entryPath, e))
@@ -98,7 +98,7 @@ func readItems(entries []domain.FileEntry, entryPath domain.EntryPath) []Directo
 	return items
 }
 
-func toFileItem(parent domain.EntryPath, e domain.FileEntry) DirectoryEntry {
+func toFileItem(parent domain.EntryPath, e domain.FileMeta) DirectoryEntry {
 	return DirectoryEntry{
 		ModTime: e.ModTime,
 		Name:    e.Name,

@@ -8,34 +8,34 @@ import (
 )
 
 type (
-	DownloadFileRequest struct {
+	OpenFileRequest struct {
 		StoragePath string
 		FilePath    string
 	}
-	DownloadFileResponse struct {
-		File      io.ReadSeekCloser
-		FileEntry domain.FileEntry
+	OpenFileResponse struct {
+		File     io.ReadSeekCloser
+		FileMeta domain.FileMeta
 	}
-	DownloadFileHandler struct {
+	OpenFileHandler struct {
 		storageSourcesFinder StorageSourcesFinder
 		fileOpener           FileOpener
 	}
 )
 
-func NewDownloadFileHandler(
+func NewOpenFileHandler(
 	storageSourcesFinder StorageSourcesFinder,
 	fileOpener FileOpener,
-) *DownloadFileHandler {
-	return &DownloadFileHandler{
+) *OpenFileHandler {
+	return &OpenFileHandler{
 		storageSourcesFinder: storageSourcesFinder,
 		fileOpener:           fileOpener,
 	}
 }
 
-func (h *DownloadFileHandler) Handle(
+func (h *OpenFileHandler) Handle(
 	ctx context.Context,
-	req *DownloadFileRequest,
-) (*DownloadFileResponse, error) {
+	req *OpenFileRequest,
+) (*OpenFileResponse, error) {
 	source, err := h.storageSourcesFinder.Find(ctx, req.StoragePath)
 	if err != nil {
 		return nil, domain.ErrStorageSourceNotFound
@@ -51,8 +51,8 @@ func (h *DownloadFileHandler) Handle(
 		return nil, err
 	}
 
-	return &DownloadFileResponse{
-		File:      file,
-		FileEntry: info,
+	return &OpenFileResponse{
+		File:     file,
+		FileMeta: info,
 	}, nil
 }

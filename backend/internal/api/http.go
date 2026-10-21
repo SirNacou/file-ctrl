@@ -12,6 +12,7 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humaecho"
 	"github.com/labstack/echo/v5"
+	"github.com/labstack/echo/v5/middleware"
 )
 
 type HttpRouter struct {
@@ -21,6 +22,10 @@ type HttpRouter struct {
 
 func NewHttpRouter() *HttpRouter {
 	router := echo.New()
+
+	router.Use(middleware.SecureWithConfig(middleware.SecureConfig{
+		ContentTypeNosniff: "nosniff",
+	}))
 
 	huma.DefaultArrayNullable = false
 	humaConfig := huma.DefaultConfig("File Ctrl API", "v1")

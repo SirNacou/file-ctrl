@@ -23,7 +23,7 @@ type DirReader interface {
 		ctx context.Context,
 		sourcePath domain.SourcePath,
 		dir domain.EntryPath,
-	) ([]domain.FileEntry, error)
+	) ([]domain.FileMeta, error)
 }
 
 type DirExistsChecker interface {
@@ -51,5 +51,5 @@ type FileOpener interface {
 		ctx context.Context,
 		sourcePath domain.SourcePath,
 		target domain.EntryPath,
-	) (*os.File, domain.FileEntry, error)
+	) (*os.File, domain.FileMeta, error)
 }

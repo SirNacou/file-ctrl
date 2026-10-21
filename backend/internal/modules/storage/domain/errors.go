@@ -15,6 +15,7 @@ var (
 	ErrFileNotFound            = errors.New("file not found")
 	ErrNotFound                = errors.New("not found")
 	ErrNotAFile                = errors.New("target path is not a file")
+	ErrEmptySelection          = errors.New("no paths selected")
 )
 
 type ErrFailToReadDir struct {
