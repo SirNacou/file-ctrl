@@ -14,7 +14,7 @@ var (
 	ErrAlreadyExists           = errors.New("already exists")
 	ErrFileNotFound            = errors.New("file not found")
 	ErrNotFound                = errors.New("not found")
-	ErrIsDirectory             = errors.New("target path is a directory")
+	ErrNotAFile                = errors.New("target path is not a file")
 )
 
 type ErrFailToReadDir struct {

@@ -51,5 +51,5 @@ type FileOpener interface {
 		ctx context.Context,
 		sourcePath domain.SourcePath,
 		target domain.EntryPath,
-	) (*os.File, os.FileInfo, error)
+	) (*os.File, domain.FileEntry, error)
 }

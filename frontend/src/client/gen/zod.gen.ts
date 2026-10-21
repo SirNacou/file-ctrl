@@ -323,6 +323,26 @@ export type ListDirectoryResponseZodInput2 = z.input<typeof zListDirectoryRespon
 
 export type ListDirectoryResponseZodOutput2 = z.output<typeof zListDirectoryResponse2>;
 
+export const zStorageFileDownloadPath = z.object({
+  storage_path: z.string(),
+});
+
+export type StorageFileDownloadPathZodType = z.infer<typeof zStorageFileDownloadPath>;
+
+export type StorageFileDownloadPathZodInput = z.input<typeof zStorageFileDownloadPath>;
+
+export type StorageFileDownloadPathZodOutput = z.output<typeof zStorageFileDownloadPath>;
+
+export const zStorageFileDownloadQuery = z.object({
+  file_path: z.string(),
+});
+
+export type StorageFileDownloadQueryZodType = z.infer<typeof zStorageFileDownloadQuery>;
+
+export type StorageFileDownloadQueryZodInput = z.input<typeof zStorageFileDownloadQuery>;
+
+export type StorageFileDownloadQueryZodOutput = z.output<typeof zStorageFileDownloadQuery>;
+
 export const zRenameFileBody = zRenameFileRequestBody;
 
 export type RenameFileBodyZodType = z.infer<typeof zRenameFileBody>;

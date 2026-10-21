@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"io"
-	"os"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
 )
@@ -14,9 +13,8 @@ type (
 		FilePath    string
 	}
 	DownloadFileResponse struct {
-		File     io.ReadCloser
-		FileInfo os.FileInfo
-		Filename string
+		File      io.ReadSeekCloser
+		FileEntry domain.FileEntry
 	}
 	DownloadFileHandler struct {
 		storageSourcesFinder StorageSourcesFinder
@@ -54,8 +52,7 @@ func (h *DownloadFileHandler) Handle(
 	}
 
 	return &DownloadFileResponse{
-		File:     file,
-		FileInfo: info,
-		Filename: file.Name(),
+		File:      file,
+		FileEntry: info,
 	}, nil
 }

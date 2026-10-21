@@ -8,12 +8,14 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
 )
 
 type Store struct {
 	baseDir string
+	mu sync.Mutex
 }
 
 func NewStore(baseDir string) *Store { return &Store{baseDir: baseDir} }
@@ -94,6 +96,8 @@ func (s *Store) Mkdir(
 	sourcePath domain.SourcePath,
 	target domain.EntryPath,
 ) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	root, err := s.openRoot(sourcePath.String())
 	if err != nil {
 		return domain.ErrStorageSourceNotFound
@@ -115,6 +119,8 @@ func (s *Store) Delete(
 	sourcePath domain.SourcePath,
 	target domain.EntryPath,
 ) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	root, err := s.openRoot(sourcePath.String())
 	if err != nil {
 		return domain.ErrStorageSourceNotFound
@@ -132,6 +138,9 @@ func (s *Store) Rename(
 	sourcePath domain.SourcePath,
 	from, to domain.EntryPath,
 ) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	root, err := s.openRoot(sourcePath.String())
 	if err != nil {
 		return domain.ErrStorageSourceNotFound
@@ -157,33 +166,38 @@ func (s *Store) OpenFile(
 	ctx context.Context,
 	sourcePath domain.SourcePath,
 	target domain.EntryPath,
-) (*os.File, os.FileInfo, error) {
+) (*os.File, domain.FileEntry, error) {
 	root, err := s.openRoot(sourcePath.String())
 	if err != nil {
-		return nil, nil, domain.ErrStorageSourceNotFound
+		return nil, domain.FileEntry{}, domain.ErrStorageSourceNotFound
 	}
 	defer closeLog(ctx, root, sourcePath.String())
 
 	file, err := root.Open(target.FS())
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
-			return nil, nil, domain.ErrFileNotFound
+			return nil, domain.FileEntry{}, domain.ErrFileNotFound
 		}
-		return nil, nil, domain.ErrInvalidPath
+		return nil, domain.FileEntry{}, domain.ErrInvalidPath
 	}
 
 	info, err := file.Stat()
 	if err != nil {
 		closeLog(ctx, file, target.FS())
-		return nil, nil, domain.ErrInvalidPath
+		return nil, domain.FileEntry{}, domain.ErrInvalidPath
 	}
 
 	if info.IsDir() {
 		closeLog(ctx, file, target.FS())
-		return nil, nil, domain.ErrIsDirectory // Neutral domain error
+		return nil, domain.FileEntry{}, domain.ErrNotAFile // Neutral domain error
 	}
 
-	return file, info, nil
+	return file, domain.FileEntry{
+		Name:    info.Name(),
+		ModTime: info.ModTime(),
+		Size:    info.Size(),
+		IsDir:   info.IsDir(),
+	}, nil
 }
 
 func mapFSError(err error) error {
@@ -209,7 +223,7 @@ func (s *Store) openRoot(relPath string) (*os.Root, error) {
 
 func closeLog(ctx context.Context, c io.Closer, target string) {
 	if err := c.Close(); err != nil {
-		slog.WarnContext(ctx, "failed to close os.Root",
+		slog.WarnContext(ctx, "failed to close file",
 			slog.String("target", target),
 			slog.Any("err", err),
 		)

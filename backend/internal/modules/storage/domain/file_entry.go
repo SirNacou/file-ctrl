@@ -4,7 +4,7 @@ import "time"
 
 type FileEntry struct {
 	Name    string
-	Size    int64
 	ModTime time.Time
+	Size    int64
 	IsDir   bool
 }

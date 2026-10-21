@@ -2,12 +2,9 @@ package api
 
 import (
 	"context"
-	"io"
-	"log/slog"
 	"mime"
 	"net/http"
 	"path/filepath"
-	"strconv"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humaecho"
@@ -41,37 +38,29 @@ func DownloadFile(api huma.API, handler *app.DownloadFileHandler) {
 				defer res.File.Close()
 
 				e := humaecho.Unwrap(ctx)
-				header := e.Response().Header()
+				h := e.Response().Header()
 
-				header.Set(echo.HeaderXContentTypeOptions, "nosniff")
-				header.Set(
+				h.Set(echo.HeaderXContentTypeOptions, "nosniff")
+				h.Set(
 					echo.HeaderContentDisposition,
 					mime.FormatMediaType("attachment", map[string]string{
-						"filename": res.Filename,
+						"filename": res.FileEntry.Name,
 					}),
 				)
-				header.Set(
-					echo.HeaderContentLength,
-					strconv.FormatInt(res.FileInfo.Size(), 10),
-				)
 
-				contentType := mime.TypeByExtension(
-					filepath.Ext(res.Filename),
-				)
+				contentType := mime.TypeByExtension(filepath.Ext(res.FileEntry.Name))
 				if contentType == "" {
 					contentType = echo.MIMEOctetStream
 				}
+				h.Set(echo.HeaderContentType, contentType)
 
-				header.Set(echo.HeaderContentType, contentType)
-
-				_, err = io.Copy(e.Response(), res.File)
-				if err != nil {
-					slog.ErrorContext(
-						ctx.Context(),
-						"failed to download file",
-						slog.Any("error", err),
-					)
-				}
+				http.ServeContent(
+					e.Response(),
+					e.Request(),
+					res.FileEntry.Name,
+					res.FileEntry.ModTime,
+					res.File,
+				)
 			},
 		}, nil
 	})

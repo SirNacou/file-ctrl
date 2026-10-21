@@ -18,8 +18,8 @@ import { useMemo } from 'react'
 import TrashIcon from '~icons/lucide/trash'
 
 export const Route = createFileRoute('/_protected/storage/$path/$/')({
-  loader: ({ params: { path }, context: { queryClient } }) =>
-    queryClient.query({
+  loader: async ({ params: { path }, context: { queryClient } }) =>
+    await queryClient.query({
       ...listDirectoryOptions({ path: { storage_path: path } }),
       staleTime: 'static',
     }),

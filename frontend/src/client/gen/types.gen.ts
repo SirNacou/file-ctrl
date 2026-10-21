@@ -286,6 +286,39 @@ export type ListDirectoryResponses = {
 
 export type ListDirectoryResponse2 = ListDirectoryResponses[keyof ListDirectoryResponses];
 
+export type StorageFileDownloadData = {
+  body?: never;
+  path: {
+    /**
+     * Storage source identifier
+     */
+    storage_path: string;
+  };
+  query: {
+    /**
+     * Relative file path to download
+     */
+    file_path: string;
+  };
+  url: "/api/storage/{storage_path}/files/download";
+};
+
+export type StorageFileDownloadErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type StorageFileDownloadError = StorageFileDownloadErrors[keyof StorageFileDownloadErrors];
+
+export type StorageFileDownloadResponses = {
+  /**
+   * OK
+   */
+  200: unknown;
+};
+
 export type RenameFileData = {
   body: RenameFileRequestBody;
   path: {

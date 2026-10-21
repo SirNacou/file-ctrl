@@ -13,6 +13,7 @@ import {
   removeStorage,
   renameFile,
   storageDeleteFiles,
+  storageFileDownload,
   storageRename,
 } from "../sdk.gen";
 import type {
@@ -37,6 +38,8 @@ import type {
   RenameFileError,
   StorageDeleteFilesData,
   StorageDeleteFilesError,
+  StorageFileDownloadData,
+  StorageFileDownloadError,
   StorageRenameData,
   StorageRenameError,
 } from "../types.gen";
@@ -228,6 +231,28 @@ export const listDirectoryOptions = (options: Options<ListDirectoryData>) =>
       return data;
     },
     queryKey: listDirectoryQueryKey(options),
+  });
+
+export const storageFileDownloadQueryKey = (options: Options<StorageFileDownloadData>) =>
+  createQueryKey("storageFileDownload", options);
+
+export const storageFileDownloadOptions = (options: Options<StorageFileDownloadData>) =>
+  queryOptions<
+    unknown,
+    StorageFileDownloadError,
+    unknown,
+    ReturnType<typeof storageFileDownloadQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await storageFileDownload({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: storageFileDownloadQueryKey(options),
   });
 
 export const renameFileMutation = (

@@ -10,6 +10,7 @@ export {
   removeStorage,
   renameFile,
   storageDeleteFiles,
+  storageFileDownload,
   storageRename,
 } from "./sdk.gen";
 export type {
@@ -64,6 +65,10 @@ export type {
   StorageDeleteFilesError,
   StorageDeleteFilesErrors,
   StorageDeleteFilesResponses,
+  StorageFileDownloadData,
+  StorageFileDownloadError,
+  StorageFileDownloadErrors,
+  StorageFileDownloadResponses,
   StorageRenameData,
   StorageRenameError,
   StorageRenameErrors,
