@@ -16,13 +16,13 @@ type (
 
 	DeleteFilesHandler struct {
 		finder        StorageSourcesFinder
-		fsFileDeleter FSFileDeleter
+		fsFileDeleter FileDeleter
 	}
 )
 
 func NewDeleteFilesHandler(
 	finder StorageSourcesFinder,
-	fsFileDeleter FSFileDeleter,
+	fsFileDeleter FileDeleter,
 ) *DeleteFilesHandler {
 	return &DeleteFilesHandler{
 		finder:        finder,

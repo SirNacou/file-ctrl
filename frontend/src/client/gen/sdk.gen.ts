@@ -33,6 +33,9 @@ import type {
   StorageDeleteFilesData,
   StorageDeleteFilesErrors,
   StorageDeleteFilesResponses,
+  StorageFileDownloadData,
+  StorageFileDownloadErrors,
+  StorageFileDownloadResponses,
   StorageRenameData,
   StorageRenameErrors,
   StorageRenameResponses,
@@ -53,6 +56,8 @@ import {
   zRenameFilePath,
   zStorageDeleteFilesBody,
   zStorageDeleteFilesPath,
+  zStorageFileDownloadPath,
+  zStorageFileDownloadQuery,
   zStorageRenameBody,
   zStorageRenamePath,
 } from "./zod.gen";
@@ -215,6 +220,26 @@ export const listDirectory = <ThrowOnError extends boolean = false>(
     responseTransformer: listDirectoryResponseTransformer,
     responseValidator: async (data) => await zListDirectoryResponse2.parseAsync(data),
     url: "/api/storage/{storage_path}/files",
+    ...options,
+  });
+
+export const storageFileDownload = <ThrowOnError extends boolean = false>(
+  options: Options<StorageFileDownloadData, ThrowOnError>,
+): RequestResult<StorageFileDownloadResponses, StorageFileDownloadErrors, ThrowOnError> =>
+  (options.client ?? client).get<
+    StorageFileDownloadResponses,
+    StorageFileDownloadErrors,
+    ThrowOnError
+  >({
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: z.never().optional(),
+          path: zStorageFileDownloadPath,
+          query: zStorageFileDownloadQuery,
+        })
+        .parseAsync(data),
+    url: "/api/storage/{storage_path}/files/download",
     ...options,
   });
 

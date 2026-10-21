@@ -13,8 +13,10 @@ import {
 import { notify } from '#/lib/notify.ts'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState, type ReactElement } from 'react'
+import DownloadIcon from '~icons/lucide/download'
 import TextCursorInputIcon from '~icons/lucide/text-cursor-input'
 import TrashIcon from '~icons/lucide/trash'
+import { DownloadLink } from './download-link'
 import { RenameFileDialog } from './rename-file-dialog'
 
 type Props = {
@@ -57,6 +59,14 @@ export const FileTableContextMenu = ({ children, entry, storagePath, subpath = '
       <ContextMenu>
         <ContextMenuTrigger render={children} />
         <ContextMenuContent>
+          <ContextMenuItem
+            render={
+              <DownloadLink storagePath={storagePath} filePath={entry.path}>
+                <DownloadIcon />
+                Download
+              </DownloadLink>
+            }
+          />
           <ContextMenuItem variant="default" onClick={() => setDialog('rename')}>
             <TextCursorInputIcon />
             Rename

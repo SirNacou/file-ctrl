@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"os"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
 )
@@ -17,7 +18,7 @@ type StorageSourcesUpdater interface {
 	Update(ctx context.Context, model *domain.StorageSource) error
 }
 
-type FSDirReader interface {
+type DirReader interface {
 	ReadDir(
 		ctx context.Context,
 		sourcePath domain.SourcePath,
@@ -25,22 +26,30 @@ type FSDirReader interface {
 	) ([]domain.FileEntry, error)
 }
 
-type FSDirExistsChecker interface {
+type DirExistsChecker interface {
 	DirExists(ctx context.Context, relPath string) (bool, error)
 }
 
-type FSDirCreator interface {
+type DirCreator interface {
 	Mkdir(ctx context.Context, sourcePath domain.SourcePath, target domain.EntryPath) error
 }
 
-type FSFileRenamer interface {
+type FileRenamer interface {
 	Rename(ctx context.Context, sourcePath domain.SourcePath, from, to domain.EntryPath) error
 }
 
-type FSDirLister interface {
+type DirLister interface {
 	ListDirs() ([]string, error)
 }
 
-type FSFileDeleter interface {
+type FileDeleter interface {
 	Delete(ctx context.Context, sourcePath domain.SourcePath, target domain.EntryPath) error
+}
+
+type FileOpener interface {
+	OpenFile(
+		ctx context.Context,
+		sourcePath domain.SourcePath,
+		target domain.EntryPath,
+	) (*os.File, domain.FileEntry, error)
 }

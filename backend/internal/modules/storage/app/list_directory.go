@@ -32,10 +32,10 @@ type DirectoryEntry struct {
 
 type ListDirectoryHandler struct {
 	db          bob.Executor
-	fsDirReader FSDirReader
+	fsDirReader DirReader
 }
 
-func NewListDirectoryHandler(db bob.Executor, fsDirReader FSDirReader) *ListDirectoryHandler {
+func NewListDirectoryHandler(db bob.Executor, fsDirReader DirReader) *ListDirectoryHandler {
 	return &ListDirectoryHandler{
 		db:          db,
 		fsDirReader: fsDirReader,

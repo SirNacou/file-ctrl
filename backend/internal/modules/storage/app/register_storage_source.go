@@ -8,7 +8,7 @@ import (
 
 type RegisterStorageSourceHandler struct {
 	inserter           StorageSourcesInserter
-	fsDirExistsChecker FSDirExistsChecker
+	fsDirExistsChecker DirExistsChecker
 }
 
 type RegisterStorageSourceRequest struct {
@@ -22,7 +22,7 @@ type RegisterStorageSourceResponse struct {
 
 func NewRegisterStorageSourceHandler(
 	inserter StorageSourcesInserter,
-	fsDirExistsChecker FSDirExistsChecker,
+	fsDirExistsChecker DirExistsChecker,
 ) *RegisterStorageSourceHandler {
 	return &RegisterStorageSourceHandler{
 		inserter:           inserter,

@@ -8,9 +8,7 @@ const sourceSchemaResponseTransformer = (data: any) => {
 };
 
 const listStorageSourcesResponseBodySchemaResponseTransformer = (data: any) => {
-  if (data.sources) {
-    data.sources = data.sources.map((item: any) => sourceSchemaResponseTransformer(item));
-  }
+  data.sources = data.sources.map((item: any) => sourceSchemaResponseTransformer(item));
   return data;
 };
 
@@ -28,9 +26,7 @@ const directoryEntrySchemaResponseTransformer = (data: any) => {
 };
 
 const listDirectoryResponseSchemaResponseTransformer = (data: any) => {
-  if (data.items) {
-    data.items = data.items.map((item: any) => directoryEntrySchemaResponseTransformer(item));
-  }
+  data.items = data.items.map((item: any) => directoryEntrySchemaResponseTransformer(item));
   return data;
 };
 

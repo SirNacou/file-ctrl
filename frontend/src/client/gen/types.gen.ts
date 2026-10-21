@@ -10,7 +10,7 @@ export type CreateFolderRequestBody = {
 };
 
 export type DeleteFilesRequestBody = {
-  file_paths: Array<string> | null;
+  file_paths: Array<string>;
 };
 
 export type DirectoryEntry = {
@@ -44,7 +44,7 @@ export type ErrorModel = {
   /**
    * Optional list of individual error details
    */
-  errors?: Array<ErrorDetail> | null;
+  errors?: Array<ErrorDetail>;
   /**
    * A URI reference that identifies the specific occurrence of the problem.
    */
@@ -65,16 +65,16 @@ export type ErrorModel = {
 
 export type ListDirectoryResponse = {
   current_path: string;
-  items: Array<DirectoryEntry> | null;
+  items: Array<DirectoryEntry>;
   storage_name: string;
 };
 
 export type ListStorageSourcesResponseBody = {
-  sources: Array<Source> | null;
+  sources: Array<Source>;
 };
 
 export type ListUnregisteredSourcesResponseBody = {
-  dirs: Array<string> | null;
+  dirs: Array<string>;
 };
 
 export type RegisterStorageSourceRequestBody = {
@@ -285,6 +285,39 @@ export type ListDirectoryResponses = {
 };
 
 export type ListDirectoryResponse2 = ListDirectoryResponses[keyof ListDirectoryResponses];
+
+export type StorageFileDownloadData = {
+  body?: never;
+  path: {
+    /**
+     * Storage source identifier
+     */
+    storage_path: string;
+  };
+  query: {
+    /**
+     * Relative file path to download
+     */
+    file_path: string;
+  };
+  url: "/api/storage/{storage_path}/files/download";
+};
+
+export type StorageFileDownloadErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type StorageFileDownloadError = StorageFileDownloadErrors[keyof StorageFileDownloadErrors];
+
+export type StorageFileDownloadResponses = {
+  /**
+   * OK
+   */
+  200: unknown;
+};
 
 export type RenameFileData = {
   body: RenameFileRequestBody;

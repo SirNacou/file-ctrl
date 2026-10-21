@@ -22,12 +22,12 @@ type (
 
 type ListUnregisteredSourcesHandler struct {
 	db               bob.Executor
-	storageDirLister FSDirLister
+	storageDirLister DirLister
 }
 
 func NewListUnregisteredSourcesHandler(
 	db bob.Executor,
-	storageDirLister FSDirLister,
+	storageDirLister DirLister,
 ) *ListUnregisteredSourcesHandler {
 	return &ListUnregisteredSourcesHandler{
 		db:               db,

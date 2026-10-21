@@ -3,6 +3,7 @@ package adapters
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/aarondl/opt/omit"
 	"github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
@@ -29,7 +30,13 @@ func (r *StorageSourcesRepository) Find(
 ) (*domain.StorageSource, error) {
 	m, err := models.FindStorageSource(ctx, r.db, path)
 	if err != nil {
-		return nil, fmt.Errorf("failed to find storage source %s: %v", path, err)
+		slog.ErrorContext(
+			ctx,
+			"failed to find storage source",
+			slog.String("path", path),
+			slog.Any("error", err),
+		)
+		return nil, domain.ErrStorageSourceNotFound
 	}
 
 	return toStorageSourceDomain(m)
