@@ -319,6 +319,34 @@ export type StorageFileDownloadResponses = {
   200: unknown;
 };
 
+export type StorageDownloadArchiveData = {
+  body?: never;
+  path: {
+    storage_path: string;
+  };
+  query: {
+    file_paths: Array<string>;
+  };
+  url: "/api/storage/{storage_path}/files/download-archive";
+};
+
+export type StorageDownloadArchiveErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type StorageDownloadArchiveError =
+  StorageDownloadArchiveErrors[keyof StorageDownloadArchiveErrors];
+
+export type StorageDownloadArchiveResponses = {
+  /**
+   * OK
+   */
+  200: unknown;
+};
+
 export type RenameFileData = {
   body: RenameFileRequestBody;
   path: {

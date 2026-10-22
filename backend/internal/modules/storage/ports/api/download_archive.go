@@ -15,15 +15,15 @@ import (
 type DownloadArchiveRequest struct {
 	StoragePath string `path:"storage_path"`
 
-	FilePaths []string `query:"file_paths" minLength:"1"`
+	FilePaths []string `query:"file_paths" required:"true" minLength:"1"`
 }
 type DownloadArchiveResponse struct{}
 
 func DownloadArchive(api huma.API, handler *app.PrepareArchiveHandler) {
 	huma.Register(api, huma.Operation{
-		OperationID: "storage-archive",
+		OperationID: "storage-download-archive",
 		Method:      http.MethodGet,
-		Path:        "/{storage_path}/files/archive",
+		Path:        "/{storage_path}/files/download-archive",
 		Summary:     "Download files and folders as a zip",
 	}, func(ctx context.Context, i *DownloadArchiveRequest) (*huma.StreamResponse, error) {
 		res, err := handler.Handle(ctx, &app.PrepareArchiveRequest{

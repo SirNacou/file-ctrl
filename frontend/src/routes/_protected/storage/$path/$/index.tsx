@@ -8,6 +8,10 @@ import { ConfirmDeleteDialog } from '#/components/confirm-detele-dialog.tsx'
 import { PageHeader } from '#/components/page-header.tsx'
 import { Button } from '#/components/ui/button.tsx'
 import { CreateFolderDialog } from '#/features/explorer/components/create-folder-dialog.tsx'
+import {
+  ArchiveDownloadLink,
+  FileDownloadLink,
+} from '#/features/explorer/components/download-link.tsx'
 import { FileBreadcrumbs } from '#/features/explorer/components/file-breadcrumb.tsx'
 import { FileTable, rowSelectionAtom } from '#/features/explorer/components/file-table.tsx'
 import { notify } from '#/lib/notify.ts'
@@ -16,6 +20,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useSelector } from '@tanstack/react-store'
 import { useMemo } from 'react'
 import TrashIcon from '~icons/lucide/trash'
+import DownloadIcon from '~icons/lucide/download'
 
 export const Route = createFileRoute('/_protected/storage/$path/$/')({
   loader: async ({ params: { path }, context: { queryClient } }) =>
@@ -94,6 +99,20 @@ function RouteComponent() {
                 </Button>
               }
             />
+            <Button
+              disabled={emptySelection}
+              render={
+                rowIds.length > 1 ? (
+                  <ArchiveDownloadLink storagePath={path} filePaths={rowIds} />
+                ) : rowIds.length === 1 ? (
+                  <FileDownloadLink storagePath={path} filePath={rowIds[0]} />
+                ) : undefined
+              }
+            >
+              <DownloadIcon />
+              Download
+              {!emptySelection && ` (${rowIds.length})`}
+            </Button>
             <CreateFolderDialog storagePath={path} parentPath={subpath} />
           </>
         }

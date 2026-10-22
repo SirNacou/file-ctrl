@@ -13,6 +13,7 @@ import {
   removeStorage,
   renameFile,
   storageDeleteFiles,
+  storageDownloadArchive,
   storageFileDownload,
   storageRename,
 } from "../sdk.gen";
@@ -38,6 +39,8 @@ import type {
   RenameFileError,
   StorageDeleteFilesData,
   StorageDeleteFilesError,
+  StorageDownloadArchiveData,
+  StorageDownloadArchiveError,
   StorageFileDownloadData,
   StorageFileDownloadError,
   StorageRenameData,
@@ -253,6 +256,31 @@ export const storageFileDownloadOptions = (options: Options<StorageFileDownloadD
       return data;
     },
     queryKey: storageFileDownloadQueryKey(options),
+  });
+
+export const storageDownloadArchiveQueryKey = (options: Options<StorageDownloadArchiveData>) =>
+  createQueryKey("storageDownloadArchive", options);
+
+/**
+ * Download files and folders as a zip
+ */
+export const storageDownloadArchiveOptions = (options: Options<StorageDownloadArchiveData>) =>
+  queryOptions<
+    unknown,
+    StorageDownloadArchiveError,
+    unknown,
+    ReturnType<typeof storageDownloadArchiveQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await storageDownloadArchive({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: storageDownloadArchiveQueryKey(options),
   });
 
 export const renameFileMutation = (

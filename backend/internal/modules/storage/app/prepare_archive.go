@@ -14,7 +14,7 @@ type PrepareArchiveRequest struct {
 	FilePaths   []string
 }
 type PrepareArchiveResponse struct {
-	Archive     *domain.Archive
+	Archive *domain.Archive
 }
 
 type PrepareArchiveHandler struct {
@@ -26,7 +26,10 @@ type FSOpener interface {
 	OpenFS(sourcePath domain.SourcePath) (fs.FS, io.Closer, error)
 }
 
-func NewPrepareArchiveHandler(fsOpener FSOpener, finder StorageSourcesFinder) *PrepareArchiveHandler {
+func NewPrepareArchiveHandler(
+	fsOpener FSOpener,
+	finder StorageSourcesFinder,
+) *PrepareArchiveHandler {
 	return &PrepareArchiveHandler{
 		fsOpener: fsOpener,
 		finder:   finder,
@@ -37,11 +40,12 @@ func (h *PrepareArchiveHandler) Handle(
 	ctx context.Context,
 	req *PrepareArchiveRequest,
 ) (*PrepareArchiveResponse, error) {
+	slog.DebugContext(ctx, "archive", slog.Any("paths", req.FilePaths))
+
 	source, err := h.finder.Find(ctx, req.StoragePath)
 	if err != nil {
 		return nil, err
 	}
-
 
 	entryPaths := make([]domain.EntryPath, 0, len(req.FilePaths))
 	for _, path := range req.FilePaths {
@@ -67,6 +71,7 @@ func (h *PrepareArchiveHandler) Handle(
 	if err != nil {
 		return nil, err
 	}
+	slog.DebugContext(ctx, "archive name", slog.String("name", archiveName.String()))
 
 	a, err := domain.NewArchive(fsys, closer, archiveName, entryPaths)
 	if err != nil {
