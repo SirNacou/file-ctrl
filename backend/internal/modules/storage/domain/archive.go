@@ -146,17 +146,7 @@ func (a *Archive) addFile(zw *zip.Writer, e archiveEntry) error {
 	}
 	defer f.Close()
 
-	info, err := f.Stat()
-	if err != nil {
-		return err
-	}
-	h, err := zip.FileInfoHeader(info)
-	if err != nil {
-		return err
-	}
-	h.Name, h.Method = e.dst, zip.Deflate
-
-	w, err := zw.CreateHeader(h)
+	w, err := zw.Create(e.dst)
 	if err != nil {
 		return err
 	}
