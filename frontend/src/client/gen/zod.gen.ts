@@ -343,6 +343,26 @@ export type StorageFileDownloadQueryZodInput = z.input<typeof zStorageFileDownlo
 
 export type StorageFileDownloadQueryZodOutput = z.output<typeof zStorageFileDownloadQuery>;
 
+export const zStorageDownloadArchivePath = z.object({
+  storage_path: z.string(),
+});
+
+export type StorageDownloadArchivePathZodType = z.infer<typeof zStorageDownloadArchivePath>;
+
+export type StorageDownloadArchivePathZodInput = z.input<typeof zStorageDownloadArchivePath>;
+
+export type StorageDownloadArchivePathZodOutput = z.output<typeof zStorageDownloadArchivePath>;
+
+export const zStorageDownloadArchiveQuery = z.object({
+  file_paths: z.array(z.string().min(1)),
+});
+
+export type StorageDownloadArchiveQueryZodType = z.infer<typeof zStorageDownloadArchiveQuery>;
+
+export type StorageDownloadArchiveQueryZodInput = z.input<typeof zStorageDownloadArchiveQuery>;
+
+export type StorageDownloadArchiveQueryZodOutput = z.output<typeof zStorageDownloadArchiveQuery>;
+
 export const zRenameFileBody = zRenameFileRequestBody;
 
 export type RenameFileBodyZodType = z.infer<typeof zRenameFileBody>;

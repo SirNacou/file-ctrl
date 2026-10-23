@@ -33,6 +33,9 @@ import type {
   StorageDeleteFilesData,
   StorageDeleteFilesErrors,
   StorageDeleteFilesResponses,
+  StorageDownloadArchiveData,
+  StorageDownloadArchiveErrors,
+  StorageDownloadArchiveResponses,
   StorageFileDownloadData,
   StorageFileDownloadErrors,
   StorageFileDownloadResponses,
@@ -56,6 +59,8 @@ import {
   zRenameFilePath,
   zStorageDeleteFilesBody,
   zStorageDeleteFilesPath,
+  zStorageDownloadArchivePath,
+  zStorageDownloadArchiveQuery,
   zStorageFileDownloadPath,
   zStorageFileDownloadQuery,
   zStorageRenameBody,
@@ -240,6 +245,30 @@ export const storageFileDownload = <ThrowOnError extends boolean = false>(
         })
         .parseAsync(data),
     url: "/api/storage/{storage_path}/files/download",
+    ...options,
+  });
+
+/**
+ * Download files and folders as a zip
+ */
+export const storageDownloadArchive = <ThrowOnError extends boolean = false>(
+  options: Options<StorageDownloadArchiveData, ThrowOnError>,
+): RequestResult<StorageDownloadArchiveResponses, StorageDownloadArchiveErrors, ThrowOnError> =>
+  (options.client ?? client).get<
+    StorageDownloadArchiveResponses,
+    StorageDownloadArchiveErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { file_paths: { array: { explode: false } } } },
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: z.never().optional(),
+          path: zStorageDownloadArchivePath,
+          query: zStorageDownloadArchiveQuery,
+        })
+        .parseAsync(data),
+    url: "/api/storage/{storage_path}/files/download-archive",
     ...options,
   });
 

@@ -15,7 +15,7 @@ import (
 
 type Store struct {
 	baseDir string
-	mu sync.Mutex
+	mu      sync.Mutex
 }
 
 func NewStore(baseDir string) *Store { return &Store{baseDir: baseDir} }
@@ -57,7 +57,7 @@ func (s *Store) ReadDir(
 	ctx context.Context,
 	sourcePath domain.SourcePath,
 	dir domain.EntryPath,
-) ([]domain.FileEntry, error) {
+) ([]domain.FileMeta, error) {
 	root, err := s.openRoot(sourcePath.String())
 	if err != nil {
 		return nil, domain.ErrStorageSourceNotFound
@@ -75,13 +75,13 @@ func (s *Store) ReadDir(
 		return nil, domain.ErrInvalidPath
 	}
 
-	out := make([]domain.FileEntry, 0, len(entries))
+	out := make([]domain.FileMeta, 0, len(entries))
 	for _, e := range entries {
 		info, err := e.Info()
 		if err != nil {
 			continue // removed between ReadDir and Info
 		}
-		out = append(out, domain.FileEntry{
+		out = append(out, domain.FileMeta{
 			Name:    e.Name(),
 			Size:    info.Size(),
 			ModTime: info.ModTime(),
@@ -166,38 +166,46 @@ func (s *Store) OpenFile(
 	ctx context.Context,
 	sourcePath domain.SourcePath,
 	target domain.EntryPath,
-) (*os.File, domain.FileEntry, error) {
+) (*os.File, domain.FileMeta, error) {
 	root, err := s.openRoot(sourcePath.String())
 	if err != nil {
-		return nil, domain.FileEntry{}, domain.ErrStorageSourceNotFound
+		return nil, domain.FileMeta{}, domain.ErrStorageSourceNotFound
 	}
 	defer closeLog(ctx, root, sourcePath.String())
 
 	file, err := root.Open(target.FS())
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
-			return nil, domain.FileEntry{}, domain.ErrFileNotFound
+			return nil, domain.FileMeta{}, domain.ErrFileNotFound
 		}
-		return nil, domain.FileEntry{}, domain.ErrInvalidPath
+		return nil, domain.FileMeta{}, domain.ErrInvalidPath
 	}
 
 	info, err := file.Stat()
 	if err != nil {
 		closeLog(ctx, file, target.FS())
-		return nil, domain.FileEntry{}, domain.ErrInvalidPath
+		return nil, domain.FileMeta{}, domain.ErrInvalidPath
 	}
 
 	if info.IsDir() {
 		closeLog(ctx, file, target.FS())
-		return nil, domain.FileEntry{}, domain.ErrNotAFile // Neutral domain error
+		return nil, domain.FileMeta{}, domain.ErrNotAFile // Neutral domain error
 	}
 
-	return file, domain.FileEntry{
+	return file, domain.FileMeta{
 		Name:    info.Name(),
 		ModTime: info.ModTime(),
 		Size:    info.Size(),
 		IsDir:   info.IsDir(),
 	}, nil
+}
+
+func (s *Store) OpenFS(sourcePath domain.SourcePath) (fs.FS, io.Closer, error) {
+	root, err := s.openRoot(sourcePath.String())
+	if err != nil {
+		return nil, nil, domain.ErrStorageSourceNotFound
+	}
+	return root.FS(), root, nil // caller closes: root must outlive the zip stream
 }
 
 func mapFSError(err error) error {

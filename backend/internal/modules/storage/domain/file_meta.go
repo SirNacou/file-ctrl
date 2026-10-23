@@ -2,7 +2,7 @@ package domain
 
 import "time"
 
-type FileEntry struct {
+type FileMeta struct {
 	Name    string
 	ModTime time.Time
 	Size    int64

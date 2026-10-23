@@ -4,4 +4,5 @@ pre-commit:
     task-check-fix:
       glob:
         - "*.{js,ts,jsx,tsx,go}"
+      stage_fixed: true
       run: task check:fix

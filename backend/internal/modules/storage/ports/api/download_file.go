@@ -18,14 +18,14 @@ type DownloadFileRequest struct {
 	FilePath string `query:"file_path" required:"true" doc:"Relative file path to download"`
 }
 
-func DownloadFile(api huma.API, handler *app.DownloadFileHandler) {
+func DownloadFile(api huma.API, handler *app.OpenFileHandler) {
 	huma.Register(api, huma.Operation{
 		OperationID:   "storage-file-download",
 		Method:        http.MethodGet,
 		Path:          "/{storage_path}/files/download",
 		DefaultStatus: http.StatusOK,
 	}, func(ctx context.Context, i *DownloadFileRequest) (*huma.StreamResponse, error) {
-		res, err := handler.Handle(ctx, &app.DownloadFileRequest{
+		res, err := handler.Handle(ctx, &app.OpenFileRequest{
 			StoragePath: i.StoragePath,
 			FilePath:    i.FilePath,
 		})
@@ -40,15 +40,14 @@ func DownloadFile(api huma.API, handler *app.DownloadFileHandler) {
 				e := humaecho.Unwrap(ctx)
 				h := e.Response().Header()
 
-				h.Set(echo.HeaderXContentTypeOptions, "nosniff")
 				h.Set(
 					echo.HeaderContentDisposition,
 					mime.FormatMediaType("attachment", map[string]string{
-						"filename": res.FileEntry.Name,
+						"filename": res.FileMeta.Name,
 					}),
 				)
 
-				contentType := mime.TypeByExtension(filepath.Ext(res.FileEntry.Name))
+				contentType := mime.TypeByExtension(filepath.Ext(res.FileMeta.Name))
 				if contentType == "" {
 					contentType = echo.MIMEOctetStream
 				}
@@ -57,8 +56,8 @@ func DownloadFile(api huma.API, handler *app.DownloadFileHandler) {
 				http.ServeContent(
 					e.Response(),
 					e.Request(),
-					res.FileEntry.Name,
-					res.FileEntry.ModTime,
+					res.FileMeta.Name,
+					res.FileMeta.ModTime,
 					res.File,
 				)
 			},
