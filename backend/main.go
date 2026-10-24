@@ -25,6 +25,13 @@ func main() {
 	httpRouter := api.NewHttpRouter()
 	httpRouter.RegisterRoutes(storageModule.RegisterAPI)
 
+	uploadRoute, err := storageModule.UploadRoute()
+	if err != nil {
+		log.Fatalf("failed to initialize upload route: %v", err)
+	}
+
+	httpRouter.Mount(uploadRoute)
+
 	if err := httpRouter.Run(commonModule.Env.Port()); err != nil {
 		log.Fatalln(err)
 	}

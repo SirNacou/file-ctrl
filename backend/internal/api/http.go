@@ -7,6 +7,7 @@ import (
 	"log"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -16,7 +17,7 @@ import (
 )
 
 type HttpRouter struct {
-	router http.Handler
+	router *echo.Echo
 	api    huma.API
 }
 
@@ -45,6 +46,19 @@ func NewHttpRouter() *HttpRouter {
 
 func (r *HttpRouter) RegisterRoutes(register func(api huma.API)) {
 	register(r.api)
+}
+
+type Route interface {
+	Prefix() string
+	Handler() http.Handler
+}
+
+func (r *HttpRouter) Mount(route Route) {
+	cleanPrefix := strings.TrimSuffix(route.Prefix(), "/")
+	wrapped := echo.WrapHandler(route.Handler())
+
+	r.router.Any(cleanPrefix, wrapped)
+	r.router.Any(cleanPrefix+"/*", wrapped)
 }
 
 func (r *HttpRouter) Run(port int) error {

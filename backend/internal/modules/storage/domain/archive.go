@@ -135,7 +135,7 @@ func (a *Archive) WriteZip(ctx context.Context, w io.Writer) error {
 }
 
 func addDir(zw *zip.Writer, e archiveEntry) error {
-	_, err := zw.CreateHeader(&zip.FileHeader{Name: e.dst + "/", Method: zip.Store})
+	_, err := zw.Create( e.dst + "/")
 	return err
 }
 
