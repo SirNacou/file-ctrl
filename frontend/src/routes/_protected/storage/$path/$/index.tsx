@@ -62,6 +62,7 @@ function RouteComponent() {
   const deleteFiles = useMutation({
     ...storageDeleteFilesMutation(),
     onSuccess: async () => {
+      rowSelectionAtom.set(() => ({}))
       await queryClient.invalidateQueries({
         queryKey: storageListDirectoryQueryKey({
           path: { storage_path: path },
