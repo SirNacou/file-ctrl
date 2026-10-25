@@ -55,7 +55,6 @@ export function CreateFolderDialog({ subpath, storagePath }: CreateFolderDialogP
   const createFolder = useMutation({
     ...createStorageFolderMutation(),
     onSuccess: async () => {
-      notify.success('Create successfully!')
       form.reset()
       await queryClient.invalidateQueries({
         queryKey: storageListDirectoryQueryKey({

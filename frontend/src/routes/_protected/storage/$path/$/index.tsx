@@ -62,7 +62,6 @@ function RouteComponent() {
   const deleteFiles = useMutation({
     ...storageDeleteFilesMutation(),
     onSuccess: async () => {
-      notify.success('Delete successfully!')
       await queryClient.invalidateQueries({
         queryKey: storageListDirectoryQueryKey({
           path: { storage_path: path },
@@ -91,8 +90,7 @@ function RouteComponent() {
   const adapter = useMemo(() => getAdapter({ path, subpath }), [path, subpath])
   const uploader = useUploader({
     adapter,
-    onSuccess: async (item) => {
-      notify.success(`${item.name} uploaded`)
+    onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: storageListDirectoryQueryKey({
           path: {

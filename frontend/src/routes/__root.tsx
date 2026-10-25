@@ -1,6 +1,6 @@
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { FormDevtoolsPanel } from '@tanstack/react-form-devtools'
-import { HeadContent, Scripts, createRootRouteWithContext } from '@tanstack/react-router'
+import { createRootRouteWithContext, HeadContent, Scripts } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
@@ -55,7 +55,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <ThemeProvider>
           <TooltipProvider>
             {children}
-            <Toaster />
+            <Toaster position={'top-right'} />
           </TooltipProvider>
         </ThemeProvider>
 

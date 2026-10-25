@@ -12,6 +12,30 @@ import LoaderCircleIcon from '~icons/lucide/loader-circle'
 import TriangleAlertIcon from '~icons/lucide/triangle-alert'
 import XIcon from '~icons/lucide/x'
 
+export type ToastPosition =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right'
+
+const viewportPositionClasses: Record<ToastPosition, string> = {
+  'top-left': 'top-4 sm:left-4 sm:right-auto [--y-dir:1]',
+  'top-center': 'top-4 left-1/2 -translate-x-1/2 [--y-dir:1]',
+  'top-right': 'top-4 sm:right-4 sm:left-auto [--y-dir:1]',
+  'bottom-left': 'bottom-4 sm:left-4 sm:right-auto [--y-dir:-1]',
+  'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2 [--y-dir:-1]',
+  'bottom-right': 'bottom-4 sm:right-4 sm:left-auto [--y-dir:-1]',
+}
+
+function getSwipeDirections(position: ToastPosition): ToastPrimitive.Root.Props['swipeDirection'] {
+  const vertical = position.startsWith('top') ? 'up' : 'down'
+  if (position.endsWith('left')) return [vertical, 'left']
+  if (position.endsWith('right')) return [vertical, 'right']
+  return [vertical, 'left', 'right']
+}
+
 const toast = ToastPrimitive.createToastManager()
 
 function ToastProvider({ ...props }: ToastPrimitive.Provider.Props) {
@@ -22,12 +46,21 @@ function ToastPortal({ ...props }: ToastPrimitive.Portal.Props) {
   return <ToastPrimitive.Portal data-slot="toast-portal" {...props} />
 }
 
-function ToastViewport({ className, ...props }: ToastPrimitive.Viewport.Props) {
+function ToastViewport({
+  className,
+  position = 'bottom-right',
+  ...props
+}: ToastPrimitive.Viewport.Props & { position?: ToastPosition }) {
+  const isTop = position.startsWith('top')
+
   return (
     <ToastPrimitive.Viewport
       data-slot="toast-viewport"
+      data-position={position}
+      data-y-position={isTop ? 'top' : 'bottom'}
       className={cn(
-        'sm:right-4 bottom-4 sm:left-auto z-100 fixed inset-x-4 mx-auto sm:mx-0 outline-none w-auto sm:w-full max-w-sm pointer-events-none',
+        'group/viewport z-100 fixed inset-x-4 mx-auto sm:mx-0 outline-none w-auto sm:w-full max-w-sm pointer-events-none',
+        viewportPositionClasses[position],
         className,
       )}
       {...props}
@@ -40,21 +73,29 @@ function Toast({ className, ...props }: ToastPrimitive.Root.Props) {
     <ToastPrimitive.Root
       data-slot="toast"
       className={cn(
-        'group/toast right-0 bottom-0 z-[calc(1000-var(--toast-index))] absolute bg-popover shadow-lg border focus-visible:border-ring rounded-2xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 w-full text-popover-foreground origin-bottom pointer-events-auto select-none will-change-transform',
-        '[--gap:0.75rem] [--height:var(--toast-frontmost-height,var(--toast-height))] [--offset-y:calc(var(--toast-offset-y)*-1+calc(var(--toast-index)*var(--gap)*-1)+var(--toast-swipe-movement-y))] [--peek:0.75rem] [--scale:calc(max(0,1-(var(--toast-index)*0.1)))] [--shrink:calc(1-var(--scale))]',
-        'h-(--height) [transform:translateX(var(--toast-swipe-movement-x))_translateY(calc(var(--toast-swipe-movement-y)-(var(--toast-index)*var(--peek))-(var(--shrink)*var(--height))))_scale(var(--scale))] [transition:transform_500ms_cubic-bezier(0.22,1,0.36,1),opacity_500ms,height_150ms]',
-        "after:absolute after:top-full after:left-0 after:h-[calc(var(--gap)+1px)] after:w-full after:content-['']",
+        'group/toast right-0 left-0 z-[calc(1000-var(--toast-index))] absolute bg-popover shadow-lg border focus-visible:border-ring rounded-2xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 w-full text-popover-foreground pointer-events-auto select-none will-change-transform',
+        'group-data-[y-position=bottom]/viewport:bottom-0 group-data-[y-position=bottom]/viewport:origin-bottom',
+        'group-data-[y-position=top]/viewport:top-0 group-data-[y-position=top]/viewport:origin-top',
+        '[--gap:0.75rem] [--peek:0.75rem]',
+        '[--height:var(--toast-frontmost-height,var(--toast-height))]',
+        '[--scale:calc(max(0,1-(var(--toast-index)*0.1)))]',
+        '[--shrink:calc(1-var(--scale))]',
+        '[--offset-y:calc(var(--toast-offset-y)*var(--y-dir)+calc(var(--toast-index)*var(--gap)*var(--y-dir))+var(--toast-swipe-movement-y))]',
+        'h-(--height) [transform:translateX(var(--toast-swipe-movement-x))_translateY(calc(var(--toast-swipe-movement-y)+((var(--toast-index)*var(--peek))+(var(--shrink)*var(--height)))*var(--y-dir)))_scale(var(--scale))] [transition:transform_500ms_cubic-bezier(0.22,1,0.36,1),opacity_500ms,height_150ms]',
+        "after:absolute after:left-0 after:h-[calc(var(--gap)+1px)] after:w-full after:content-['']",
+        'group-data-[y-position=bottom]/viewport:after:top-full',
+        'group-data-[y-position=top]/viewport:after:bottom-full',
         'data-expanded:h-(--toast-height) data-expanded:[transform:translateX(var(--toast-swipe-movement-x))_translateY(var(--offset-y))]',
-        'data-limited:opacity-0 data-starting-style:[transform:translateY(150%)]',
-        '[&[data-ending-style]:not([data-limited]):not([data-swipe-direction])]:[transform:translateY(150%)]',
+        'data-limited:opacity-0 data-starting-style:[transform:translateY(calc(150%*var(--y-dir)*-1))]',
+        '[&[data-ending-style]:not([data-limited]):not([data-swipe-direction])]:[transform:translateY(calc(150%*var(--y-dir)*-1))]',
         'data-ending-style:data-[swipe-direction=down]:[transform:translateY(calc(var(--toast-swipe-movement-y)+150%))]',
+        'data-ending-style:data-[swipe-direction=up]:[transform:translateY(calc(var(--toast-swipe-movement-y)-150%))]',
         'data-ending-style:data-[swipe-direction=left]:[transform:translateX(calc(var(--toast-swipe-movement-x)-150%))_translateY(var(--offset-y))]',
         'data-ending-style:data-[swipe-direction=right]:[transform:translateX(calc(var(--toast-swipe-movement-x)+150%))_translateY(var(--offset-y))]',
-        'data-ending-style:data-[swipe-direction=up]:[transform:translateY(calc(var(--toast-swipe-movement-y)-150%))]',
         'data-expanded:data-ending-style:data-[swipe-direction=down]:[transform:translateY(calc(var(--toast-swipe-movement-y)+150%))]',
+        'data-expanded:data-ending-style:data-[swipe-direction=up]:[transform:translateY(calc(var(--toast-swipe-movement-y)-150%))]',
         'data-expanded:data-ending-style:data-[swipe-direction=left]:[transform:translateX(calc(var(--toast-swipe-movement-x)-150%))_translateY(var(--offset-y))]',
         'data-expanded:data-ending-style:data-[swipe-direction=right]:[transform:translateX(calc(var(--toast-swipe-movement-x)+150%))_translateY(var(--offset-y))]',
-        'data-expanded:data-ending-style:data-[swipe-direction=up]:[transform:translateY(calc(var(--toast-swipe-movement-y)-150%))]',
         className,
       )}
       {...props}
@@ -169,11 +210,12 @@ function ToastIcon({ type }: { type: string | undefined }) {
   )
 }
 
-function ToastList() {
+function ToastList({ position = 'bottom-right' }: { position?: ToastPosition }) {
   const { toasts } = ToastPrimitive.useToastManager()
+  const swipeDirection = getSwipeDirections(position)
 
   return toasts.map((toastItem) => (
-    <Toast key={toastItem.id} toast={toastItem}>
+    <Toast key={toastItem.id} toast={toastItem} swipeDirection={swipeDirection}>
       <ToastContent>
         <ToastIcon type={toastItem.type} />
         <div className="flex flex-col flex-1 gap-1 min-w-0">
@@ -187,13 +229,22 @@ function ToastList() {
   ))
 }
 
-function Toaster({ children, toastManager = toast, ...props }: ToastPrimitive.Provider.Props) {
+interface ToasterProps extends ToastPrimitive.Provider.Props {
+  position?: ToastPosition
+}
+
+function Toaster({
+  children,
+  toastManager = toast,
+  position = 'bottom-right',
+  ...props
+}: ToasterProps) {
   return (
     <ToastProvider toastManager={toastManager} {...props}>
       {children}
       <ToastPortal>
-        <ToastViewport>
-          <ToastList />
+        <ToastViewport position={position}>
+          <ToastList position={position} />
         </ToastViewport>
       </ToastPortal>
     </ToastProvider>
@@ -217,4 +268,5 @@ export {
   ToastTitle,
   ToastViewport,
   useToastManager,
+  type ToasterProps,
 }
