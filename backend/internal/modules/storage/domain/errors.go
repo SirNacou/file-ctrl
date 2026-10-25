@@ -6,7 +6,6 @@ import (
 )
 
 var (
-	ErrNameMustNotBeEmpty      = errors.New("name must not be empty")
 	ErrStorageSourceNotFound   = errors.New("storage source not found")
 	ErrInvalidSourceDirectory  = errors.New("source directory is invalid")
 	ErrSourceDirectoryNotFound = errors.New("source directory is not exists")
@@ -18,16 +17,28 @@ var (
 	ErrEmptySelection          = errors.New("no paths selected")
 )
 
+type ErrMustNotBeEmpty struct {
+	property string
+}
+
+func NewErrMustNotBeEmpty(property string) *ErrMustNotBeEmpty {
+	return &ErrMustNotBeEmpty{property: property}
+}
+
+func (e *ErrMustNotBeEmpty) Error() string {
+	return fmt.Sprintf("%s must not be empty", e.property)
+}
+
 type ErrFailToReadDir struct {
-	Path string
+	path string
 }
 
 func NewErrFailToReadDir(path string) *ErrFailToReadDir {
 	return &ErrFailToReadDir{
-		Path: path,
+		path: path,
 	}
 }
 
 func (e *ErrFailToReadDir) Error() string {
-	return fmt.Sprintf("Failed to read directory: %s", e.Path)
+	return fmt.Sprintf("failed to read directory: %s", e.path)
 }

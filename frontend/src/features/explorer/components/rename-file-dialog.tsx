@@ -1,6 +1,6 @@
 import {
-  listDirectoryQueryKey,
   renameFileMutation,
+  storageListDirectoryQueryKey,
 } from '#/client/gen/@tanstack/react-query.gen.ts'
 import type { DirectoryEntry } from '#/client/gen/index.ts'
 import { zRenameFileBody, type RenameFileBodyZodInput } from '#/client/gen/zod.gen.ts'
@@ -53,7 +53,12 @@ export const RenameFileDialog = ({ storagePath, subpath, entry, open, openChange
       notify.success('Create successfully!')
       form.reset()
       await queryClient.invalidateQueries({
-        queryKey: listDirectoryQueryKey({ path: { storage_path: storagePath } }),
+        queryKey: storageListDirectoryQueryKey({
+          path: { storage_path: storagePath },
+          query: {
+            subpath: subpath,
+          },
+        }),
       })
       openChanged(false)
     },

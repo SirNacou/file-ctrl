@@ -23,6 +23,7 @@
   "menuAccent": "subtle",
   "registries": {
     "@uiable": "https://uiable.com/r/{name}.json",
-    "@magicui": "https://magicui.design/r/{name}"
+    "@magicui": "https://magicui.design/r/{name}",
+    "@uploadcn": "https://uploadcn.dev/r/{style}/{name}.json"
   }
 }

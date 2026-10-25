@@ -2,7 +2,6 @@
 
 export {
   createStorageFolder,
-  listDirectory,
   listStorageSources,
   listUnregisteredSources,
   type Options,
@@ -12,6 +11,7 @@ export {
   storageDeleteFiles,
   storageDownloadArchive,
   storageFileDownload,
+  storageListDirectory,
   storageRename,
 } from "./sdk.gen";
 export type {
@@ -25,12 +25,7 @@ export type {
   DirectoryEntry,
   ErrorDetail,
   ErrorModel,
-  ListDirectoryData,
-  ListDirectoryError,
-  ListDirectoryErrors,
   ListDirectoryResponse,
-  ListDirectoryResponse2,
-  ListDirectoryResponses,
   ListStorageSourcesData,
   ListStorageSourcesError,
   ListStorageSourcesErrors,
@@ -74,6 +69,11 @@ export type {
   StorageFileDownloadError,
   StorageFileDownloadErrors,
   StorageFileDownloadResponses,
+  StorageListDirectoryData,
+  StorageListDirectoryError,
+  StorageListDirectoryErrors,
+  StorageListDirectoryResponse,
+  StorageListDirectoryResponses,
   StorageRenameData,
   StorageRenameError,
   StorageRenameErrors,

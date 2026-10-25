@@ -14,7 +14,7 @@ type StorageSource struct {
 func NewStorageSource(path SourcePath, name string) (*StorageSource, error) {
 	name = strings.TrimSpace(name)
 	if len(name) == 0 {
-		return nil, ErrNameMustNotBeEmpty
+		return nil, NewErrMustNotBeEmpty("storage source name")
 	}
 
 	return &StorageSource{
@@ -27,7 +27,7 @@ func NewStorageSource(path SourcePath, name string) (*StorageSource, error) {
 func (s *StorageSource) Rename(name string) error {
 	name = strings.TrimSpace(name)
 	if len(name) == 0 {
-		return ErrNameMustNotBeEmpty
+		return NewErrMustNotBeEmpty("storage source name")
 	}
 
 	s.Name = name

@@ -10,6 +10,8 @@ import (
 )
 
 type StorageModule struct {
+	storageDir string
+
 	listDirectoryHandler           *app.ListDirectoryHandler
 	listUnregisteredSourcesHandler *app.ListUnregisteredSourcesHandler
 	listStorageSourcesHandler      *app.ListStorageSourcesHandler
@@ -21,6 +23,8 @@ type StorageModule struct {
 	deleteFilesHandler             *app.DeleteFilesHandler
 	openFileHandler                *app.OpenFileHandler
 	prepareArchiveHandler          *app.PrepareArchiveHandler
+	validateUploadHandler          *app.ValidateUploadHandler
+	uploadFileHandler              *app.UploadFileHandler
 }
 
 func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error) {
@@ -28,6 +32,8 @@ func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error
 	fsStore := localfs.NewStore(storageDir)
 
 	return &StorageModule{
+		storageDir: storageDir,
+
 		listDirectoryHandler:           app.NewListDirectoryHandler(db, fsStore),
 		listUnregisteredSourcesHandler: app.NewListUnregisteredSourcesHandler(db, fsStore),
 		listStorageSourcesHandler:      app.NewListStorageSourcesHandler(db),
@@ -42,6 +48,8 @@ func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error
 		deleteFilesHandler:         app.NewDeleteFilesHandler(storageRepo, fsStore),
 		openFileHandler:            app.NewOpenFileHandler(storageRepo, fsStore),
 		prepareArchiveHandler:      app.NewPrepareArchiveHandler(fsStore, storageRepo),
+		validateUploadHandler:      app.NewValidateUploadHandler(storageRepo),
+		uploadFileHandler:          app.NewUploadFileHandler(storageRepo, fsStore),
 	}, nil
 }
 
@@ -59,4 +67,12 @@ func (m *StorageModule) RegisterAPI(humaApi huma.API) {
 	api.DeleteFiles(storageApi, m.deleteFilesHandler)
 	api.DownloadFile(storageApi, m.openFileHandler)
 	api.DownloadArchive(storageApi, m.prepareArchiveHandler)
+}
+
+func (m *StorageModule) UploadRoute() (*api.UploadRoute, error) {
+	return api.NewUploadRoute(
+		m.storageDir,
+		m.validateUploadHandler,
+		m.uploadFileHandler,
+	)
 }

@@ -20,7 +20,7 @@ type ListDirectoryResponse struct {
 
 func ListDirectory(api huma.API, handler *app.ListDirectoryHandler) {
 	huma.Register(api, huma.Operation{
-		OperationID:   "list-directory",
+		OperationID:   "storage-list-directory",
 		Method:        http.MethodGet,
 		Path:          "/{storage_path}/files",
 		DefaultStatus: http.StatusOK,

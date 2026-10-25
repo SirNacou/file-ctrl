@@ -14,7 +14,6 @@ export const Route = createFileRoute('/_protected/storage/')({
   },
   component: RouteComponent,
 })
-
 function RouteComponent() {
   const { data: sourcesRes } = useSuspenseQuery(listStorageSourcesOptions())
 
