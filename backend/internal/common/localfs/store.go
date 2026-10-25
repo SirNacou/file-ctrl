@@ -222,7 +222,7 @@ func (s *Store) CommitStagedFile(
 	defer root.Close()
 
 	parentDir := filepath.Dir(targetPath.FS())
-	if parentDir != "." || parentDir != "/" {
+	if parentDir != "." && parentDir != "/" {
 		_ = root.MkdirAll(parentDir, 0o755)
 	}
 
