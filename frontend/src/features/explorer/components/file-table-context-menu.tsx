@@ -1,6 +1,6 @@
 import {
-  listDirectoryQueryKey,
   storageDeleteFilesMutation,
+  storageListDirectoryQueryKey,
 } from '#/client/gen/@tanstack/react-query.gen.ts'
 import type { DirectoryEntry } from '#/client/gen/index.ts'
 import { ConfirmDeleteDialog } from '#/components/confirm-detele-dialog.tsx'
@@ -42,7 +42,12 @@ export const FileTableContextMenu = ({ children, entry, storagePath, subpath = '
     onSuccess: async () => {
       notify.success('Delete successfully!')
       await queryClient.invalidateQueries({
-        queryKey: listDirectoryQueryKey({ path: { storage_path: storagePath } }),
+        queryKey: storageListDirectoryQueryKey({
+          path: { storage_path: storagePath },
+          query: {
+            subpath: subpath,
+          },
+        }),
       })
     },
   })

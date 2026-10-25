@@ -1,6 +1,6 @@
 import {
   createStorageFolderMutation,
-  listDirectoryQueryKey,
+  storageListDirectoryQueryKey,
 } from '#/client/gen/@tanstack/react-query.gen.ts'
 import {
   zCreateStorageFolderBody,
@@ -23,15 +23,15 @@ import PlusIcon from '~icons/lucide/plus'
 
 type CreateFolderDialogProps = {
   storagePath: string
-  parentPath?: string
+  subpath?: string
 }
 
-export function CreateFolderDialog({ parentPath, storagePath }: CreateFolderDialogProps) {
+export function CreateFolderDialog({ subpath, storagePath }: CreateFolderDialogProps) {
   const [open, setOpen] = useState(false)
 
   const defaultValues: CreateStorageFolderBodyZodInput = {
     name: '',
-    parent_path: parentPath,
+    parent_path: subpath,
   }
 
   const form = useAppForm({
@@ -58,7 +58,10 @@ export function CreateFolderDialog({ parentPath, storagePath }: CreateFolderDial
       notify.success('Create successfully!')
       form.reset()
       await queryClient.invalidateQueries({
-        queryKey: listDirectoryQueryKey({ path: { storage_path: storagePath } }),
+        queryKey: storageListDirectoryQueryKey({
+          path: { storage_path: storagePath },
+          query: { subpath: subpath },
+        }),
       })
       setOpen(false)
     },

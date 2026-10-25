@@ -5,16 +5,13 @@ import * as z from "zod";
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from "./client";
 import { client } from "./client.gen";
 import {
-  listDirectoryResponseTransformer,
   listStorageSourcesResponseTransformer,
+  storageListDirectoryResponseTransformer,
 } from "./transformers.gen";
 import type {
   CreateStorageFolderData,
   CreateStorageFolderErrors,
   CreateStorageFolderResponses,
-  ListDirectoryData,
-  ListDirectoryErrors,
-  ListDirectoryResponses,
   ListStorageSourcesData,
   ListStorageSourcesErrors,
   ListStorageSourcesResponses,
@@ -39,6 +36,9 @@ import type {
   StorageFileDownloadData,
   StorageFileDownloadErrors,
   StorageFileDownloadResponses,
+  StorageListDirectoryData,
+  StorageListDirectoryErrors,
+  StorageListDirectoryResponses,
   StorageRenameData,
   StorageRenameErrors,
   StorageRenameResponses,
@@ -46,9 +46,6 @@ import type {
 import {
   zCreateStorageFolderBody,
   zCreateStorageFolderPath,
-  zListDirectoryPath,
-  zListDirectoryQuery,
-  zListDirectoryResponse2,
   zListStorageSourcesResponse,
   zListUnregisteredSourcesResponse,
   zRegisterStorageBody,
@@ -63,6 +60,9 @@ import {
   zStorageDownloadArchiveQuery,
   zStorageFileDownloadPath,
   zStorageFileDownloadQuery,
+  zStorageListDirectoryPath,
+  zStorageListDirectoryQuery,
+  zStorageListDirectoryResponse,
   zStorageRenameBody,
   zStorageRenamePath,
 } from "./zod.gen";
@@ -210,20 +210,24 @@ export const storageDeleteFiles = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const listDirectory = <ThrowOnError extends boolean = false>(
-  options: Options<ListDirectoryData, ThrowOnError>,
-): RequestResult<ListDirectoryResponses, ListDirectoryErrors, ThrowOnError> =>
-  (options.client ?? client).get<ListDirectoryResponses, ListDirectoryErrors, ThrowOnError>({
+export const storageListDirectory = <ThrowOnError extends boolean = false>(
+  options: Options<StorageListDirectoryData, ThrowOnError>,
+): RequestResult<StorageListDirectoryResponses, StorageListDirectoryErrors, ThrowOnError> =>
+  (options.client ?? client).get<
+    StorageListDirectoryResponses,
+    StorageListDirectoryErrors,
+    ThrowOnError
+  >({
     requestValidator: async (data) =>
       await z
         .object({
           body: z.never().optional(),
-          path: zListDirectoryPath,
-          query: zListDirectoryQuery.optional(),
+          path: zStorageListDirectoryPath,
+          query: zStorageListDirectoryQuery.optional(),
         })
         .parseAsync(data),
-    responseTransformer: listDirectoryResponseTransformer,
-    responseValidator: async (data) => await zListDirectoryResponse2.parseAsync(data),
+    responseTransformer: storageListDirectoryResponseTransformer,
+    responseValidator: async (data) => await zStorageListDirectoryResponse.parseAsync(data),
     url: "/api/storage/{storage_path}/files",
     ...options,
   });

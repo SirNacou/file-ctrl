@@ -292,36 +292,36 @@ export type StorageDeleteFilesPathZodInput = z.input<typeof zStorageDeleteFilesP
 
 export type StorageDeleteFilesPathZodOutput = z.output<typeof zStorageDeleteFilesPath>;
 
-export const zListDirectoryPath = z.object({
+export const zStorageListDirectoryPath = z.object({
   storage_path: z.string(),
 });
 
-export type ListDirectoryPathZodType = z.infer<typeof zListDirectoryPath>;
+export type StorageListDirectoryPathZodType = z.infer<typeof zStorageListDirectoryPath>;
 
-export type ListDirectoryPathZodInput = z.input<typeof zListDirectoryPath>;
+export type StorageListDirectoryPathZodInput = z.input<typeof zStorageListDirectoryPath>;
 
-export type ListDirectoryPathZodOutput = z.output<typeof zListDirectoryPath>;
+export type StorageListDirectoryPathZodOutput = z.output<typeof zStorageListDirectoryPath>;
 
-export const zListDirectoryQuery = z.object({
+export const zStorageListDirectoryQuery = z.object({
   subpath: z.string().optional().default("."),
 });
 
-export type ListDirectoryQueryZodType = z.infer<typeof zListDirectoryQuery>;
+export type StorageListDirectoryQueryZodType = z.infer<typeof zStorageListDirectoryQuery>;
 
-export type ListDirectoryQueryZodInput = z.input<typeof zListDirectoryQuery>;
+export type StorageListDirectoryQueryZodInput = z.input<typeof zStorageListDirectoryQuery>;
 
-export type ListDirectoryQueryZodOutput = z.output<typeof zListDirectoryQuery>;
+export type StorageListDirectoryQueryZodOutput = z.output<typeof zStorageListDirectoryQuery>;
 
 /**
  * OK
  */
-export const zListDirectoryResponse2 = zListDirectoryResponse;
+export const zStorageListDirectoryResponse = zListDirectoryResponse;
 
-export type ListDirectoryResponseZodType2 = z.infer<typeof zListDirectoryResponse2>;
+export type StorageListDirectoryResponseZodType = z.infer<typeof zStorageListDirectoryResponse>;
 
-export type ListDirectoryResponseZodInput2 = z.input<typeof zListDirectoryResponse2>;
+export type StorageListDirectoryResponseZodInput = z.input<typeof zStorageListDirectoryResponse>;
 
-export type ListDirectoryResponseZodOutput2 = z.output<typeof zListDirectoryResponse2>;
+export type StorageListDirectoryResponseZodOutput = z.output<typeof zStorageListDirectoryResponse>;
 
 export const zStorageFileDownloadPath = z.object({
   storage_path: z.string(),

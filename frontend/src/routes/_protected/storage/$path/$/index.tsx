@@ -1,9 +1,9 @@
 import {
-  listDirectoryOptions,
-  listDirectoryQueryKey,
   storageDeleteFilesMutation,
+  storageListDirectoryOptions,
+  storageListDirectoryQueryKey,
 } from '#/client/gen/@tanstack/react-query.gen.ts'
-import type { DirectoryEntry } from '#/client/gen/index.ts'
+import { type DirectoryEntry } from '#/client/gen/index.ts'
 import { ConfirmDeleteDialog } from '#/components/confirm-detele-dialog.tsx'
 import { PageHeader } from '#/components/page-header.tsx'
 import { Button } from '#/components/ui/button.tsx'
@@ -14,18 +14,20 @@ import {
 } from '#/features/explorer/components/download-link.tsx'
 import { FileBreadcrumbs } from '#/features/explorer/components/file-breadcrumb.tsx'
 import { FileTable, rowSelectionAtom } from '#/features/explorer/components/file-table.tsx'
+import { getAdapter } from '#/features/explorer/lib/tus-adapter.ts'
 import { notify } from '#/lib/notify.ts'
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useSelector } from '@tanstack/react-store'
+import { useUploader } from '@uploadcn/react'
 import { useMemo } from 'react'
-import TrashIcon from '~icons/lucide/trash'
 import DownloadIcon from '~icons/lucide/download'
+import TrashIcon from '~icons/lucide/trash'
 
 export const Route = createFileRoute('/_protected/storage/$path/$/')({
-  loader: async ({ params: { path }, context: { queryClient } }) =>
+  loader: async ({ params: { path, _splat: subpath }, context: { queryClient } }) =>
     await queryClient.query({
-      ...listDirectoryOptions({ path: { storage_path: path } }),
+      ...storageListDirectoryOptions({ path: { storage_path: path }, query: { subpath: subpath } }),
       staleTime: 'static',
     }),
   component: RouteComponent,
@@ -35,7 +37,7 @@ function RouteComponent() {
   const navigate = Route.useNavigate()
   const { path, _splat: subpath } = Route.useParams()
   const { data } = useSuspenseQuery(
-    listDirectoryOptions({ path: { storage_path: path }, query: { subpath: subpath } }),
+    storageListDirectoryOptions({ path: { storage_path: path }, query: { subpath: subpath } }),
   )
 
   const rowSelection = useSelector(rowSelectionAtom)
@@ -62,7 +64,10 @@ function RouteComponent() {
     onSuccess: async () => {
       notify.success('Delete successfully!')
       await queryClient.invalidateQueries({
-        queryKey: listDirectoryQueryKey({ path: { storage_path: path } }),
+        queryKey: storageListDirectoryQueryKey({
+          path: { storage_path: path },
+          query: { subpath: subpath },
+        }),
       })
     },
     onError: (error) => {
@@ -82,6 +87,28 @@ function RouteComponent() {
       },
     })
   }
+
+  const adapter = useMemo(() => getAdapter({ path, subpath }), [path, subpath])
+  const uploader = useUploader({
+    adapter,
+    onSuccess: async (item) => {
+      notify.success(`${item.name} uploaded`)
+      await queryClient.invalidateQueries({
+        queryKey: storageListDirectoryQueryKey({
+          path: {
+            storage_path: path,
+          },
+          query: {
+            subpath: subpath,
+          },
+        }),
+      })
+    },
+    onError: (_item, error) => notify.error(error.message),
+  })
+
+  const upload = () =>
+    uploader.add([new File(['Hello Browser Temp File!'], 'texttt.txt', { type: 'text/plain' })])
 
   return (
     <>
@@ -113,11 +140,12 @@ function RouteComponent() {
               Download
               {!emptySelection && ` (${rowIds.length})`}
             </Button>
-            <CreateFolderDialog storagePath={path} parentPath={subpath} />
+            <CreateFolderDialog storagePath={path} subpath={subpath} />
           </>
         }
       />
       <FileBreadcrumbs />
+      <Button onClick={upload}>Upload</Button>
       <FileTable
         storagePath={path}
         subpath={subpath}

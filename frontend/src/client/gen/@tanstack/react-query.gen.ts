@@ -5,7 +5,6 @@ import { queryOptions, type UseMutationOptions } from "@tanstack/react-query";
 import { client } from "../client.gen";
 import {
   createStorageFolder,
-  listDirectory,
   listStorageSources,
   listUnregisteredSources,
   type Options,
@@ -15,14 +14,12 @@ import {
   storageDeleteFiles,
   storageDownloadArchive,
   storageFileDownload,
+  storageListDirectory,
   storageRename,
 } from "../sdk.gen";
 import type {
   CreateStorageFolderData,
   CreateStorageFolderError,
-  ListDirectoryData,
-  ListDirectoryError,
-  ListDirectoryResponse2,
   ListStorageSourcesData,
   ListStorageSourcesError,
   ListStorageSourcesResponse,
@@ -43,6 +40,9 @@ import type {
   StorageDownloadArchiveError,
   StorageFileDownloadData,
   StorageFileDownloadError,
+  StorageListDirectoryData,
+  StorageListDirectoryError,
+  StorageListDirectoryResponse,
   StorageRenameData,
   StorageRenameError,
 } from "../types.gen";
@@ -214,18 +214,18 @@ export const storageDeleteFilesMutation = (
   return mutationOptions;
 };
 
-export const listDirectoryQueryKey = (options: Options<ListDirectoryData>) =>
-  createQueryKey("listDirectory", options);
+export const storageListDirectoryQueryKey = (options: Options<StorageListDirectoryData>) =>
+  createQueryKey("storageListDirectory", options);
 
-export const listDirectoryOptions = (options: Options<ListDirectoryData>) =>
+export const storageListDirectoryOptions = (options: Options<StorageListDirectoryData>) =>
   queryOptions<
-    ListDirectoryResponse2,
-    ListDirectoryError,
-    ListDirectoryResponse2,
-    ReturnType<typeof listDirectoryQueryKey>
+    StorageListDirectoryResponse,
+    StorageListDirectoryError,
+    StorageListDirectoryResponse,
+    ReturnType<typeof storageListDirectoryQueryKey>
   >({
     queryFn: async ({ queryKey, signal }) => {
-      const { data } = await listDirectory({
+      const { data } = await storageListDirectory({
         ...options,
         ...queryKey[0],
         signal,
@@ -233,7 +233,7 @@ export const listDirectoryOptions = (options: Options<ListDirectoryData>) =>
       });
       return data;
     },
-    queryKey: listDirectoryQueryKey(options),
+    queryKey: storageListDirectoryQueryKey(options),
   });
 
 export const storageFileDownloadQueryKey = (options: Options<StorageFileDownloadData>) =>

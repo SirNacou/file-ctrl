@@ -14,7 +14,7 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-const UploadBasePath = "/api/storage/uploads/"
+const UploadBasePath = "/api/storage/files/uploads"
 
 type UploadRoute struct {
 	prefix  string
@@ -119,7 +119,7 @@ func mapToMetadata(tusMeta handler.MetaData) (metadata, error) {
 	if !exists || storagePath == "" {
 		return metadata{}, handler.NewError(
 			"INVALID_METADATA",
-			"invalid metadata: storage_path",
+			"metadata storage_path must not empty",
 			http.StatusBadRequest,
 		)
 	}
@@ -127,10 +127,10 @@ func mapToMetadata(tusMeta handler.MetaData) (metadata, error) {
 
 	parentPath, exists := tusMeta["parent_path"]
 	parentPath = strings.TrimSpace(parentPath)
-	if !exists || parentPath == "" {
+	if !exists {
 		return metadata{}, handler.NewError(
 			"INVALID_METADATA",
-			"invalid metadata: parent_path",
+			"metadata parent_path does not exist",
 			http.StatusBadRequest,
 		)
 	}
@@ -141,11 +141,11 @@ func mapToMetadata(tusMeta handler.MetaData) (metadata, error) {
 	if !exists || filename == "" {
 		return metadata{}, handler.NewError(
 			"INVALID_METADATA",
-			"invalid metadata: filename",
+			"metadata filename must not empty",
 			http.StatusBadRequest,
 		)
 	}
-	res.StoragePath = filename
+	res.Filename = filename
 
 	return res, nil
 }

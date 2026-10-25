@@ -257,7 +257,7 @@ export type StorageDeleteFilesResponses = {
   202: unknown;
 };
 
-export type ListDirectoryData = {
+export type StorageListDirectoryData = {
   body?: never;
   path: {
     storage_path: string;
@@ -268,23 +268,25 @@ export type ListDirectoryData = {
   url: "/api/storage/{storage_path}/files";
 };
 
-export type ListDirectoryErrors = {
+export type StorageListDirectoryErrors = {
   /**
    * Error
    */
   default: ErrorModel;
 };
 
-export type ListDirectoryError = ListDirectoryErrors[keyof ListDirectoryErrors];
+export type StorageListDirectoryError =
+  StorageListDirectoryErrors[keyof StorageListDirectoryErrors];
 
-export type ListDirectoryResponses = {
+export type StorageListDirectoryResponses = {
   /**
    * OK
    */
   200: ListDirectoryResponse;
 };
 
-export type ListDirectoryResponse2 = ListDirectoryResponses[keyof ListDirectoryResponses];
+export type StorageListDirectoryResponse =
+  StorageListDirectoryResponses[keyof StorageListDirectoryResponses];
 
 export type StorageFileDownloadData = {
   body?: never;

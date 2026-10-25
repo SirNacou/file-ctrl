@@ -59,6 +59,10 @@ func (r *HttpRouter) Mount(route Route) {
 
 	r.router.Any(cleanPrefix, wrapped)
 	r.router.Any(cleanPrefix+"/*", wrapped)
+
+	for _, v := range r.router.Router().Routes() {
+		log.Println(fmt.Sprintf("Path: %s", v.Path))
+	}
 }
 
 func (r *HttpRouter) Run(port int) error {

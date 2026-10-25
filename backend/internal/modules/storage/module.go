@@ -48,6 +48,8 @@ func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error
 		deleteFilesHandler:         app.NewDeleteFilesHandler(storageRepo, fsStore),
 		openFileHandler:            app.NewOpenFileHandler(storageRepo, fsStore),
 		prepareArchiveHandler:      app.NewPrepareArchiveHandler(fsStore, storageRepo),
+		validateUploadHandler:      app.NewValidateUploadHandler(storageRepo),
+		uploadFileHandler:          app.NewUploadFileHandler(storageRepo, fsStore),
 	}, nil
 }
 
