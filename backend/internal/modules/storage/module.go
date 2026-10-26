@@ -29,27 +29,27 @@ type StorageModule struct {
 
 func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error) {
 	storageRepo := adapters.NewStorageSourcesRepository(db)
-	fsStore := localfs.NewStore(storageDir)
+	localFileStorage := localfs.NewStorage(storageDir)
 
 	return &StorageModule{
 		storageDir: storageDir,
 
-		listDirectoryHandler:           app.NewListDirectoryHandler(db, fsStore),
-		listUnregisteredSourcesHandler: app.NewListUnregisteredSourcesHandler(db, fsStore),
+		listDirectoryHandler:           app.NewListDirectoryHandler(db, localFileStorage),
+		listUnregisteredSourcesHandler: app.NewListUnregisteredSourcesHandler(db, localFileStorage),
 		listStorageSourcesHandler:      app.NewListStorageSourcesHandler(db),
 		registerStorageSourcesHandler: app.NewRegisterStorageSourceHandler(
 			storageRepo,
-			fsStore,
+			localFileStorage,
 		),
 		removeStorageSourceHandler: app.NewRemoveStorageSourceHandler(db),
 		renameStorageHandler:       app.NewRenameStorageHandler(storageRepo, storageRepo),
-		createFolderHandler:        app.NewCreateFolderHandler(storageRepo, fsStore),
-		renameFileHandler:          app.NewRenameFileHandler(storageRepo, fsStore),
-		deleteFilesHandler:         app.NewDeleteFilesHandler(storageRepo, fsStore),
-		openFileHandler:            app.NewOpenFileHandler(storageRepo, fsStore),
-		prepareArchiveHandler:      app.NewPrepareArchiveHandler(fsStore, storageRepo),
+		createFolderHandler:        app.NewCreateFolderHandler(storageRepo, localFileStorage),
+		renameFileHandler:          app.NewRenameFileHandler(storageRepo, localFileStorage),
+		deleteFilesHandler:         app.NewDeleteFilesHandler(storageRepo, localFileStorage),
+		openFileHandler:            app.NewOpenFileHandler(storageRepo, localFileStorage),
+		prepareArchiveHandler:      app.NewPrepareArchiveHandler(localFileStorage, storageRepo),
 		validateUploadHandler:      app.NewValidateUploadHandler(storageRepo),
-		uploadFileHandler:          app.NewUploadFileHandler(storageRepo, fsStore),
+		uploadFileHandler:          app.NewUploadFileHandler(storageRepo, localFileStorage),
 	}, nil
 }
 

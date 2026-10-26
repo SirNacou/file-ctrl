@@ -4,7 +4,7 @@ import { notify } from '#/lib/notify.ts'
 import { GlobalDropzone, UploadProvider, UploadQueuePanel } from '@/components/global-upload'
 import { useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
-import type { UploadError, UploadItem } from '@uploadcn/core'
+import { createIndexedDBPersistence, type UploadError, type UploadItem } from '@uploadcn/core'
 import { UploadConfigProvider } from '@uploadcn/react'
 
 export const Route = createFileRoute('/_protected/storage/$path/$')({
@@ -38,6 +38,7 @@ function RouteComponent() {
         path,
         subpath,
       })}
+      persistence={createIndexedDBPersistence()}
     >
       <UploadProvider duplicates="replace" persist onSuccess={handleSuccess} onError={handleError}>
         <Outlet />

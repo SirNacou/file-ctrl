@@ -40,6 +40,7 @@ func NewUploadRoute(
 		BasePath:      UploadBasePath,
 		Logger:        slog.Default(),
 		PreUploadCreateCallback: func(hook handler.HookEvent) (handler.HTTPResponse, handler.FileInfoChanges, error) {
+			slog.InfoContext(hook.Context, "Metadata", slog.Any("meta", hook.Upload.MetaData))
 			meta, err := mapToMetadata(hook.Upload.MetaData)
 			if err != nil {
 				return handler.HTTPResponse{
@@ -48,9 +49,10 @@ func NewUploadRoute(
 			}
 
 			_, err = validateUploadHandler.Handle(hook.Context, &app.ValidateUploadRequest{
-				StoragePath: meta.StoragePath,
-				ParentPath:  meta.ParentPath,
-				Filename:    meta.Filename,
+				StoragePath:    meta.StoragePath,
+				StorageSubpath: meta.StorageSubpath,
+				DirectoryPath:  meta.DirectoryPath,
+				Filename:       meta.Filename,
 			})
 			if err != nil {
 				slog.ErrorContext(hook.Context, "failed to validate file", slog.Any("error", err))
@@ -66,6 +68,7 @@ func NewUploadRoute(
 			return handler.HTTPResponse{}, handler.FileInfoChanges{}, nil
 		},
 		PreFinishResponseCallback: func(hook handler.HookEvent) (handler.HTTPResponse, error) {
+			slog.InfoContext(hook.Context, "Metadata", slog.Any("meta", hook.Upload.MetaData))
 			meta, err := mapToMetadata(hook.Upload.MetaData)
 			if err != nil {
 				return handler.HTTPResponse{
@@ -83,7 +86,8 @@ func NewUploadRoute(
 
 			_, err = uploadFileHandler.Handle(hook.Context, &app.UploadFileRequest{
 				StoragePath:    meta.StoragePath,
-				ParentPath:     meta.ParentPath,
+				StorageSubpath: meta.StorageSubpath,
+				DirectoryPath:  meta.DirectoryPath,
 				Filename:       meta.Filename,
 				StagedFilePath: stagedPath,
 			})
@@ -106,9 +110,10 @@ func NewUploadRoute(
 }
 
 type metadata struct {
-	StoragePath string
-	ParentPath  string
-	Filename    string
+	StoragePath    string
+	StorageSubpath string
+	DirectoryPath  string
+	Filename       string
 }
 
 func mapToMetadata(tusMeta handler.MetaData) (metadata, error) {
@@ -125,16 +130,27 @@ func mapToMetadata(tusMeta handler.MetaData) (metadata, error) {
 	}
 	res.StoragePath = storagePath
 
-	parentPath, exists := tusMeta["parent_path"]
-	parentPath = strings.TrimSpace(parentPath)
+	storageSubpath, exists := tusMeta["storage_subpath"]
+	storageSubpath = strings.TrimSpace(storageSubpath)
 	if !exists {
 		return metadata{}, handler.NewError(
 			"INVALID_METADATA",
-			"metadata parent_path does not exist",
+			"metadata storage_subpath does not exist",
 			http.StatusBadRequest,
 		)
 	}
-	res.ParentPath = parentPath
+	res.StorageSubpath = storageSubpath
+
+	directoryPath, exists := tusMeta["directory_path"]
+	directoryPath = strings.TrimSpace(directoryPath)
+	if !exists {
+		return metadata{}, handler.NewError(
+			"INVALID_METADATA",
+			"metadata directory_path does not exist",
+			http.StatusBadRequest,
+		)
+	}
+	res.DirectoryPath = directoryPath
 
 	filename, exists := tusMeta["filename"]
 	filename = strings.TrimSpace(filename)

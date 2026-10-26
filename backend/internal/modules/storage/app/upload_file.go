@@ -10,6 +10,7 @@ import (
 type (
 	StagedFileCommitter interface {
 		CommitStagedFile(
+			ctx context.Context,
 			stagingFilePath string,
 			sourcePath domain.SourcePath,
 			target domain.EntryPath,
@@ -17,7 +18,8 @@ type (
 	}
 	UploadFileRequest struct {
 		StoragePath    string
-		ParentPath     string
+		StorageSubpath     string
+		DirectoryPath   string
 		Filename       string
 		StagedFilePath string
 	}
@@ -52,17 +54,27 @@ func (h *UploadFileHandler) Handle(
 		return nil, domain.ErrStorageSourceNotFound
 	}
 
-	parent, err := domain.NewEntryPath(req.ParentPath)
+	sourceSubpath, err := domain.NewEntryPath(req.StorageSubpath)
 	if err != nil {
 		return nil, err
 	}
 
-	target, err := parent.ChildPath(req.Filename)
+	targetDirectory, err := sourceSubpath.Join(req.DirectoryPath)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := h.committer.CommitStagedFile(req.StagedFilePath, source.Path, target); err != nil {
+	target, err := targetDirectory.Join(req.Filename)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := h.committer.CommitStagedFile(
+		ctx,
+		req.StagedFilePath,
+		source.Path,
+		target,
+	); err != nil {
 	}
 
 	return &UploadFileResponse{}, nil

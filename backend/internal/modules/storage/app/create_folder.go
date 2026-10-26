@@ -42,7 +42,7 @@ func (h *CreateFolderHandler) Handle(
 	if err != nil {
 		return nil, err
 	}
-	target, err := parent.ChildPath(req.Name)
+	target, err := parent.Join(req.Name)
 	if err != nil {
 		return nil, err
 	}

@@ -12,6 +12,7 @@ import { useTable, type RowSelectionState } from '@tanstack/react-table'
 import { columns } from './columns'
 import { features } from './features'
 import { FileTableContextMenu } from './file-table-context-menu'
+import { useEffect } from 'react'
 
 type FileTableProps = {
   storagePath: string
@@ -39,11 +40,15 @@ export const FileTable = ({ storagePath, subpath, data, itemSelected }: FileTabl
     },
   })
 
+  useEffect(() => {
+    rowSelectionAtom.set(() => ({}))
+  }, [storagePath, subpath])
+
   return (
     <div
       className="bg-card shadow border-2 overflow-auto"
       style={{
-        height: 'calc(100vh - 200px)',
+        height: 'calc(100vh - 300px)',
       }}
     >
       <Table noWrapper className="text-base">
