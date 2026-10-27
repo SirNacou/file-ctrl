@@ -1,5 +1,6 @@
 import type { Group } from '@base-ui/react/internals/resolveValueLabel'
 import type { Key } from 'react'
+
 import { Field, FieldLabel } from '../ui/field'
 import {
   Select,

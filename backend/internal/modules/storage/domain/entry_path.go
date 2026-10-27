@@ -16,11 +16,10 @@ func NewEntryPath(raw string) (EntryPath, error) {
 	if raw == "" {
 		return Root, nil
 	}
-	if strings.ContainsRune(raw, 0) || strings.Contains(raw, `\`) {
-		return EntryPath{}, ErrInvalidPath
-	}
-	if !filepath.IsLocal(filepath.FromSlash(raw)) {
-		return EntryPath{}, ErrInvalidPath
+	if strings.ContainsRune(raw, 0) ||
+		strings.Contains(raw, `\`) ||
+		!filepath.IsLocal(filepath.FromSlash(raw)) {
+		return EntryPath{}, NewErrInvalidPath(raw)
 	}
 	return EntryPath{value: path.Clean(raw)}, nil
 }
@@ -43,7 +42,7 @@ func (p EntryPath) Display() string {
 func (p EntryPath) Join(rel string) (EntryPath, error) {
 	child, err := NewEntryPath(rel)
 	if err != nil || child.IsRoot() {
-		return EntryPath{}, ErrInvalidPath
+		return EntryPath{}, err
 	}
 	return NewEntryPath(path.Join(p.value, child.value))
 }

@@ -1,6 +1,5 @@
 'use client'
 
-import { NativeButton, UploadProgress, UploadQueue } from '@/components/ui/upload'
 import {
   type UploadAdapter,
   type UploadPersistence,
@@ -22,6 +21,10 @@ import ChevronDownIcon from '~icons/lucide/chevron-down'
 import CloudUploadIcon from '~icons/lucide/cloud-upload'
 import WifiOffIcon from '~icons/lucide/wifi-off'
 import XIcon from '~icons/lucide/x'
+
+import { NativeButton, UploadProgress } from '@/components/ui/upload'
+
+import { UploadQueue } from './upload-queue'
 
 interface UploadProviderProps<TResult> extends Partial<UseUploaderOptions<TResult>> {
   adapter?: UploadAdapter<TResult>
@@ -94,12 +97,12 @@ function GlobalDropzone({
         className,
       )}
     >
-      <div className="flex size-full max-h-128 max-w-3xl animate-in flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-primary/60 text-center duration-200 zoom-in-95 motion-reduce:animate-none">
-        <div className="flex size-12 items-center justify-center rounded-full border bg-background shadow-sm">
+      <div className="animate-in border-primary/60 zoom-in-95 flex size-full max-h-128 max-w-3xl flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed text-center duration-200 motion-reduce:animate-none">
+        <div className="bg-background flex size-12 items-center justify-center rounded-full border shadow-sm">
           <CloudUploadIcon strokeWidth={2} className="size-5" />
         </div>
         <p className="text-lg font-medium">{title}</p>
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <p className="text-muted-foreground text-sm">{description}</p>
       </div>
     </div>
   )
@@ -144,13 +147,13 @@ function UploadQueuePanel({ className }: { className?: string }) {
             {!online ? (
               <WifiOffIcon
                 strokeWidth={2}
-                className="size-3.5 text-muted-foreground"
+                className="text-muted-foreground size-3.5"
                 aria-label="Offline"
               />
             ) : null}
             <span className="truncate">{title}</span>
             {summary.isUploading ? (
-              <span className="ms-auto text-xs font-normal text-muted-foreground tabular-nums">
+              <span className="text-muted-foreground ms-auto text-xs font-normal tabular-nums">
                 {Math.round(summary.percent)}%
               </span>
             ) : null}

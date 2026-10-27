@@ -58,13 +58,13 @@ func (h *ListDirectoryHandler) Handle(
 
 	entryPath, err := domain.NewEntryPath(req.Subpath)
 	if err != nil {
-		return nil, domain.ErrInvalidPath
+		return nil, domain.NewErrInvalidPath(req.Subpath)
 	}
 
 	// Note: omit ctx here if FSDirReader.ReadDir matches localfs.Store.ReadDir(sourcePath, dir)
 	entries, err := h.fsDirReader.ReadDir(ctx, sourcePath, entryPath)
 	if err != nil {
-		return nil, domain.ErrInvalidPath
+		return nil, domain.NewErrInvalidPath(entryPath.String())
 	}
 
 	items, err := readItems(entries, entryPath)

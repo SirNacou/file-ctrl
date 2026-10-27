@@ -1,6 +1,5 @@
 'use client'
 
-import * as React from 'react'
 import {
   formatBytes,
   formatDuration,
@@ -24,20 +23,22 @@ import {
 } from '@uploadcn/react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from 'cn'
-import UploadIcon from '~icons/lucide/upload'
-import LoaderIcon from '~icons/lucide/loader'
-import ImageIcon from '~icons/lucide/image'
-import VideoIcon from '~icons/lucide/video'
-import MusicIcon from '~icons/lucide/music-4'
-import FileIcon from '~icons/lucide/file'
-import SpreadsheetIcon from '~icons/lucide/file-spreadsheet'
+import * as React from 'react'
 import CircleAlertIcon from '~icons/lucide/circle-alert'
 import CircleCheckIcon from '~icons/lucide/circle-check'
-import ShieldIcon from '~icons/lucide/shield'
+import FileIcon from '~icons/lucide/file'
+import SpreadsheetIcon from '~icons/lucide/file-spreadsheet'
+import ImageIcon from '~icons/lucide/image'
+import LoaderIcon from '~icons/lucide/loader'
+import MusicIcon from '~icons/lucide/music-4'
 import PauseIcon from '~icons/lucide/pause'
-import XIcon from '~icons/lucide/x'
-import UndoIcon from '~icons/lucide/undo-2'
 import PlayIcon from '~icons/lucide/play'
+import ShieldIcon from '~icons/lucide/shield'
+import UndoIcon from '~icons/lucide/undo-2'
+import UploadIcon from '~icons/lucide/upload'
+import VideoIcon from '~icons/lucide/video'
+import XIcon from '~icons/lucide/x'
+
 import { buttonVariants } from './button'
 
 /* -------------------------------------------------------------------------- */
@@ -434,7 +435,7 @@ function UploadItemMedia({
           <UploadPrimitive.Preview
             thumbnailSize={thumbnailSize ?? (variant === 'cover' ? 400 : 128)}
             fallback={<UploadFileIcon />}
-            className="size-full animate-in rounded-[inherit] object-cover duration-300 fade-in-0 motion-reduce:animate-none"
+            className="animate-in fade-in-0 size-full rounded-[inherit] object-cover duration-300 motion-reduce:animate-none"
           />
         ))}
       {variant === 'cover' ? null : <UploadItemMediaBadge />}
@@ -798,13 +799,13 @@ function UploadOverlay({
       {children}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-10 flex scale-95 flex-col items-center justify-center gap-1.5 rounded-[inherit] border-2 border-dashed border-primary/60 bg-background/80 text-center opacity-0 backdrop-blur-sm transition-[opacity,transform] duration-200 group-data-drag-reject/upload-overlay:border-destructive/60 group-data-dragging/upload-overlay:scale-100 group-data-dragging/upload-overlay:opacity-100 motion-reduce:transition-none"
+        className="border-primary/60 bg-background/80 group-data-drag-reject/upload-overlay:border-destructive/60 pointer-events-none absolute inset-0 z-10 flex scale-95 flex-col items-center justify-center gap-1.5 rounded-[inherit] border-2 border-dashed text-center opacity-0 backdrop-blur-sm transition-[opacity,transform] duration-200 group-data-dragging/upload-overlay:scale-100 group-data-dragging/upload-overlay:opacity-100 motion-reduce:transition-none"
       >
-        <span className="flex size-10 items-center justify-center rounded-full border bg-background text-foreground shadow-sm">
+        <span className="bg-background text-foreground flex size-10 items-center justify-center rounded-full border shadow-sm">
           <UploadIcon strokeWidth={2} className="size-4" />
         </span>
         <span className="text-sm font-medium">{label}</span>
-        {description ? <span className="text-xs text-muted-foreground">{description}</span> : null}
+        {description ? <span className="text-muted-foreground text-xs">{description}</span> : null}
       </div>
     </UploadPrimitive.Dropzone>
   )
@@ -963,10 +964,10 @@ function UploadSlot({
       {item ? (
         <UploadItemContext.Provider value={item}>
           {children ?? (
-            <div className="gap-3.5 px-4 py-3.5 flex min-w-0 flex-wrap items-center">
+            <div className="flex min-w-0 flex-wrap items-center gap-3.5 px-4 py-3.5">
               <UploadItemMedia />
               <UploadItemContent>
-                <span className="text-xs text-muted-foreground">{label}</span>
+                <span className="text-muted-foreground text-xs">{label}</span>
                 <UploadItemTitle />
                 <UploadItemDescription />
               </UploadItemContent>
@@ -986,9 +987,9 @@ function UploadSlot({
           type="button"
           onClick={open}
           disabled={disabled}
-          className="gap-3.5 px-4 py-3.5 flex min-w-0 items-center rounded-[inherit] text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
+          className="focus-visible:ring-ring/50 flex min-w-0 items-center gap-3.5 rounded-[inherit] px-4 py-3.5 text-left outline-none focus-visible:ring-3 disabled:opacity-50"
         >
-          <span className="size-10 rounded-lg group-data-[size=sm]/upload-item:size-8 group-data-[size=xs]/upload-item:size-6 group-data-[size=xs]/upload-item:rounded-md flex shrink-0 items-center justify-center border bg-muted text-muted-foreground transition-transform group-data-dragging/upload-slot:scale-110 [&_svg:not([class*='size-'])]:size-4">
+          <span className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg border transition-transform group-data-dragging/upload-slot:scale-110 group-data-[size=sm]/upload-item:size-8 group-data-[size=xs]/upload-item:size-6 group-data-[size=xs]/upload-item:rounded-md [&_svg:not([class*='size-'])]:size-4">
             {icon ?? <UploadIcon strokeWidth={2} />}
           </span>
           <span className="flex min-w-0 flex-col gap-0.5">
@@ -997,13 +998,13 @@ function UploadSlot({
               {required ? <span className="text-muted-foreground"> (required)</span> : null}
             </span>
             {description ? (
-              <span className="text-sm text-muted-foreground">{description}</span>
+              <span className="text-muted-foreground text-sm">{description}</span>
             ) : null}
           </span>
         </button>
       )}
       {issue ? (
-        <p role="alert" className="gap-3.5 px-4 py-3.5 pt-0 text-xs text-destructive">
+        <p role="alert" className="text-destructive gap-3.5 px-4 py-3.5 pt-0 text-xs">
           {issue}
         </p>
       ) : null}
@@ -1078,7 +1079,7 @@ function UploadModal({
     >
       <ModalContext.Provider value={context}>
         {open ? (
-          <div className="gap-6 p-6 relative flex flex-col">
+          <div className="relative flex flex-col gap-6 p-6">
             {children}
             {showCloseButton ? (
               <NativeButton

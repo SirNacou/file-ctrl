@@ -1,6 +1,5 @@
 'use client'
 
-import * as React from 'react'
 import {
   formatBytes,
   type UploadAdapter,
@@ -9,6 +8,7 @@ import {
   type ValidationOptions,
 } from '@uploadcn/core'
 import { useUploadContext, useUploadProgress, type UploadRootProps } from '@uploadcn/react'
+import * as React from 'react'
 
 import {
   Upload,
@@ -124,7 +124,7 @@ function FileUploadSummary() {
   const summary = useUploadProgress(uploader)
   if (summary.total < 2 && summary.counts.idle === 0) return null
   return (
-    <div className="flex items-center gap-3 pt-1 text-xs text-muted-foreground tabular-nums">
+    <div className="text-muted-foreground flex items-center gap-3 pt-1 text-xs tabular-nums">
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <div className="flex justify-between gap-2">
           <span>

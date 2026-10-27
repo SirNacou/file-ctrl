@@ -1,3 +1,6 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useTable } from '@tanstack/react-table'
+
 import {
   listStorageSourcesQueryKey,
   listUnregisteredSourcesQueryKey,
@@ -15,8 +18,7 @@ import {
 import { toast } from '#/components/ui/toast.tsx'
 import { getPinningProps } from '#/lib/table-utils.ts'
 import { cn } from '#/lib/utils.ts'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useTable } from '@tanstack/react-table'
+
 import { columns } from './columns'
 import { features } from './features'
 
@@ -63,13 +65,13 @@ export const StorageTable = ({ data }: StorageTableProps) => {
 
   return (
     <div
-      className="bg-card shadow border-2 overflow-auto"
+      className="bg-card overflow-auto border-2 shadow"
       style={{
         height: 'calc(100vh - 200px)',
       }}
     >
       <Table>
-        <TableHeader className="top-0 z-10 sticky bg-card">
+        <TableHeader className="bg-card sticky top-0 z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {

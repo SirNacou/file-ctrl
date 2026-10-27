@@ -50,7 +50,7 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon
-        render={<UnfoldVerticalIcon className="size-4 text-muted-foreground pointer-events-none" />}
+        render={<UnfoldVerticalIcon className="text-muted-foreground pointer-events-none size-4" />}
       />
     </SelectPrimitive.Trigger>
   )
@@ -78,7 +78,7 @@ function SelectContent({
         align={align}
         alignOffset={alignOffset}
         alignItemWithTrigger={alignItemWithTrigger}
-        className="z-50 isolate"
+        className="isolate z-50"
       >
         <SelectPrimitive.Popup
           data-slot="select-content"
@@ -119,12 +119,12 @@ function SelectItem({ className, children, ...props }: SelectPrimitive.Item.Prop
       )}
       {...props}
     >
-      <SelectPrimitive.ItemText className="flex flex-1 gap-2 whitespace-nowrap shrink-0">
+      <SelectPrimitive.ItemText className="flex flex-1 shrink-0 gap-2 whitespace-nowrap">
         {children}
       </SelectPrimitive.ItemText>
       <SelectPrimitive.ItemIndicator
         render={
-          <span className="right-2 absolute flex justify-center items-center size-4 pointer-events-none" />
+          <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center" />
         }
       >
         <CheckIcon className="pointer-events-none" />

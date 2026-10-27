@@ -9,13 +9,26 @@ var (
 	ErrStorageSourceNotFound   = errors.New("storage source not found")
 	ErrInvalidSourceDirectory  = errors.New("source directory is invalid")
 	ErrSourceDirectoryNotFound = errors.New("source directory is not exists")
-	ErrInvalidPath             = errors.New("invalid path")
 	ErrAlreadyExists           = errors.New("already exists")
 	ErrFileNotFound            = errors.New("file not found")
 	ErrNotFound                = errors.New("not found")
 	ErrNotAFile                = errors.New("target path is not a file")
 	ErrEmptySelection          = errors.New("no paths selected")
 )
+
+type ErrInvalidPath struct {
+	path string
+}
+
+func NewErrInvalidPath(path string) *ErrInvalidPath {
+	return &ErrInvalidPath{
+		path: path,
+	}
+}
+
+func (e *ErrInvalidPath) Error() string {
+	return fmt.Sprintf("invalid path %s", e.path)
+}
 
 type ErrMustNotBeEmpty struct {
 	property string

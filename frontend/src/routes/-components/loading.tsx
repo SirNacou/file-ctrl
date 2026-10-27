@@ -10,9 +10,9 @@ export const Loading = ({ message = 'Loading...' }: Props) => {
       role="status"
       aria-live="polite"
     >
-      <LoaderCircleIcon className="size-6 animate-spin text-muted-foreground" aria-hidden="true" />
+      <LoaderCircleIcon className="text-muted-foreground size-6 animate-spin" aria-hidden="true" />
 
-      <span className="text-sm text-muted-foreground">{message}</span>
+      <span className="text-muted-foreground text-sm">{message}</span>
     </div>
   )
 }

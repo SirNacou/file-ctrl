@@ -3,14 +3,14 @@
 import { Toast as ToastPrimitive } from '@base-ui/react/toast'
 import { cn } from 'cn'
 import * as React from 'react'
-
-import { Button } from '@/components/ui/button'
 import CircleCheckIcon from '~icons/lucide/circle-check'
 import CircleXIcon from '~icons/lucide/circle-x'
 import InfoIcon from '~icons/lucide/info'
 import LoaderCircleIcon from '~icons/lucide/loader-circle'
 import TriangleAlertIcon from '~icons/lucide/triangle-alert'
 import XIcon from '~icons/lucide/x'
+
+import { Button } from '@/components/ui/button'
 
 export type ToastPosition =
   | 'top-left'
@@ -218,7 +218,7 @@ function ToastList({ position = 'bottom-right' }: { position?: ToastPosition }) 
     <Toast key={toastItem.id} toast={toastItem} swipeDirection={swipeDirection}>
       <ToastContent>
         <ToastIcon type={toastItem.type} />
-        <div className="flex flex-col flex-1 gap-1 min-w-0">
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
           <ToastTitle />
           <ToastDescription />
         </div>

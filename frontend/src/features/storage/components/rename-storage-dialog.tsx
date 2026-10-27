@@ -1,3 +1,8 @@
+import { createFormHook } from '@tanstack/react-form'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
+import EditIcon from '~icons/lucide/edit'
+
 import {
   listStorageSourcesQueryKey,
   storageRenameMutation,
@@ -20,10 +25,6 @@ import {
 } from '#/components/ui/dialog.tsx'
 import { Field, FieldGroup } from '#/components/ui/field.tsx'
 import { toast } from '#/components/ui/toast.tsx'
-import { createFormHook } from '@tanstack/react-form'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
-import EditIcon from '~icons/lucide/edit'
 
 const { useAppForm } = createFormHook({
   fieldContext,
@@ -99,7 +100,7 @@ export function RenameStorageDialog({ storage }: RenameStorageDialogProps) {
       />
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-bold text-xl">Add Storage</DialogTitle>
+          <DialogTitle className="text-xl font-bold">Add Storage</DialogTitle>
         </DialogHeader>
 
         <form

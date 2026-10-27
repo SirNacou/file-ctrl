@@ -1,3 +1,10 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useAtom } from '@tanstack/react-store'
+import { useState, type ReactElement } from 'react'
+import DownloadIcon from '~icons/lucide/download'
+import TextCursorInputIcon from '~icons/lucide/text-cursor-input'
+import TrashIcon from '~icons/lucide/trash'
+
 import {
   storageDeleteFilesMutation,
   storageListDirectoryQueryKey,
@@ -13,12 +20,9 @@ import {
   ContextMenuTrigger,
 } from '#/components/ui/context-menu.tsx'
 import { notify } from '#/lib/notify.ts'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useState, type ReactElement } from 'react'
-import DownloadIcon from '~icons/lucide/download'
-import TextCursorInputIcon from '~icons/lucide/text-cursor-input'
-import TrashIcon from '~icons/lucide/trash'
+
 import { ArchiveDownloadLink, FileDownloadLink } from './download-link'
+import { rowSelectionAtom } from './file-table'
 import { RenameFileDialog } from './rename-file-dialog'
 
 type Props = {
@@ -31,6 +35,8 @@ type Props = {
 type Dialog = 'rename' | 'delete' | null
 
 export const FileTableContextMenu = ({ children, entry, storagePath, subpath = '' }: Props) => {
+  const [_, setRowSelection] = useAtom(rowSelectionAtom)
+
   const [dialog, setDialog] = useState<Dialog>(null)
 
   const queryClient = useQueryClient()
@@ -41,6 +47,7 @@ export const FileTableContextMenu = ({ children, entry, storagePath, subpath = '
     },
     onSuccess: async () => {
       notify.success('Delete successfully!')
+      setRowSelection(() => ({}))
       await queryClient.invalidateQueries({
         queryKey: storageListDirectoryQueryKey({
           path: { storage_path: storagePath },

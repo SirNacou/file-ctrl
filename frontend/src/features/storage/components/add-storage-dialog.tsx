@@ -1,3 +1,8 @@
+import { createFormHook, formOptions } from '@tanstack/react-form'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMemo, useState } from 'react'
+import LucidePlusIcon from '~icons/lucide/plus'
+
 import {
   listStorageSourcesQueryKey,
   listUnregisteredSourcesOptions,
@@ -20,10 +25,6 @@ import {
 import { Field, FieldGroup } from '#/components/ui/field.tsx'
 import { toast } from '#/components/ui/toast.tsx'
 import { Button } from '@/components/ui/button'
-import { createFormHook, formOptions } from '@tanstack/react-form'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useMemo, useState } from 'react'
-import LucidePlusIcon from '~icons/lucide/plus'
 
 const defaultValues: RegisterStorageSourceRequestBody = {
   name: '',
@@ -122,7 +123,7 @@ export const AddStorageDialog = () => {
       />
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-bold text-xl">Add Storage</DialogTitle>
+          <DialogTitle className="text-xl font-bold">Add Storage</DialogTitle>
         </DialogHeader>
 
         <form

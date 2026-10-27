@@ -3,9 +3,9 @@
 import { Dialog as DialogPrimitive } from '@base-ui/react/dialog'
 import { cn } from 'cn'
 import * as React from 'react'
+import XIcon from '~icons/lucide/x'
 
 import { Button } from '@/components/ui/button'
-import XIcon from '~icons/lucide/x'
 
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />
@@ -59,7 +59,7 @@ function DialogContent({
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"
-            render={<Button variant="ghost" className="top-4 right-4 absolute" size="icon-sm" />}
+            render={<Button variant="ghost" className="absolute top-4 right-4" size="icon-sm" />}
           >
             <XIcon />
             <span className="sr-only">Close</span>

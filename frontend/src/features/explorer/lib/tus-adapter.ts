@@ -1,6 +1,7 @@
-import { env } from '#/config/env.ts'
 import type { UploadAdapter } from '@uploadcn/core'
 import { tusAdapter } from '@uploadcn/core/tus'
+
+import { env } from '#/config/env.ts'
 
 const FILE_UPLOAD_ENDPOINT = `${env.PUBLIC_APP_URL}/api/storage/files/uploads`
 
