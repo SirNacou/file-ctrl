@@ -1,9 +1,10 @@
+import type { AnchorHTMLAttributes } from 'react'
+
 import { client } from '#/client/gen/client.gen.ts'
 import {
   type StorageDownloadArchiveData,
   type StorageFileDownloadData,
 } from '#/client/gen/index.ts'
-import type { AnchorHTMLAttributes } from 'react'
 
 type BaseProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'download'>
 

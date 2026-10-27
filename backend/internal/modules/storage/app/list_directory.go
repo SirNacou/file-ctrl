@@ -58,16 +58,19 @@ func (h *ListDirectoryHandler) Handle(
 
 	entryPath, err := domain.NewEntryPath(req.Subpath)
 	if err != nil {
-		return nil, domain.ErrInvalidPath
+		return nil, domain.NewErrInvalidPath(req.Subpath)
 	}
 
 	// Note: omit ctx here if FSDirReader.ReadDir matches localfs.Store.ReadDir(sourcePath, dir)
 	entries, err := h.fsDirReader.ReadDir(ctx, sourcePath, entryPath)
 	if err != nil {
-		return nil, domain.ErrInvalidPath
+		return nil, domain.NewErrInvalidPath(entryPath.String())
 	}
 
-	items := readItems(entries, entryPath)
+	items, err := readItems(entries, entryPath)
+	if err != nil {
+		return nil, err
+	}
 
 	return &ListDirectoryResponse{
 		StorageName: storageSource.Name,
@@ -76,10 +79,14 @@ func (h *ListDirectoryHandler) Handle(
 	}, nil
 }
 
-func readItems(entries []domain.FileMeta, entryPath domain.EntryPath) []DirectoryEntry {
+func readItems(entries []domain.FileMeta, entryPath domain.EntryPath) ([]DirectoryEntry, error) {
 	items := make([]DirectoryEntry, 0, len(entries))
 	for _, e := range entries {
-		items = append(items, toFileItem(entryPath, e))
+		item, err := toFileItem(entryPath, e)
+		if err != nil {
+			return nil, err
+		}
+		items = append(items, item)
 	}
 
 	// Directories first, then by name
@@ -95,15 +102,19 @@ func readItems(entries []domain.FileMeta, entryPath domain.EntryPath) []Director
 		return strings.Compare(strings.ToLower(a.Name), strings.ToLower(b.Name))
 	})
 
-	return items
+	return items, nil
 }
 
-func toFileItem(parent domain.EntryPath, e domain.FileMeta) DirectoryEntry {
+func toFileItem(parent domain.EntryPath, e domain.FileMeta) (DirectoryEntry, error) {
+	path, err := parent.Join(e.Name)
+	if err != nil {
+		return DirectoryEntry{}, err
+	}
 	return DirectoryEntry{
 		ModTime: e.ModTime,
 		Name:    e.Name,
-		Path:    parent.Child(e.Name),
+		Path:    path.Display(),
 		Size:    e.Size,
 		IsDir:   e.IsDir,
-	}
+	}, nil
 }

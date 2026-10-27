@@ -1,3 +1,6 @@
+import { useState, type ReactElement } from 'react'
+import LoaderCircleIcon from '~icons/lucide/loader-circle'
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,8 +12,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { useState, type ReactElement } from 'react'
-import LoaderCircleIcon from '~icons/lucide/loader-circle'
 
 type ConfirmDeleteProps = {
   onConfirm: () => void | Promise<void>

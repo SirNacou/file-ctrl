@@ -1,3 +1,6 @@
+import { Link, useParams } from '@tanstack/react-router'
+import { Fragment, useMemo } from 'react'
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -5,8 +8,6 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '#/components/ui/breadcrumb.tsx'
-import { Link, useParams } from '@tanstack/react-router'
-import { Fragment, useMemo } from 'react'
 
 export function FileBreadcrumbs() {
   const { path, _splat: current_path } = useParams({ from: '/_protected/storage/$path/$/' })

@@ -1,14 +1,13 @@
 'use client'
 
+// third-party
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from 'cn'
 import { useMemo } from 'react'
 
 // shadcn
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-
-// third-party
-import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from 'cn'
 
 // types
 
@@ -156,7 +155,7 @@ function FieldSeparator({
       <Separator className="absolute inset-0 top-1/2" />
       {children && (
         <span
-          className="relative mx-auto block w-fit bg-background px-2 text-muted-foreground"
+          className="bg-background text-muted-foreground relative mx-auto block w-fit px-2"
           data-slot="field-separator-content"
         >
           {children}

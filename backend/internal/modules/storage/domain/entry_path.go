@@ -8,40 +8,55 @@ import (
 
 type EntryPath struct{ value string }
 
+// Root is the base directory.
+var Root = EntryPath{value: "."}
+
 func NewEntryPath(raw string) (EntryPath, error) {
-	raw = strings.TrimSpace(raw)
-	raw = strings.TrimPrefix(raw, "/")
+	raw = strings.TrimLeft(strings.TrimSpace(raw), "/")
 	if raw == "" {
-		return EntryPath{value: "."}, nil
+		return Root, nil
 	}
-	if strings.ContainsRune(raw, 0) || strings.Contains(raw, `\`) {
-		return EntryPath{}, ErrInvalidPath
-	}
-	if !filepath.IsLocal(filepath.FromSlash(raw)) {
-		return EntryPath{}, ErrInvalidPath
+	if strings.ContainsRune(raw, 0) ||
+		strings.Contains(raw, `\`) ||
+		!filepath.IsLocal(filepath.FromSlash(raw)) {
+		return EntryPath{}, NewErrInvalidPath(raw)
 	}
 	return EntryPath{value: path.Clean(raw)}, nil
 }
 
-func (p EntryPath) FS() string {
-	return filepath.FromSlash(p.value)
-}
+func (p EntryPath) IsRoot() bool { return p.value == "." }
+
+func (p EntryPath) FS() string { return filepath.FromSlash(p.value) }
+
+func (p EntryPath) String() string { return p.value }
 
 func (p EntryPath) Display() string {
-	if p.value == "." {
+	if p.IsRoot() {
 		return ""
 	}
 	return p.value
 }
 
-func (p EntryPath) Child(name string) string {
-	return path.Join(p.value, name)
+// Join appends a relative path (a name or a nested path like "a/b/c.txt").
+// The relative part is validated on its own, so it can never escape p.
+func (p EntryPath) Join(rel string) (EntryPath, error) {
+	child, err := NewEntryPath(rel)
+	if err != nil || child.IsRoot() {
+		return EntryPath{}, err
+	}
+	return NewEntryPath(path.Join(p.value, child.value))
 }
 
-func (p EntryPath) ChildPath(name string) (EntryPath, error) {
-	if name == "" || name == "." || strings.ContainsAny(name, `/\`) {
-		return EntryPath{}, ErrInvalidPath
+// Ancestors returns every parent directory, outermost first, excluding root
+// and the path itself. "a/b/c.txt" -> ["a", "a/b"].
+func (p EntryPath) Ancestors() []EntryPath {
+	if p.IsRoot() {
+		return nil
 	}
-
-	return NewEntryPath(p.Child(name))
+	parts := strings.Split(p.value, "/")
+	out := make([]EntryPath, 0, len(parts)-1)
+	for i := 1; i < len(parts); i++ {
+		out = append(out, EntryPath{value: strings.Join(parts[:i], "/")})
+	}
+	return out
 }

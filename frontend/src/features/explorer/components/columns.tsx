@@ -1,6 +1,8 @@
+import { createColumnHelper } from '@tanstack/react-table'
+
 import type { DirectoryEntry } from '#/client/gen/index.ts'
 import { Checkbox } from '#/components/ui/checkbox.tsx'
-import { createColumnHelper } from '@tanstack/react-table'
+
 import { formatBytes, getFileIcon } from '../types'
 import type { Features } from './features'
 
@@ -39,17 +41,17 @@ export const columns = columnHelper.columns([
 
       return (
         <div
-          className="group flex items-center gap-2.5 py-0.5 cursor-pointer select-none"
+          className="group flex cursor-pointer items-center gap-2.5 py-0.5 select-none"
           onClick={() => table.options.meta?.itemSelected(item)}
         >
           <Icon
             className={`h-4 w-4 shrink-0 transition-transform group-hover:scale-110 ${
-              item.is_dir ? 'text-amber-500 fill-amber-500/20' : 'text-muted-foreground'
+              item.is_dir ? 'fill-amber-500/20 text-amber-500' : 'text-muted-foreground'
             }`}
           />
           <span
-            className={`font-medium truncate ${
-              item.is_dir ? 'hover:underline text-foreground' : 'text-foreground/90 font-normal'
+            className={`truncate font-medium ${
+              item.is_dir ? 'text-foreground hover:underline' : 'text-foreground/90 font-normal'
             }`}
           >
             {item.name}

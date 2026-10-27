@@ -1,7 +1,8 @@
-// pinning.ts
-import { cn } from '@/lib/utils'
 import type { Column_ColumnPinning, Column_ColumnSizing } from '@tanstack/react-table'
 import type { CSSProperties } from 'react'
+
+// pinning.ts
+import { cn } from '@/lib/utils'
 
 export function getPinningProps(
   column: Column_ColumnPinning & Column_ColumnSizing,

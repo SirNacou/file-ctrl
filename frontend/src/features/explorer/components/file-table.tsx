@@ -1,3 +1,7 @@
+import { createAtom } from '@tanstack/react-store'
+import { useTable, type RowSelectionState } from '@tanstack/react-table'
+import { useEffect } from 'react'
+
 import type { DirectoryEntry } from '#/client/gen/index.ts'
 import {
   Table,
@@ -7,8 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '#/components/ui/table.tsx'
-import { createAtom } from '@tanstack/react-store'
-import { useTable, type RowSelectionState } from '@tanstack/react-table'
+
 import { columns } from './columns'
 import { features } from './features'
 import { FileTableContextMenu } from './file-table-context-menu'
@@ -39,15 +42,19 @@ export const FileTable = ({ storagePath, subpath, data, itemSelected }: FileTabl
     },
   })
 
+  useEffect(() => {
+    rowSelectionAtom.set(() => ({}))
+  }, [storagePath, subpath])
+
   return (
     <div
-      className="bg-card shadow border-2 overflow-auto"
+      className="bg-card overflow-auto border-2 shadow"
       style={{
-        height: 'calc(100vh - 200px)',
+        height: 'calc(100vh - 300px)',
       }}
     >
       <Table noWrapper className="text-base">
-        <TableHeader className="top-0 z-10 sticky bg-card">
+        <TableHeader className="bg-card sticky top-0 z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {

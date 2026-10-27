@@ -40,7 +40,7 @@ func NewArchive(
 
 	for _, p := range paths {
 		if err := a.collect(p.FS(), single, seen); err != nil {
-			return nil, toDomainError(err)
+			return nil, toDomainError(p.String(), err)
 		}
 	}
 	if len(a.entries) == 0 {
@@ -104,11 +104,11 @@ func relativeTo(root, src string) string {
 	}
 }
 
-func toDomainError(err error) error {
+func toDomainError(path string, err error) error {
 	if errors.Is(err, fs.ErrNotExist) {
 		return ErrNotFound
 	}
-	return ErrInvalidPath
+	return NewErrInvalidPath(path)
 }
 
 func (a *Archive) Name() string { return a.name.String() }
@@ -135,7 +135,7 @@ func (a *Archive) WriteZip(ctx context.Context, w io.Writer) error {
 }
 
 func addDir(zw *zip.Writer, e archiveEntry) error {
-	_, err := zw.Create( e.dst + "/")
+	_, err := zw.Create(e.dst + "/")
 	return err
 }
 

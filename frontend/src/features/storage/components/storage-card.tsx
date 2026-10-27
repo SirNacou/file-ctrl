@@ -1,3 +1,8 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
+import ArchiveIcon from '~icons/lucide/archive'
+import TrashIcon from '~icons/lucide/trash'
+
 import {
   listStorageSourcesQueryKey,
   removeStorageMutation,
@@ -14,10 +19,7 @@ import {
   CardTitle,
 } from '#/components/ui/card.tsx'
 import { toast } from '#/components/ui/toast.tsx'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Link } from '@tanstack/react-router'
-import ArchiveIcon from '~icons/lucide/archive'
-import TrashIcon from '~icons/lucide/trash'
+
 import { RenameStorageDialog } from './rename-storage-dialog'
 
 type StorageCardProps = {
@@ -53,13 +55,13 @@ export function StorageCard({ storage }: StorageCardProps) {
   }
 
   return (
-    <Card className="relative transition hover:border-muted-foreground/40 hover:shadow-md active:bg-muted">
+    <Card className="hover:border-muted-foreground/40 active:bg-muted relative transition hover:shadow-md">
       <CardHeader>
         <CardTitle>
           <Link
             to="/storage/$path/$"
             params={{ path: storage.path }}
-            className="after:absolute after:inset-0 after:rounded-[inherit] after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-primary"
+            className="focus-visible:after:ring-primary after:absolute after:inset-0 after:rounded-[inherit] after:content-[''] focus-visible:outline-none focus-visible:after:ring-2"
           >
             {storage.name}
           </Link>

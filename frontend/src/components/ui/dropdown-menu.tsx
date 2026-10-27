@@ -29,7 +29,7 @@ function DropdownMenuContent({
   return (
     <MenuPrimitive.Portal>
       <MenuPrimitive.Positioner
-        className="z-50 isolate outline-none"
+        className="isolate z-50 outline-none"
         align={align}
         alignOffset={alignOffset}
         side={side}
@@ -165,7 +165,7 @@ function DropdownMenuCheckboxItem({
       {...props}
     >
       <span
-        className="right-2 absolute flex justify-center items-center pointer-events-none"
+        className="pointer-events-none absolute right-2 flex items-center justify-center"
         data-slot="dropdown-menu-checkbox-item-indicator"
       >
         <MenuPrimitive.CheckboxItemIndicator>
@@ -200,7 +200,7 @@ function DropdownMenuRadioItem({
       {...props}
     >
       <span
-        className="right-2 absolute flex justify-center items-center pointer-events-none"
+        className="pointer-events-none absolute right-2 flex items-center justify-center"
         data-slot="dropdown-menu-radio-item-indicator"
       >
         <MenuPrimitive.RadioItemIndicator>

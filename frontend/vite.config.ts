@@ -1,22 +1,23 @@
-import { devtools } from '@tanstack/devtools-vite'
 import path from 'path'
-import { defineConfig, lazyPlugins } from 'vite-plus'
-
-import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 
 import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
+import { devtools } from '@tanstack/devtools-vite'
+import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { nitro } from 'nitro/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import Icons from 'unplugin-icons/vite'
+import { defineConfig, lazyPlugins } from 'vite-plus'
 
 const config = defineConfig({
   fmt: {
     semi: false,
     singleQuote: true,
     trailingComma: 'all',
+    sortImports: true,
+    sortTailwindcss: true,
     ignorePatterns: ['**/gen/', '**/*.gen.ts'],
   },
   lint: {

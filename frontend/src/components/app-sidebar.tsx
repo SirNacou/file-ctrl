@@ -1,4 +1,5 @@
 import { Link, useMatchRoute, type LinkProps } from '@tanstack/react-router'
+
 import { ThemeToggle } from './theme-toggle'
 import {
   Sidebar,
@@ -40,7 +41,7 @@ export const AppSidebar = () => {
     <Sidebar>
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem className="self-center font-bold text-2xl">File Ctrl</SidebarMenuItem>
+          <SidebarMenuItem className="self-center text-2xl font-bold">File Ctrl</SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>

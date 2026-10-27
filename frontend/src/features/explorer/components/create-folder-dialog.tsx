@@ -1,3 +1,7 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
+import PlusIcon from '~icons/lucide/plus'
+
 import {
   createStorageFolderMutation,
   storageListDirectoryQueryKey,
@@ -17,9 +21,6 @@ import {
 import { Field, FieldGroup } from '#/components/ui/field.tsx'
 import { useAppForm } from '#/hooks/use-form.ts'
 import { notify } from '#/lib/notify.ts'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
-import PlusIcon from '~icons/lucide/plus'
 
 type CreateFolderDialogProps = {
   storagePath: string
@@ -55,7 +56,6 @@ export function CreateFolderDialog({ subpath, storagePath }: CreateFolderDialogP
   const createFolder = useMutation({
     ...createStorageFolderMutation(),
     onSuccess: async () => {
-      notify.success('Create successfully!')
       form.reset()
       await queryClient.invalidateQueries({
         queryKey: storageListDirectoryQueryKey({
@@ -76,7 +76,7 @@ export function CreateFolderDialog({ subpath, storagePath }: CreateFolderDialogP
         render={
           <Button>
             <PlusIcon />
-            Folder
+            Create folder
           </Button>
         }
       />

@@ -1,3 +1,6 @@
+import { Link, useRouter } from '@tanstack/react-router'
+import FileQuestionMarkIcon from '~icons/lucide/file-question-mark'
+
 import { Button } from '@/components/ui/button'
 import {
   Empty,
@@ -7,8 +10,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@/components/ui/empty'
-import { Link, useRouter } from '@tanstack/react-router'
-import FileQuestionMarkIcon from '~icons/lucide/file-question-mark'
 
 export const NotFound = () => {
   const router = useRouter()

@@ -43,11 +43,11 @@ func (h *RenameFileHandler) Handle(
 	if err != nil {
 		return nil, err
 	}
-	oldPath, err := parent.ChildPath(req.OldName)
+	oldPath, err := parent.Join(req.OldName)
 	if err != nil {
 		return nil, err
 	}
-	newPath, err := parent.ChildPath(req.NewName)
+	newPath, err := parent.Join(req.NewName)
 	if err != nil {
 		return nil, err
 	}

@@ -7,9 +7,10 @@ import (
 )
 
 type ValidateUploadRequest struct {
-	StoragePath string
-	ParentPath  string
-	Filename    string
+	StoragePath  string
+	StorageSubpath   string
+	DirectoryPath string
+	Filename     string
 }
 type (
 	ValidateUploadResponse struct{}
@@ -32,12 +33,17 @@ func (h *ValidateUploadHandler) Handle(
 		return nil, domain.ErrStorageSourceNotFound
 	}
 
-	parent, err := domain.NewEntryPath(req.ParentPath)
+	sourceSubpath, err := domain.NewEntryPath(req.StorageSubpath)
 	if err != nil {
 		return nil, err
 	}
 
-	if _, err := parent.ChildPath(req.Filename); err != nil {
+	uploadDirectory, err := sourceSubpath.Join(req.DirectoryPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := uploadDirectory.Join(req.Filename); err != nil {
 		return nil, err
 	}
 

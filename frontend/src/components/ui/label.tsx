@@ -1,9 +1,8 @@
 'use client'
 
-import { type ComponentProps } from 'react'
-
 // third-party
 import { cn } from 'cn'
+import { type ComponentProps } from 'react'
 
 function Label({ className, ...props }: ComponentProps<'label'>) {
   return (
