@@ -17,11 +17,17 @@ var (
 )
 
 func Where[Q sqlite.Filterable]() struct {
+	Sessions       sessionWhere[Q]
 	StorageSources storageSourceWhere[Q]
+	Users          userWhere[Q]
 } {
 	return struct {
+		Sessions       sessionWhere[Q]
 		StorageSources storageSourceWhere[Q]
+		Users          userWhere[Q]
 	}{
+		Sessions:       buildSessionWhere[Q](Sessions.Columns),
 		StorageSources: buildStorageSourceWhere[Q](StorageSources.Columns),
+		Users:          buildUserWhere[Q](Users.Columns),
 	}
 }

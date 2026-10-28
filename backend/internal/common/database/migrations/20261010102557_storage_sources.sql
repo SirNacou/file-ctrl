@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS storage_sources (
   path TEXT PRIMARY KEY,
   name TEXT NOT NULL,
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+  created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
 );
 
 -- +goose Down
