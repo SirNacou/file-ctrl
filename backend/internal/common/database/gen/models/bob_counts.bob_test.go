@@ -2,3 +2,53 @@
 // This file is meant to be re-generated in place and/or deleted at any time.
 
 package models
+
+import (
+	"context"
+	"testing"
+)
+
+// Test that User has a C field with count pointers for to-many relationships
+func TestUserCountStruct(t *testing.T) {
+	var m User
+	_ = m.C // Verify C field exists
+
+	// Verify Sessions count field exists and is *int64
+	var _ *int64 = m.C.Sessions
+}
+
+// Test that User has LoadCount methods for to-many relationships
+func TestUserLoadCountMethods(t *testing.T) {
+	var m *User
+	var ms UserSlice
+	ctx := context.Background()
+
+	// Verify LoadCountSessions method exists on single model
+	_ = m.LoadCountSessions(ctx, nil)
+
+	// Verify LoadCountSessions method exists on slice
+	_ = ms.LoadCountSessions(ctx, nil)
+}
+
+// Test that SelectThenLoadCount has User with methods for to-many relationships
+func TestSelectThenLoadCountUser(t *testing.T) {
+	_ = SelectThenLoadCount.User
+
+	// Verify Sessions loader exists
+	_ = SelectThenLoadCount.User.Sessions
+}
+
+// Test that PreloadCount has User with methods for to-many relationships
+func TestPreloadCountUser(t *testing.T) {
+	_ = PreloadCount.User
+
+	// Verify Sessions preloader exists and returns a Preloader
+	_ = PreloadCount.User.Sessions()
+}
+
+// Test that User has PreloadCount method
+func TestUserPreloadCountMethod(t *testing.T) {
+	var m *User
+
+	_ = m.PreloadCount("Sessions", 0)
+}

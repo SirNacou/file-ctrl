@@ -10,8 +10,16 @@ type contextKey string
 var (
 	factoryVisitedCtx = newContextual[map[uintptr]struct{}]("factoryVisited")
 
+	// Relationship Contexts for sessions
+	sessionWithParentsCascadingCtx = newContextual[bool]("sessionWithParentsCascading")
+	sessionRelUserCtx              = newContextual[bool]("sessions.users.fk_sessions_0")
+
 	// Relationship Contexts for storage_sources
 	storageSourceWithParentsCascadingCtx = newContextual[bool]("storageSourceWithParentsCascading")
+
+	// Relationship Contexts for users
+	userWithParentsCascadingCtx = newContextual[bool]("userWithParentsCascading")
+	userRelSessionsCtx          = newContextual[bool]("sessions.users.fk_sessions_0")
 
 	modelsInCreationCtx = newContextual[map[string]any]("modelsInCreation")
 )

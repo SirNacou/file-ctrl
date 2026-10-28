@@ -35,3 +35,8 @@ sqlite:
     - internal/common/database/gen/queries
   except:
     "goose_db_version":
+
+replacements:
+  - match:
+      name: "/^(created_at|updated_at|expires_at)$/"
+    replace: "time.Time"

@@ -6,16 +6,63 @@ package factory
 import (
 	"context"
 	"time"
+	"unsafe"
 
 	models "github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
 )
 
 type Factory struct {
+	baseSessionMods       SessionModSlice
 	baseStorageSourceMods StorageSourceModSlice
+	baseUserMods          UserModSlice
 }
 
 func New() *Factory {
 	return &Factory{}
+}
+
+func (f *Factory) NewSession(mods ...SessionMod) *SessionTemplate {
+	return f.NewSessionWithContext(context.Background(), mods...)
+}
+
+func (f *Factory) NewSessionWithContext(ctx context.Context, mods ...SessionMod) *SessionTemplate {
+	o := &SessionTemplate{f: f}
+
+	if f != nil {
+		f.baseSessionMods.Apply(ctx, o)
+	}
+
+	SessionModSlice(mods).Apply(ctx, o)
+
+	return o
+}
+
+func (f *Factory) FromExistingSession(ctx context.Context, m *models.Session) *SessionTemplate {
+	visited := make(map[uintptr]struct{})
+	ctx = factoryVisitedCtx.WithValue(ctx, visited)
+	return f.fromExistingSession(ctx, m)
+}
+
+func (f *Factory) fromExistingSession(ctx context.Context, m *models.Session) *SessionTemplate {
+	o := &SessionTemplate{f: f, alreadyPersisted: true}
+
+	o.ID = func() string { return m.ID }
+	o.UserID = func() string { return m.UserID }
+	o.ExpiresAt = func() time.Time { return m.ExpiresAt }
+	o.CreatedAt = func() time.Time { return m.CreatedAt }
+
+	if visited, ok := factoryVisitedCtx.Value(ctx); ok {
+		ptr := uintptr(unsafe.Pointer(m))
+		if _, seen := visited[ptr]; seen {
+			return o
+		}
+		visited[ptr] = struct{}{}
+	}
+	if m.R.User != nil {
+		SessionMods.WithExistingUser(m.R.User).Apply(ctx, o)
+	}
+
+	return o
 }
 
 func (f *Factory) NewStorageSource(mods ...StorageSourceMod) *StorageSourceTemplate {
@@ -48,10 +95,72 @@ func (f *Factory) fromExistingStorageSource(ctx context.Context, m *models.Stora
 	return o
 }
 
+func (f *Factory) NewUser(mods ...UserMod) *UserTemplate {
+	return f.NewUserWithContext(context.Background(), mods...)
+}
+
+func (f *Factory) NewUserWithContext(ctx context.Context, mods ...UserMod) *UserTemplate {
+	o := &UserTemplate{f: f}
+
+	if f != nil {
+		f.baseUserMods.Apply(ctx, o)
+	}
+
+	UserModSlice(mods).Apply(ctx, o)
+
+	return o
+}
+
+func (f *Factory) FromExistingUser(ctx context.Context, m *models.User) *UserTemplate {
+	visited := make(map[uintptr]struct{})
+	ctx = factoryVisitedCtx.WithValue(ctx, visited)
+	return f.fromExistingUser(ctx, m)
+}
+
+func (f *Factory) fromExistingUser(ctx context.Context, m *models.User) *UserTemplate {
+	o := &UserTemplate{f: f, alreadyPersisted: true}
+
+	o.ID = func() string { return m.ID }
+	o.Username = func() string { return m.Username }
+	o.PasswordHash = func() string { return m.PasswordHash }
+	o.Role = func() string { return m.Role }
+	o.CreatedAt = func() time.Time { return m.CreatedAt }
+	o.UpdatedAt = func() time.Time { return m.UpdatedAt }
+
+	if visited, ok := factoryVisitedCtx.Value(ctx); ok {
+		ptr := uintptr(unsafe.Pointer(m))
+		if _, seen := visited[ptr]; seen {
+			return o
+		}
+		visited[ptr] = struct{}{}
+	}
+	if len(m.R.Sessions) > 0 {
+		UserMods.AddExistingSessions(m.R.Sessions...).Apply(ctx, o)
+	}
+
+	return o
+}
+
+func (f *Factory) ClearBaseSessionMods() {
+	f.baseSessionMods = nil
+}
+
+func (f *Factory) AddBaseSessionMod(mods ...SessionMod) {
+	f.baseSessionMods = append(f.baseSessionMods, mods...)
+}
+
 func (f *Factory) ClearBaseStorageSourceMods() {
 	f.baseStorageSourceMods = nil
 }
 
 func (f *Factory) AddBaseStorageSourceMod(mods ...StorageSourceMod) {
 	f.baseStorageSourceMods = append(f.baseStorageSourceMods, mods...)
+}
+
+func (f *Factory) ClearBaseUserMods() {
+	f.baseUserMods = nil
+}
+
+func (f *Factory) AddBaseUserMod(mods ...UserMod) {
+	f.baseUserMods = append(f.baseUserMods, mods...)
 }

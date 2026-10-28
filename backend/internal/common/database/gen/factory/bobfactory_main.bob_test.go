@@ -6,7 +6,33 @@ package factory
 import (
 	"context"
 	"testing"
+
+	models "github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
 )
+
+func TestCreateSession(t *testing.T) {
+	if testDB == nil {
+		t.Skip("skipping test, no DSN provided")
+	}
+
+	ctx, cancel := context.WithCancel(t.Context())
+	t.Cleanup(cancel)
+
+	tx, err := testDB.Begin(ctx)
+	if err != nil {
+		t.Fatalf("Error starting transaction: %v", err)
+	}
+
+	defer func() {
+		if err := tx.Rollback(ctx); err != nil {
+			t.Fatalf("Error rolling back transaction: %v", err)
+		}
+	}()
+
+	if _, err := New().NewSessionWithContext(ctx).Create(ctx, tx); err != nil {
+		t.Fatalf("Error creating Session: %v", err)
+	}
+}
 
 func TestCreateStorageSource(t *testing.T) {
 	if testDB == nil {
@@ -29,5 +55,67 @@ func TestCreateStorageSource(t *testing.T) {
 
 	if _, err := New().NewStorageSourceWithContext(ctx).Create(ctx, tx); err != nil {
 		t.Fatalf("Error creating StorageSource: %v", err)
+	}
+}
+
+func TestCreateUser(t *testing.T) {
+	if testDB == nil {
+		t.Skip("skipping test, no DSN provided")
+	}
+
+	ctx, cancel := context.WithCancel(t.Context())
+	t.Cleanup(cancel)
+
+	tx, err := testDB.Begin(ctx)
+	if err != nil {
+		t.Fatalf("Error starting transaction: %v", err)
+	}
+
+	defer func() {
+		if err := tx.Rollback(ctx); err != nil {
+			t.Fatalf("Error rolling back transaction: %v", err)
+		}
+	}()
+
+	if _, err := New().NewUserWithContext(ctx).Create(ctx, tx); err != nil {
+		t.Fatalf("Error creating User: %v", err)
+	}
+}
+
+func TestCreateUserWithSessionsDoesNotDuplicateParent(t *testing.T) {
+	if testDB == nil {
+		t.Skip("skipping test, no DSN provided")
+	}
+
+	ctx, cancel := context.WithCancel(t.Context())
+	t.Cleanup(cancel)
+
+	tx, err := testDB.Begin(ctx)
+	if err != nil {
+		t.Fatalf("Error starting transaction: %v", err)
+	}
+
+	defer func() {
+		if err := tx.Rollback(ctx); err != nil {
+			t.Fatalf("Error rolling back transaction: %v", err)
+		}
+	}()
+
+	before, err := models.Users.Query().Count(ctx, tx)
+	if err != nil {
+		t.Fatalf("Error counting Users: %v", err)
+	}
+
+	if _, err := New().NewUserWithContext(ctx, UserMods.WithNewSessions(2)).Create(ctx, tx); err != nil {
+		t.Fatalf("Error creating User with Sessions: %v", err)
+	}
+
+	after, err := models.Users.Query().Count(ctx, tx)
+	if err != nil {
+		t.Fatalf("Error counting Users: %v", err)
+	}
+
+	if got := after - before; got != 1 {
+		t.Fatalf("Expected Users to increase by 1, got %d", got)
 	}
 }
