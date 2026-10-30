@@ -1,38 +1,27 @@
 package main
 
 import (
-	"log"
+	"context"
 	"log/slog"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/api"
-	"github.com/sirnacou/file-ctrl/backend/internal/common"
-	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage"
 )
 
 func main() {
-	commonModule, err := common.NewCommonModule()
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	server, err := api.NewServer()
 	if err != nil {
-		log.Fatalln(err)
+		slog.Error("init failed", slog.Any("error", err))
+		os.Exit(1)
 	}
 
-	slog.SetDefault(commonModule.Logger)
-
-	storageModule, err := storage.NewStorageModule(commonModule.Env.StorageDir, commonModule.DB)
-	if err != nil {
-		log.Fatalf("Failed to create Storage Module. Error: %e", err)
-	}
-
-	httpRouter := api.NewHttpRouter()
-	httpRouter.RegisterRoutes(storageModule.RegisterAPI)
-
-	uploadRoute, err := storageModule.UploadRoute()
-	if err != nil {
-		log.Fatalf("failed to initialize upload route: %v", err)
-	}
-
-	httpRouter.Mount(uploadRoute)
-
-	if err := httpRouter.Run(commonModule.Env.Port()); err != nil {
-		log.Fatalln(err)
+	if err := server.Run(ctx); err != nil {
+		slog.Error("server failed", slog.Any("error", err))
+		os.Exit(1)
 	}
 }

@@ -18,6 +18,11 @@ type StorageSourcesUpdater interface {
 	Update(ctx context.Context, model *domain.StorageSource) error
 }
 
+type StorageSourcesFinderUpdater interface {
+	StorageSourcesFinder
+	StorageSourcesUpdater
+}
+
 type DirReader interface {
 	ReadDir(
 		ctx context.Context,

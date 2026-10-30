@@ -1,4 +1,3 @@
-// internal/api/frontend.go
 package api
 
 import (
