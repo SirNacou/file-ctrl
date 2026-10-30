@@ -13,18 +13,15 @@ type (
 	}
 	RenameStorageResponse struct{}
 	RenameStorageHandler  struct {
-		finder  StorageSourcesFinder
-		updater StorageSourcesUpdater
+		finderupdater StorageSourcesFinderUpdater
 	}
 )
 
 func NewRenameStorageHandler(
-	finder StorageSourcesFinder,
-	updater StorageSourcesUpdater,
+	finderupdater StorageSourcesFinderUpdater,
 ) *RenameStorageHandler {
 	return &RenameStorageHandler{
-		finder:  finder,
-		updater: updater,
+		finderupdater: finderupdater,
 	}
 }
 
@@ -32,7 +29,7 @@ func (h *RenameStorageHandler) Handle(
 	ctx context.Context,
 	req *RenameStorageRequest,
 ) (*RenameStorageResponse, error) {
-	storage, err := h.finder.Find(ctx, req.Path)
+	storage, err := h.finderupdater.Find(ctx, req.Path)
 	if err != nil {
 		return nil, domain.ErrStorageSourceNotFound
 	}
@@ -42,7 +39,7 @@ func (h *RenameStorageHandler) Handle(
 		return nil, err
 	}
 
-	err = h.updater.Update(ctx, storage)
+	err = h.finderupdater.Update(ctx, storage)
 	if err != nil {
 		return nil, err
 	}

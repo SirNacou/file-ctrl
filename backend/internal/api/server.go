@@ -39,9 +39,7 @@ func NewServer() (*Server, error) {
 	if err != nil {
 		return nil, fmt.Errorf("create storage module: %w", err)
 	}
-	if err := sm.RegisterAPI(humaAPI, e); err != nil {
-		return nil, fmt.Errorf("register storage api: %w", err)
-	}
+	sm.RegisterAPI(humaAPI, e)
 
 	registerFrontend(e)
 
