@@ -64,3 +64,10 @@ func (r *SessionRepository) Delete(ctx context.Context, tokenHash string) error 
 	).Exec(ctx, r.db)
 	return err
 }
+
+func (r *SessionRepository) DeleteAllBefore(ctx context.Context, cutoff time.Time) error {
+	_, err := models.Sessions.Delete(
+		dm.Where(models.Sessions.Columns.ExpiresAt.LT(sqlite.Arg(cutoff))),
+	).Exec(ctx, r.db)
+	return err
+}

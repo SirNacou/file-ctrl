@@ -16,16 +16,11 @@ import (
 
 const UploadBasePath = "/api/storage/files/uploads"
 
-type UploadRoute struct {
-	prefix  string
-	handler http.Handler
-}
-
-func NewUploadRoute(
+func NewUploadHandler(
 	storageDir string,
 	validateUploadHandler *app.ValidateUploadHandler,
 	uploadFileHandler *app.UploadFileHandler,
-) (*UploadRoute, error) {
+) (http.Handler, error) {
 	stagingDir := filepath.Join(storageDir, ".uploads")
 	if err := os.MkdirAll(stagingDir, 0o755); err != nil {
 		return nil, err
@@ -103,10 +98,7 @@ func NewUploadRoute(
 		return nil, err
 	}
 
-	return &UploadRoute{
-		prefix:  UploadBasePath,
-		handler: http.StripPrefix(UploadBasePath, tusHandler),
-	}, nil
+	return http.StripPrefix(UploadBasePath, tusHandler), nil
 }
 
 type metadata struct {
@@ -165,6 +157,3 @@ func mapToMetadata(tusMeta handler.MetaData) (metadata, error) {
 
 	return res, nil
 }
-
-func (r *UploadRoute) Prefix() string        { return r.prefix }
-func (r *UploadRoute) Handler() http.Handler { return r.handler }

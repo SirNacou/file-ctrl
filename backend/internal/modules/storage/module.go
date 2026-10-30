@@ -1,7 +1,10 @@
 package storage
 
 import (
+	"strings"
+
 	"github.com/danielgtaylor/huma/v2"
+	"github.com/labstack/echo/v5"
 	"github.com/sirnacou/file-ctrl/backend/internal/common/localfs"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/adapters"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/app"
@@ -53,7 +56,7 @@ func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error
 	}, nil
 }
 
-func (m *StorageModule) RegisterAPI(humaApi huma.API) {
+func (m *StorageModule) RegisterAPI(humaApi huma.API, e *echo.Echo) error {
 	storageApi := huma.NewGroup(humaApi, "/storage")
 
 	api.ListDirectory(storageApi, m.listDirectoryHandler)
@@ -67,12 +70,21 @@ func (m *StorageModule) RegisterAPI(humaApi huma.API) {
 	api.DeleteFiles(storageApi, m.deleteFilesHandler)
 	api.DownloadFile(storageApi, m.openFileHandler)
 	api.DownloadArchive(storageApi, m.prepareArchiveHandler)
-}
 
-func (m *StorageModule) UploadRoute() (*api.UploadRoute, error) {
-	return api.NewUploadRoute(
+	uploadHandler, err := api.NewUploadHandler(
 		m.storageDir,
 		m.validateUploadHandler,
 		m.uploadFileHandler,
 	)
+	if err != nil {
+		return err
+	}
+
+	cleanPrefix := strings.TrimSuffix(api.UploadBasePath, "/")
+	wrapped := echo.WrapHandler(uploadHandler)
+
+	e.Any(cleanPrefix, wrapped)
+	e.Any(cleanPrefix+"/*", wrapped)
+
+	return nil
 }
