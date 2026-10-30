@@ -7,6 +7,12 @@ import (
 	"fmt"
 	"time"
 	"uuid"
+
+	"github.com/sirnacou/file-ctrl/backend/internal/common"
+)
+
+var (
+	ErrInvalidSession = common.NewUnauthorizedError("Session expired or invalid")
 )
 
 const (

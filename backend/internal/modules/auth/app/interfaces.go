@@ -12,3 +12,10 @@ type SessionCreator interface {
 		session *domain.Session,
 	) error
 }
+
+type SessionFinder interface {
+	FindByTokenHash(
+		ctx context.Context,
+		tokenHash string,
+	) (*domain.Session, error)
+}

@@ -6,7 +6,7 @@ import (
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/domain"
 )
 
-type UserFinder interface {
+type UserByUsernameFinder interface {
 	FindByUsername(ctx context.Context, username string) (*domain.User, error)
 }
 
@@ -21,11 +21,11 @@ type LoginResponse struct {
 }
 
 type LoginHandler struct {
-	users    UserFinder
+	users    UserByUsernameFinder
 	sessions SessionCreator
 }
 
-func NewLoginHandler(users UserFinder, sessions SessionCreator) *LoginHandler {
+func NewLoginHandler(users UserByUsernameFinder, sessions SessionCreator) *LoginHandler {
 	return &LoginHandler{
 		users:    users,
 		sessions: sessions,

@@ -8,12 +8,6 @@ import (
 )
 
 type (
-	SessionFinder interface {
-		FindByTokenHash(
-			ctx context.Context,
-			tokenHash string,
-		) (*domain.Session, error)
-	}
 	UserFinderCounter interface {
 		Count(ctx context.Context) (int64, error)
 		Find(ctx context.Context, ID uuid.UUID) (*domain.User, error)
