@@ -21,18 +21,18 @@ type (
 		User          *domain.User
 	}
 	GetStatusHandler struct {
-		sessionFinder     SessionFinder
 		userFinderCounter UserFinderCounter
+		sessionFinder     SessionFinder
 	}
 )
 
 func NewGetStatusHandler(
-	sessionFinder SessionFinder,
 	userFinderCounter UserFinderCounter,
+	sessionFinder SessionFinder,
 ) *GetStatusHandler {
 	return &GetStatusHandler{
-		sessionFinder:     sessionFinder,
 		userFinderCounter: userFinderCounter,
+		sessionFinder:     sessionFinder,
 	}
 }
 

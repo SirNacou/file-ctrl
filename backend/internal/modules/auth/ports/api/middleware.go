@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 	"strings"
 	"uuid"
 
-	"github.com/danielgtaylor/huma/v2"
+	"github.com/labstack/echo/v5"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/app"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/domain"
 )
@@ -30,64 +31,66 @@ func GetUserFromContext(ctx context.Context) *UserContext {
 	return user
 }
 
-func AuthMiddleware(
-	api huma.API,
-	handler *app.VerifySessionHandler,
-) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+var publicPaths = map[string]struct{}{
+	"/api/auth/status": {},
+	"/api/auth/login":  {},
+	"/api/auth/setup":  {},
+}
+
+func AuthMiddleware(handler *app.VerifySessionHandler) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c *echo.Context) error {
+			r := c.Request()
 			path := r.URL.Path
-			// 1. Only protect /api/* routes (let frontend static assets and /docs pass)
+
+			// Only protect /api/*; frontend assets pass through.
 			if !strings.HasPrefix(path, "/api/") {
-				next.ServeHTTP(w, r)
-				return
+				return next(c)
+			}
+			if _, ok := publicPaths[strings.TrimSuffix(path, "/")]; ok {
+				return next(c)
 			}
 
-			// 2. Allow public auth routes (status, login, setup)
-			if strings.HasPrefix(path, "/api/auth/status") ||
-				strings.HasPrefix(path, "/api/auth/login") ||
-				strings.HasPrefix(path, "/api/auth/setup") {
-				next.ServeHTTP(w, r)
-				return
-			}
-
-			// 2. Read session cookie
-			cookie, err := r.Cookie(SessionCookieName)
+			cookie, err := c.Cookie(SessionCookieName)
 			if err != nil || cookie.Value == "" {
-				writeUnauthorized(w, "Authentication required")
-				return
+				return writeProblem(c, http.StatusUnauthorized, "Authentication required")
 			}
 
 			res, err := handler.Handle(
 				r.Context(),
 				&app.VerifySessionRequest{SessionToken: cookie.Value},
 			)
-			if err != nil {
-				if errors.Is(err, domain.ErrSessionNotFound) {
-					writeUnauthorized(w, "Session expired or invalid")
-				} else if errors.Is(err, domain.ErrUserNotFound) {
-					writeUnauthorized(w, "User account no longer exists")
-				}
-				return
+			switch {
+			case err == nil:
+			case errors.Is(err, domain.ErrSessionNotFound):
+				return writeProblem(c, http.StatusUnauthorized, "Session expired or invalid")
+			case errors.Is(err, domain.ErrUserNotFound):
+				return writeProblem(c, http.StatusUnauthorized, "User account no longer exists")
+			default:
+				slog.ErrorContext(r.Context(), "verify session failed", slog.Any("err", err))
+				return writeProblem(c, http.StatusInternalServerError, "Internal error")
 			}
 
-			// 5. Inject into context and proceed
-			ctx := context.WithValue(r.Context(), userContextKey{}, UserContext{
+			ctx := context.WithValue(r.Context(), userContextKey{}, &UserContext{
 				ID:       res.UserID,
 				Username: res.Username,
 				Role:     res.Role,
 			})
-			next.ServeHTTP(w, r.WithContext(ctx))
-		})
+			c.SetRequest(r.WithContext(ctx))
+
+			return next(c)
+		}
 	}
 }
 
-func writeUnauthorized(w http.ResponseWriter, detail string) {
-	w.Header().Set("Content-Type", "application/problem+json")
-	w.WriteHeader(http.StatusUnauthorized)
-	_ = json.NewEncoder(w).Encode(map[string]any{
-		"title":  "Unauthorized",
-		"status": http.StatusUnauthorized,
+func writeProblem(c *echo.Context, status int, detail string) error {
+	body, err := json.Marshal(map[string]any{
+		"title":  http.StatusText(status),
+		"status": status,
 		"detail": detail,
 	})
+	if err != nil {
+		return err
+	}
+	return c.Blob(status, "application/problem+json", body)
 }

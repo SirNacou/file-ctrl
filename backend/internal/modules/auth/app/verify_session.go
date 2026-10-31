@@ -24,13 +24,16 @@ type (
 		Role     domain.Role
 	}
 	VerifySessionHandler struct {
-		sessions SessionFinder
 		users    UserFinder
+		sessions SessionFinder
 	}
 )
 
-func NewVerifySessionHandler() *VerifySessionHandler {
-	return &VerifySessionHandler{}
+func NewVerifySessionHandler(users UserFinder, sessions SessionFinder) *VerifySessionHandler {
+	return &VerifySessionHandler{
+		users:    users,
+		sessions: sessions,
+	}
 }
 
 func (h *VerifySessionHandler) Handle(

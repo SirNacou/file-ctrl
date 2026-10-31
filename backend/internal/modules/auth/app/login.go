@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"time"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/domain"
 )
@@ -16,8 +17,9 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	User  *domain.User
-	Token domain.SessionToken
+	User      *domain.User
+	RawToken  string
+	ExpiresAt time.Time
 }
 
 type LoginHandler struct {
@@ -58,7 +60,8 @@ func (h *LoginHandler) Handle(ctx context.Context, req *LoginRequest) (*LoginRes
 	}
 
 	return &LoginResponse{
-		User:  user,
-		Token: token,
+		User:      user,
+		RawToken:  token.Raw,
+		ExpiresAt: sess.ExpiresAt,
 	}, nil
 }

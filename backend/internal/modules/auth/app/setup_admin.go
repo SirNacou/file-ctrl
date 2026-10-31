@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"time"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/domain"
 )
@@ -20,8 +21,9 @@ type SetupAdminRequest struct {
 }
 
 type SetupAdminResponse struct {
-	User  *domain.User
-	Token domain.SessionToken
+	User      *domain.User
+	RawToken  string
+	ExpiresAt time.Time
 }
 
 type SetupAdminHandler struct {
@@ -76,7 +78,8 @@ func (h *SetupAdminHandler) Handle(
 	}
 
 	return &SetupAdminResponse{
-		User:  user,
-		Token: token,
+		User:      user,
+		RawToken:  token.Raw,
+		ExpiresAt: session.ExpiresAt,
 	}, nil
 }
