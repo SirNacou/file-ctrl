@@ -4,6 +4,13 @@ export type ClientOptions = {
   baseUrl: "http://localhost:8080" | (string & {});
 };
 
+export type AuthStatusResponseBody = {
+  authenticated: boolean;
+  needs_setup: boolean;
+  role?: string;
+  username?: string;
+};
+
 export type CreateFolderRequestBody = {
   name: string;
   parent_path: string;
@@ -77,6 +84,17 @@ export type ListUnregisteredSourcesResponseBody = {
   dirs: Array<string>;
 };
 
+export type LoginRequestBody = {
+  password: string;
+  username: string;
+};
+
+export type LoginResponseBody = {
+  role: string;
+  user_id: string;
+  username: string;
+};
+
 export type RegisterStorageSourceRequestBody = {
   name: string;
   path: string;
@@ -96,11 +114,123 @@ export type RenameStorageRequestBody = {
   new_name: string;
 };
 
+export type SetupAdminRequestBody = {
+  password: string;
+  username: string;
+};
+
+export type SetupAdminResponseBody = {
+  role: string;
+  user_id: string;
+  username: string;
+};
+
 export type Source = {
   created_at: Date;
   name: string;
   path: string;
 };
+
+export type LoginData = {
+  body: LoginRequestBody;
+  path?: never;
+  query?: never;
+  url: "/api/auth/login";
+};
+
+export type LoginErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type LoginError = LoginErrors[keyof LoginErrors];
+
+export type LoginResponses = {
+  /**
+   * OK
+   */
+  200: LoginResponseBody;
+};
+
+export type LoginResponse = LoginResponses[keyof LoginResponses];
+
+export type LogoutData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/auth/logout";
+};
+
+export type LogoutErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type LogoutError = LogoutErrors[keyof LogoutErrors];
+
+export type LogoutResponses = {
+  /**
+   * No Content
+   */
+  204: void;
+};
+
+export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
+
+export type SetupInitialAdminData = {
+  body: SetupAdminRequestBody;
+  path?: never;
+  query?: never;
+  url: "/api/auth/setup";
+};
+
+export type SetupInitialAdminErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type SetupInitialAdminError = SetupInitialAdminErrors[keyof SetupInitialAdminErrors];
+
+export type SetupInitialAdminResponses = {
+  /**
+   * OK
+   */
+  200: SetupAdminResponseBody;
+};
+
+export type SetupInitialAdminResponse =
+  SetupInitialAdminResponses[keyof SetupInitialAdminResponses];
+
+export type AuthGetStatusData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/auth/status";
+};
+
+export type AuthGetStatusErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type AuthGetStatusError = AuthGetStatusErrors[keyof AuthGetStatusErrors];
+
+export type AuthGetStatusResponses = {
+  /**
+   * OK
+   */
+  200: AuthStatusResponseBody;
+};
+
+export type AuthGetStatusResponse = AuthGetStatusResponses[keyof AuthGetStatusResponses];
 
 export type ListStorageSourcesData = {
   body?: never;

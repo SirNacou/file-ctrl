@@ -4,13 +4,17 @@ import { queryOptions, type UseMutationOptions } from "@tanstack/react-query";
 
 import { client } from "../client.gen";
 import {
+  authGetStatus,
   createStorageFolder,
   listStorageSources,
   listUnregisteredSources,
+  login,
+  logout,
   type Options,
   registerStorage,
   removeStorage,
   renameFile,
+  setupInitialAdmin,
   storageDeleteFiles,
   storageDownloadArchive,
   storageFileDownload,
@@ -18,6 +22,9 @@ import {
   storageRename,
 } from "../sdk.gen";
 import type {
+  AuthGetStatusData,
+  AuthGetStatusError,
+  AuthGetStatusResponse,
   CreateStorageFolderData,
   CreateStorageFolderError,
   ListStorageSourcesData,
@@ -26,6 +33,12 @@ import type {
   ListUnregisteredSourcesData,
   ListUnregisteredSourcesError,
   ListUnregisteredSourcesResponse,
+  LoginData,
+  LoginError,
+  LoginResponse,
+  LogoutData,
+  LogoutError,
+  LogoutResponse,
   RegisterStorageData,
   RegisterStorageError,
   RegisterStorageResponse,
@@ -34,6 +47,9 @@ import type {
   RemoveStorageResponse,
   RenameFileData,
   RenameFileError,
+  SetupInitialAdminData,
+  SetupInitialAdminError,
+  SetupInitialAdminResponse,
   StorageDeleteFilesData,
   StorageDeleteFilesError,
   StorageDownloadArchiveData,
@@ -46,6 +62,71 @@ import type {
   StorageRenameData,
   StorageRenameError,
 } from "../types.gen";
+
+/**
+ * Authenticate with username and password
+ */
+export const loginMutation = (
+  options?: Partial<Options<LoginData>>,
+): UseMutationOptions<LoginResponse, LoginError, Options<LoginData>> => {
+  const mutationOptions: UseMutationOptions<LoginResponse, LoginError, Options<LoginData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await login({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+/**
+ * Invalidate session and clear cookie
+ */
+export const logoutMutation = (
+  options?: Partial<Options<LogoutData>>,
+): UseMutationOptions<LogoutResponse, LogoutError, Options<LogoutData>> => {
+  const mutationOptions: UseMutationOptions<LogoutResponse, LogoutError, Options<LogoutData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await logout({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+/**
+ * Create first administrator account on first run
+ */
+export const setupInitialAdminMutation = (
+  options?: Partial<Options<SetupInitialAdminData>>,
+): UseMutationOptions<
+  SetupInitialAdminResponse,
+  SetupInitialAdminError,
+  Options<SetupInitialAdminData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    SetupInitialAdminResponse,
+    SetupInitialAdminError,
+    Options<SetupInitialAdminData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await setupInitialAdmin({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
 
 export type QueryKey<TOptions extends Options> = [
   Pick<TOptions, "baseUrl" | "body" | "headers" | "path" | "query"> & {
@@ -85,6 +166,31 @@ const createQueryKey = <TOptions extends Options>(
   }
   return [params];
 };
+
+export const authGetStatusQueryKey = (options?: Options<AuthGetStatusData>) =>
+  createQueryKey("authGetStatus", options);
+
+/**
+ * Get current authentication state and setup status
+ */
+export const authGetStatusOptions = (options?: Options<AuthGetStatusData>) =>
+  queryOptions<
+    AuthGetStatusResponse,
+    AuthGetStatusError,
+    AuthGetStatusResponse,
+    ReturnType<typeof authGetStatusQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await authGetStatus({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: authGetStatusQueryKey(options),
+  });
 
 export const listStorageSourcesQueryKey = (options?: Options<ListStorageSourcesData>) =>
   createQueryKey("listStorageSources", options);
