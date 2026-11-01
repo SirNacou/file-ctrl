@@ -247,35 +247,35 @@ export type ListStorageSourcesResponseBodyZodOutput = z.output<
   typeof zListStorageSourcesResponseBody
 >;
 
-export const zLoginBody = zLoginRequestBody;
+export const zAuthLoginBody = zLoginRequestBody;
 
-export type LoginBodyZodType = z.infer<typeof zLoginBody>;
+export type AuthLoginBodyZodType = z.infer<typeof zAuthLoginBody>;
 
-export type LoginBodyZodInput = z.input<typeof zLoginBody>;
+export type AuthLoginBodyZodInput = z.input<typeof zAuthLoginBody>;
 
-export type LoginBodyZodOutput = z.output<typeof zLoginBody>;
+export type AuthLoginBodyZodOutput = z.output<typeof zAuthLoginBody>;
 
 /**
  * OK
  */
-export const zLoginResponse = zLoginResponseBody;
+export const zAuthLoginResponse = zLoginResponseBody;
 
-export type LoginResponseZodType = z.infer<typeof zLoginResponse>;
+export type AuthLoginResponseZodType = z.infer<typeof zAuthLoginResponse>;
 
-export type LoginResponseZodInput = z.input<typeof zLoginResponse>;
+export type AuthLoginResponseZodInput = z.input<typeof zAuthLoginResponse>;
 
-export type LoginResponseZodOutput = z.output<typeof zLoginResponse>;
+export type AuthLoginResponseZodOutput = z.output<typeof zAuthLoginResponse>;
 
 /**
  * No Content
  */
-export const zLogoutResponse = z.void();
+export const zAuthLogoutResponse = z.void();
 
-export type LogoutResponseZodType = z.infer<typeof zLogoutResponse>;
+export type AuthLogoutResponseZodType = z.infer<typeof zAuthLogoutResponse>;
 
-export type LogoutResponseZodInput = z.input<typeof zLogoutResponse>;
+export type AuthLogoutResponseZodInput = z.input<typeof zAuthLogoutResponse>;
 
-export type LogoutResponseZodOutput = z.output<typeof zLogoutResponse>;
+export type AuthLogoutResponseZodOutput = z.output<typeof zAuthLogoutResponse>;
 
 export const zAuthSetupAdminBody = zSetupAdminRequestBody;
 

@@ -14,7 +14,7 @@ type LogoutReponse struct {
 
 func Logout(api huma.API, h *app.LogoutHandler, cookies *SessionCookies) {
 	huma.Register(api, huma.Operation{
-		OperationID: "logout",
+		OperationID: "auth-logout",
 		Method:      http.MethodPost,
 		Path:        "/logout",
 		Summary:     "Invalidate session and clear cookie",

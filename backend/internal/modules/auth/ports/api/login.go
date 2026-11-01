@@ -29,7 +29,7 @@ type LoginResponseBody struct {
 
 func Login(api huma.API, h *app.LoginHandler, cookies *SessionCookies) {
 	huma.Register(api, huma.Operation{
-		OperationID: "login",
+		OperationID: "auth-login",
 		Method:      http.MethodPost,
 		Path:        "/login",
 		Summary:     "Authenticate with username and password",

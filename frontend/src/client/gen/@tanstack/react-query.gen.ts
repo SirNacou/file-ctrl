@@ -5,12 +5,12 @@ import { queryOptions, type UseMutationOptions } from "@tanstack/react-query";
 import { client } from "../client.gen";
 import {
   authGetStatus,
+  authLogin,
+  authLogout,
   authSetupAdmin,
   createStorageFolder,
   listStorageSources,
   listUnregisteredSources,
-  login,
-  logout,
   type Options,
   registerStorage,
   removeStorage,
@@ -25,6 +25,12 @@ import type {
   AuthGetStatusData,
   AuthGetStatusError,
   AuthGetStatusResponse,
+  AuthLoginData,
+  AuthLoginError,
+  AuthLoginResponse,
+  AuthLogoutData,
+  AuthLogoutError,
+  AuthLogoutResponse,
   AuthSetupAdminData,
   AuthSetupAdminError,
   AuthSetupAdminResponse,
@@ -36,12 +42,6 @@ import type {
   ListUnregisteredSourcesData,
   ListUnregisteredSourcesError,
   ListUnregisteredSourcesResponse,
-  LoginData,
-  LoginError,
-  LoginResponse,
-  LogoutData,
-  LogoutError,
-  LogoutResponse,
   RegisterStorageData,
   RegisterStorageError,
   RegisterStorageResponse,
@@ -66,12 +66,16 @@ import type {
 /**
  * Authenticate with username and password
  */
-export const loginMutation = (
-  options?: Partial<Options<LoginData>>,
-): UseMutationOptions<LoginResponse, LoginError, Options<LoginData>> => {
-  const mutationOptions: UseMutationOptions<LoginResponse, LoginError, Options<LoginData>> = {
+export const authLoginMutation = (
+  options?: Partial<Options<AuthLoginData>>,
+): UseMutationOptions<AuthLoginResponse, AuthLoginError, Options<AuthLoginData>> => {
+  const mutationOptions: UseMutationOptions<
+    AuthLoginResponse,
+    AuthLoginError,
+    Options<AuthLoginData>
+  > = {
     mutationFn: async (fnOptions) => {
-      const { data } = await login({
+      const { data } = await authLogin({
         ...options,
         ...fnOptions,
         throwOnError: true,
@@ -85,12 +89,16 @@ export const loginMutation = (
 /**
  * Invalidate session and clear cookie
  */
-export const logoutMutation = (
-  options?: Partial<Options<LogoutData>>,
-): UseMutationOptions<LogoutResponse, LogoutError, Options<LogoutData>> => {
-  const mutationOptions: UseMutationOptions<LogoutResponse, LogoutError, Options<LogoutData>> = {
+export const authLogoutMutation = (
+  options?: Partial<Options<AuthLogoutData>>,
+): UseMutationOptions<AuthLogoutResponse, AuthLogoutError, Options<AuthLogoutData>> => {
+  const mutationOptions: UseMutationOptions<
+    AuthLogoutResponse,
+    AuthLogoutError,
+    Options<AuthLogoutData>
+  > = {
     mutationFn: async (fnOptions) => {
-      const { data } = await logout({
+      const { data } = await authLogout({
         ...options,
         ...fnOptions,
         throwOnError: true,
