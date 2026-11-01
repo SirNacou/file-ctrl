@@ -2,11 +2,12 @@ package app
 
 import (
 	"context"
+	"time"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/domain"
 )
 
-type UserFinder interface {
+type UserByUsernameFinder interface {
 	FindByUsername(ctx context.Context, username string) (*domain.User, error)
 }
 
@@ -16,16 +17,17 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	User  *domain.User
-	Token domain.SessionToken
+	User      *domain.User
+	RawToken  string
+	ExpiresAt time.Time
 }
 
 type LoginHandler struct {
-	users    UserFinder
+	users    UserByUsernameFinder
 	sessions SessionCreator
 }
 
-func NewLoginHandler(users UserFinder, sessions SessionCreator) *LoginHandler {
+func NewLoginHandler(users UserByUsernameFinder, sessions SessionCreator) *LoginHandler {
 	return &LoginHandler{
 		users:    users,
 		sessions: sessions,
@@ -58,7 +60,8 @@ func (h *LoginHandler) Handle(ctx context.Context, req *LoginRequest) (*LoginRes
 	}
 
 	return &LoginResponse{
-		User:  user,
-		Token: token,
+		User:      user,
+		RawToken:  token.Raw,
+		ExpiresAt: sess.ExpiresAt,
 	}, nil
 }

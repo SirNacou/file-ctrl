@@ -9,6 +9,9 @@ import {
   storageListDirectoryResponseTransformer,
 } from "./transformers.gen";
 import type {
+  AuthGetStatusData,
+  AuthGetStatusErrors,
+  AuthGetStatusResponses,
   CreateStorageFolderData,
   CreateStorageFolderErrors,
   CreateStorageFolderResponses,
@@ -18,6 +21,12 @@ import type {
   ListUnregisteredSourcesData,
   ListUnregisteredSourcesErrors,
   ListUnregisteredSourcesResponses,
+  LoginData,
+  LoginErrors,
+  LoginResponses,
+  LogoutData,
+  LogoutErrors,
+  LogoutResponses,
   RegisterStorageData,
   RegisterStorageErrors,
   RegisterStorageResponses,
@@ -27,6 +36,9 @@ import type {
   RenameFileData,
   RenameFileErrors,
   RenameFileResponses,
+  SetupInitialAdminData,
+  SetupInitialAdminErrors,
+  SetupInitialAdminResponses,
   StorageDeleteFilesData,
   StorageDeleteFilesErrors,
   StorageDeleteFilesResponses,
@@ -44,16 +56,22 @@ import type {
   StorageRenameResponses,
 } from "./types.gen";
 import {
+  zAuthGetStatusResponse,
   zCreateStorageFolderBody,
   zCreateStorageFolderPath,
   zListStorageSourcesResponse,
   zListUnregisteredSourcesResponse,
+  zLoginBody,
+  zLoginResponse,
+  zLogoutResponse,
   zRegisterStorageBody,
   zRegisterStorageResponse,
   zRemoveStoragePath,
   zRemoveStorageResponse,
   zRenameFileBody,
   zRenameFilePath,
+  zSetupInitialAdminBody,
+  zSetupInitialAdminResponse,
   zStorageDeleteFilesBody,
   zStorageDeleteFilesPath,
   zStorageDownloadArchivePath,
@@ -84,6 +102,98 @@ export type Options<
    */
   meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
+
+/**
+ * Authenticate with username and password
+ */
+export const login = <ThrowOnError extends boolean = false>(
+  options: Options<LoginData, ThrowOnError>,
+): RequestResult<LoginResponses, LoginErrors, ThrowOnError> =>
+  (options.client ?? client).post<LoginResponses, LoginErrors, ThrowOnError>({
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: zLoginBody,
+          path: z.never().optional(),
+          query: z.never().optional(),
+        })
+        .parseAsync(data),
+    responseValidator: async (data) => await zLoginResponse.parseAsync(data),
+    url: "/api/auth/login",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Invalidate session and clear cookie
+ */
+export const logout = <ThrowOnError extends boolean = false>(
+  options?: Options<LogoutData, ThrowOnError>,
+): RequestResult<LogoutResponses, LogoutErrors, ThrowOnError> =>
+  (options?.client ?? client).post<LogoutResponses, LogoutErrors, ThrowOnError>({
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: z.never().optional(),
+          path: z.never().optional(),
+          query: z.never().optional(),
+        })
+        .parseAsync(data),
+    responseValidator: async (data) => await zLogoutResponse.parseAsync(data),
+    url: "/api/auth/logout",
+    ...options,
+  });
+
+/**
+ * Create first administrator account on first run
+ */
+export const setupInitialAdmin = <ThrowOnError extends boolean = false>(
+  options: Options<SetupInitialAdminData, ThrowOnError>,
+): RequestResult<SetupInitialAdminResponses, SetupInitialAdminErrors, ThrowOnError> =>
+  (options.client ?? client).post<
+    SetupInitialAdminResponses,
+    SetupInitialAdminErrors,
+    ThrowOnError
+  >({
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: zSetupInitialAdminBody,
+          path: z.never().optional(),
+          query: z.never().optional(),
+        })
+        .parseAsync(data),
+    responseValidator: async (data) => await zSetupInitialAdminResponse.parseAsync(data),
+    url: "/api/auth/setup",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Get current authentication state and setup status
+ */
+export const authGetStatus = <ThrowOnError extends boolean = false>(
+  options?: Options<AuthGetStatusData, ThrowOnError>,
+): RequestResult<AuthGetStatusResponses, AuthGetStatusErrors, ThrowOnError> =>
+  (options?.client ?? client).get<AuthGetStatusResponses, AuthGetStatusErrors, ThrowOnError>({
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: z.never().optional(),
+          path: z.never().optional(),
+          query: z.never().optional(),
+        })
+        .parseAsync(data),
+    responseValidator: async (data) => await zAuthGetStatusResponse.parseAsync(data),
+    url: "/api/auth/status",
+    ...options,
+  });
 
 export const listStorageSources = <ThrowOnError extends boolean = false>(
   options?: Options<ListStorageSourcesData, ThrowOnError>,

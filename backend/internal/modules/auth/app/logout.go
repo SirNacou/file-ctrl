@@ -20,6 +20,12 @@ type LogoutHandler struct {
 	sessions SessionDeleter
 }
 
+func NewLogoutHandler(sessions SessionDeleter) *LogoutHandler {
+	return &LogoutHandler{
+		sessions: sessions,
+	}
+}
+
 func (h *LogoutHandler) Handle(ctx context.Context, req *LogoutRequest) (*LogoutResponse, error) {
 	if req.RawSessionToken == "" {
 		return &LogoutResponse{}, nil

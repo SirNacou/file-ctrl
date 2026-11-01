@@ -14,14 +14,15 @@ var (
 	ErrDBInsideStorage = errors.New("database file cannot be located inside the storage root")
 )
 
-type Config struct {
-	AppEnv       string `env:"APP_ENV"       envDefault:"development"`
-	DatabasePath string `env:"DATABASE_PATH" envDefault:"../data/metadata.db"`
-	StorageDir   string `env:"STORAGE_DIR"   envDefault:"../storage"`
+type Env struct {
+	AppEnv               string `env:"APP_ENV"       envDefault:"development"`
+	DatabasePath         string `env:"DATABASE_PATH" envDefault:"../data/metadata.db"`
+	StorageDir           string `env:"STORAGE_DIR"   envDefault:"../storage"`
+	CookieSecureOverride *bool  `env:"COOKIE_SECURE"`
 }
 
-func LoadEnv() (*Config, error) {
-	cfg := new(Config)
+func LoadEnv() (*Env, error) {
+	cfg := new(Env)
 	if err := env.Parse(cfg); err != nil {
 		return nil, fmt.Errorf("failed to load config: %w", err)
 	}
@@ -33,21 +34,21 @@ func LoadEnv() (*Config, error) {
 	return cfg, nil
 }
 
-func (c *Config) IsProd() bool {
+func (c *Env) IsProd() bool {
 	return c.AppEnv == "production"
 }
 
-func (c *Config) IsDev() bool {
+func (c *Env) IsDev() bool {
 	return c.AppEnv == "development"
 }
 
-func (c *Config) Port() int {
+func (c *Env) Port() int {
 	return 8080
 }
 
 // Validate checks pure in-memory constraints and normalizes paths.
 // No filesystem operations (os.MkdirAll, os.Stat) are executed here.
-func (c *Config) Validate() error {
+func (c *Env) Validate() error {
 	if c.Port() < 0 || c.Port() > 65535 {
 		return ErrInvalidPort
 	}
@@ -75,4 +76,11 @@ func (c *Config) Validate() error {
 	}
 
 	return nil
+}
+
+func (c *Env) CookieSecure() bool {
+	if c.CookieSecureOverride != nil {
+		return *c.CookieSecureOverride
+	}
+	return c.IsProd()
 }

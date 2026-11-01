@@ -11,7 +11,7 @@ import (
 )
 
 type CommonModule struct {
-	Env    *config.Config
+	Env    *config.Env
 	Logger *slog.Logger
 	DB     *bob.DB
 }

@@ -32,13 +32,18 @@ func NewServer() (*Server, error) {
 	}
 	slog.SetDefault(cm.Logger)
 
-	e := newEcho()
-	humaAPI := newHumaAPI(e)
-
+	am := auth.NewAuthModule(cm.DB, cm.Env)
 	sm, err := storage.NewStorageModule(cm.Env.StorageDir, cm.DB)
 	if err != nil {
 		return nil, fmt.Errorf("create storage module: %w", err)
 	}
+
+	e := newEcho()
+	e.Use(am.Middleware())
+
+	humaAPI := newHumaAPI(e)
+
+	am.RegisterAPI(humaAPI)
 	sm.RegisterAPI(humaAPI, e)
 
 	registerFrontend(e)
@@ -52,7 +57,7 @@ func NewServer() (*Server, error) {
 		},
 		common:  cm,
 		storage: sm,
-		auth:    auth.NewAuthModule(cm.DB),
+		auth:    am,
 	}, nil
 }
 
