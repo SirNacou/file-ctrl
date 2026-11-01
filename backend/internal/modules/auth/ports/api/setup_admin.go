@@ -31,7 +31,7 @@ type SetupAdminResponseBody struct {
 
 func SetupAdmin(api huma.API, h *app.SetupAdminHandler, cookies *SessionCookies) {
 	huma.Register(api, huma.Operation{
-		OperationID: "setup-initial-admin",
+		OperationID: "auth-setup-admin",
 		Method:      http.MethodPost,
 		Path:        "/setup",
 		Summary:     "Create first administrator account on first run",

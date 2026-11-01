@@ -12,6 +12,9 @@ import type {
   AuthGetStatusData,
   AuthGetStatusErrors,
   AuthGetStatusResponses,
+  AuthSetupAdminData,
+  AuthSetupAdminErrors,
+  AuthSetupAdminResponses,
   CreateStorageFolderData,
   CreateStorageFolderErrors,
   CreateStorageFolderResponses,
@@ -36,9 +39,6 @@ import type {
   RenameFileData,
   RenameFileErrors,
   RenameFileResponses,
-  SetupInitialAdminData,
-  SetupInitialAdminErrors,
-  SetupInitialAdminResponses,
   StorageDeleteFilesData,
   StorageDeleteFilesErrors,
   StorageDeleteFilesResponses,
@@ -57,6 +57,8 @@ import type {
 } from "./types.gen";
 import {
   zAuthGetStatusResponse,
+  zAuthSetupAdminBody,
+  zAuthSetupAdminResponse,
   zCreateStorageFolderBody,
   zCreateStorageFolderPath,
   zListStorageSourcesResponse,
@@ -70,8 +72,6 @@ import {
   zRemoveStorageResponse,
   zRenameFileBody,
   zRenameFilePath,
-  zSetupInitialAdminBody,
-  zSetupInitialAdminResponse,
   zStorageDeleteFilesBody,
   zStorageDeleteFilesPath,
   zStorageDownloadArchivePath,
@@ -150,23 +150,19 @@ export const logout = <ThrowOnError extends boolean = false>(
 /**
  * Create first administrator account on first run
  */
-export const setupInitialAdmin = <ThrowOnError extends boolean = false>(
-  options: Options<SetupInitialAdminData, ThrowOnError>,
-): RequestResult<SetupInitialAdminResponses, SetupInitialAdminErrors, ThrowOnError> =>
-  (options.client ?? client).post<
-    SetupInitialAdminResponses,
-    SetupInitialAdminErrors,
-    ThrowOnError
-  >({
+export const authSetupAdmin = <ThrowOnError extends boolean = false>(
+  options: Options<AuthSetupAdminData, ThrowOnError>,
+): RequestResult<AuthSetupAdminResponses, AuthSetupAdminErrors, ThrowOnError> =>
+  (options.client ?? client).post<AuthSetupAdminResponses, AuthSetupAdminErrors, ThrowOnError>({
     requestValidator: async (data) =>
       await z
         .object({
-          body: zSetupInitialAdminBody,
+          body: zAuthSetupAdminBody,
           path: z.never().optional(),
           query: z.never().optional(),
         })
         .parseAsync(data),
-    responseValidator: async (data) => await zSetupInitialAdminResponse.parseAsync(data),
+    responseValidator: async (data) => await zAuthSetupAdminResponse.parseAsync(data),
     url: "/api/auth/setup",
     ...options,
     headers: {

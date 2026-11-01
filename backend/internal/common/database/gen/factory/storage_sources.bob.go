@@ -6,7 +6,6 @@ package factory
 import (
 	"context"
 	"testing"
-	"time"
 
 	"github.com/aarondl/opt/omit"
 	"github.com/jaswdr/faker/v2"
@@ -37,7 +36,7 @@ func (mods StorageSourceModSlice) Apply(ctx context.Context, n *StorageSourceTem
 type StorageSourceTemplate struct {
 	Path      func() string
 	Name      func() string
-	CreatedAt func() time.Time
+	CreatedAt func() string
 
 	f *Factory
 
@@ -316,14 +315,14 @@ func (m storageSourceMods) RandomName(f *faker.Faker) StorageSourceMod {
 }
 
 // Set the model columns to this value
-func (m storageSourceMods) CreatedAt(val time.Time) StorageSourceMod {
+func (m storageSourceMods) CreatedAt(val string) StorageSourceMod {
 	return StorageSourceModFunc(func(_ context.Context, o *StorageSourceTemplate) {
-		o.CreatedAt = func() time.Time { return val }
+		o.CreatedAt = func() string { return val }
 	})
 }
 
 // Set the Column from the function
-func (m storageSourceMods) CreatedAtFunc(f func() time.Time) StorageSourceMod {
+func (m storageSourceMods) CreatedAtFunc(f func() string) StorageSourceMod {
 	return StorageSourceModFunc(func(_ context.Context, o *StorageSourceTemplate) {
 		o.CreatedAt = f
 	})
@@ -340,8 +339,8 @@ func (m storageSourceMods) UnsetCreatedAt() StorageSourceMod {
 // if faker is nil, a default faker is used
 func (m storageSourceMods) RandomCreatedAt(f *faker.Faker) StorageSourceMod {
 	return StorageSourceModFunc(func(_ context.Context, o *StorageSourceTemplate) {
-		o.CreatedAt = func() time.Time {
-			return random_time_Time(f)
+		o.CreatedAt = func() string {
+			return random_string(f)
 		}
 	})
 }

@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as SetupRouteImport } from './routes/setup'
 import { Route as ProtectedIndexRouteImport } from './routes/_protected/index'
 import { Route as ProtectedStorageIndexRouteImport } from './routes/_protected/storage/index'
 import { Route as ProtectedStoragePathSplatRouteRouteImport } from './routes/_protected/storage/$path/$/route'
@@ -17,6 +19,16 @@ import { Route as ProtectedStoragePathSplatIndexRouteImport } from './routes/_pr
 
 const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
   id: '/_protected',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SetupRoute = SetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProtectedIndexRoute = ProtectedIndexRouteImport.update({
@@ -44,11 +56,15 @@ const ProtectedStoragePathSplatIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof ProtectedIndexRoute
+  '/login': typeof LoginRoute
+  '/setup': typeof SetupRoute
   '/storage/': typeof ProtectedStorageIndexRoute
   '/storage/$path/$': typeof ProtectedStoragePathSplatRouteRouteWithChildren
   '/storage/$path/$/': typeof ProtectedStoragePathSplatIndexRoute
 }
 export interface FileRoutesByTo {
+  '/login': typeof LoginRoute
+  '/setup': typeof SetupRoute
   '/': typeof ProtectedIndexRoute
   '/storage': typeof ProtectedStorageIndexRoute
   '/storage/$path/$': typeof ProtectedStoragePathSplatIndexRoute
@@ -56,6 +72,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_protected': typeof ProtectedRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/setup': typeof SetupRoute
   '/_protected/': typeof ProtectedIndexRoute
   '/_protected/storage/': typeof ProtectedStorageIndexRoute
   '/_protected/storage/$path/$': typeof ProtectedStoragePathSplatRouteRouteWithChildren
@@ -63,12 +81,20 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/storage/' | '/storage/$path/$' | '/storage/$path/$/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/setup'
+    | '/storage/'
+    | '/storage/$path/$'
+    | '/storage/$path/$/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/storage' | '/storage/$path/$'
+  to: '/login' | '/setup' | '/' | '/storage' | '/storage/$path/$'
   id:
     | '__root__'
     | '/_protected'
+    | '/login'
+    | '/setup'
     | '/_protected/'
     | '/_protected/storage/'
     | '/_protected/storage/$path/$'
@@ -77,6 +103,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   ProtectedRouteRoute: typeof ProtectedRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  SetupRoute: typeof SetupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -86,6 +114,20 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof ProtectedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/setup': {
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_protected/': {
@@ -152,6 +194,8 @@ const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   ProtectedRouteRoute: ProtectedRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
+  SetupRoute: SetupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

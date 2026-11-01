@@ -1,10 +1,31 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
+import { authGetStatusOptions } from '#/client/gen/@tanstack/react-query.gen.ts'
 import { AppSidebar } from '#/components/app-sidebar.tsx'
 import { ThemeToggle } from '#/components/theme-toggle.tsx'
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 
 export const Route = createFileRoute('/_protected')({
+  beforeLoad: async ({ context }) => {
+    const status = await context.queryClient.query({
+      ...authGetStatusOptions(),
+      staleTime: 'static',
+    })
+
+    if (status.needs_setup) {
+      throw redirect({ to: '/setup' })
+    }
+    if (!status.authenticated) {
+      throw redirect({ to: '/login' })
+    }
+
+    return {
+      user: {
+        username: status.username,
+        role: status.role,
+      },
+    }
+  },
   component: RouteComponent,
 })
 

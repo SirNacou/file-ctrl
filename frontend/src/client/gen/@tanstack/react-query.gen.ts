@@ -5,6 +5,7 @@ import { queryOptions, type UseMutationOptions } from "@tanstack/react-query";
 import { client } from "../client.gen";
 import {
   authGetStatus,
+  authSetupAdmin,
   createStorageFolder,
   listStorageSources,
   listUnregisteredSources,
@@ -14,7 +15,6 @@ import {
   registerStorage,
   removeStorage,
   renameFile,
-  setupInitialAdmin,
   storageDeleteFiles,
   storageDownloadArchive,
   storageFileDownload,
@@ -25,6 +25,9 @@ import type {
   AuthGetStatusData,
   AuthGetStatusError,
   AuthGetStatusResponse,
+  AuthSetupAdminData,
+  AuthSetupAdminError,
+  AuthSetupAdminResponse,
   CreateStorageFolderData,
   CreateStorageFolderError,
   ListStorageSourcesData,
@@ -47,9 +50,6 @@ import type {
   RemoveStorageResponse,
   RenameFileData,
   RenameFileError,
-  SetupInitialAdminData,
-  SetupInitialAdminError,
-  SetupInitialAdminResponse,
   StorageDeleteFilesData,
   StorageDeleteFilesError,
   StorageDownloadArchiveData,
@@ -104,20 +104,16 @@ export const logoutMutation = (
 /**
  * Create first administrator account on first run
  */
-export const setupInitialAdminMutation = (
-  options?: Partial<Options<SetupInitialAdminData>>,
-): UseMutationOptions<
-  SetupInitialAdminResponse,
-  SetupInitialAdminError,
-  Options<SetupInitialAdminData>
-> => {
+export const authSetupAdminMutation = (
+  options?: Partial<Options<AuthSetupAdminData>>,
+): UseMutationOptions<AuthSetupAdminResponse, AuthSetupAdminError, Options<AuthSetupAdminData>> => {
   const mutationOptions: UseMutationOptions<
-    SetupInitialAdminResponse,
-    SetupInitialAdminError,
-    Options<SetupInitialAdminData>
+    AuthSetupAdminResponse,
+    AuthSetupAdminError,
+    Options<AuthSetupAdminData>
   > = {
     mutationFn: async (fnOptions) => {
-      const { data } = await setupInitialAdmin({
+      const { data } = await authSetupAdmin({
         ...options,
         ...fnOptions,
         throwOnError: true,

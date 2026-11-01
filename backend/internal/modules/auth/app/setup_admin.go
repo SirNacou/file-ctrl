@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"log/slog"
 	"time"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/domain"
@@ -68,12 +69,18 @@ func (h *SetupAdminHandler) Handle(
 		return nil, err
 	}
 
+	if err := h.userRepo.Create(ctx, user); err != nil {
+		slog.ErrorContext(ctx, "failed to create user", slog.Any("error", err))
+		return nil, err
+	}
+
 	session, token, err := domain.NewSession(user.ID)
 	if err != nil {
 		return nil, err
 	}
 
 	if err := h.sessionRepo.Create(ctx, session); err != nil {
+		slog.ErrorContext(ctx, "failed to create session", slog.Any("error", err))
 		return nil, err
 	}
 

@@ -6,7 +6,6 @@ package factory
 import (
 	"context"
 	"testing"
-	"time"
 
 	"github.com/aarondl/opt/omit"
 	"github.com/jaswdr/faker/v2"
@@ -37,8 +36,8 @@ func (mods SessionModSlice) Apply(ctx context.Context, n *SessionTemplate) {
 type SessionTemplate struct {
 	ID        func() string
 	UserID    func() string
-	ExpiresAt func() time.Time
-	CreatedAt func() time.Time
+	ExpiresAt func() string
+	CreatedAt func() string
 
 	r sessionR
 	f *Factory
@@ -157,7 +156,7 @@ func ensureCreatableSession(m *models.SessionSetter) {
 		m.UserID = omit.From(val)
 	}
 	if m.ExpiresAt.IsUnset() {
-		val := random_time_Time(nil)
+		val := random_string(nil)
 		m.ExpiresAt = omit.From(val)
 	}
 }
@@ -376,14 +375,14 @@ func (m sessionMods) RandomUserID(f *faker.Faker) SessionMod {
 }
 
 // Set the model columns to this value
-func (m sessionMods) ExpiresAt(val time.Time) SessionMod {
+func (m sessionMods) ExpiresAt(val string) SessionMod {
 	return SessionModFunc(func(_ context.Context, o *SessionTemplate) {
-		o.ExpiresAt = func() time.Time { return val }
+		o.ExpiresAt = func() string { return val }
 	})
 }
 
 // Set the Column from the function
-func (m sessionMods) ExpiresAtFunc(f func() time.Time) SessionMod {
+func (m sessionMods) ExpiresAtFunc(f func() string) SessionMod {
 	return SessionModFunc(func(_ context.Context, o *SessionTemplate) {
 		o.ExpiresAt = f
 	})
@@ -400,21 +399,21 @@ func (m sessionMods) UnsetExpiresAt() SessionMod {
 // if faker is nil, a default faker is used
 func (m sessionMods) RandomExpiresAt(f *faker.Faker) SessionMod {
 	return SessionModFunc(func(_ context.Context, o *SessionTemplate) {
-		o.ExpiresAt = func() time.Time {
-			return random_time_Time(f)
+		o.ExpiresAt = func() string {
+			return random_string(f)
 		}
 	})
 }
 
 // Set the model columns to this value
-func (m sessionMods) CreatedAt(val time.Time) SessionMod {
+func (m sessionMods) CreatedAt(val string) SessionMod {
 	return SessionModFunc(func(_ context.Context, o *SessionTemplate) {
-		o.CreatedAt = func() time.Time { return val }
+		o.CreatedAt = func() string { return val }
 	})
 }
 
 // Set the Column from the function
-func (m sessionMods) CreatedAtFunc(f func() time.Time) SessionMod {
+func (m sessionMods) CreatedAtFunc(f func() string) SessionMod {
 	return SessionModFunc(func(_ context.Context, o *SessionTemplate) {
 		o.CreatedAt = f
 	})
@@ -431,8 +430,8 @@ func (m sessionMods) UnsetCreatedAt() SessionMod {
 // if faker is nil, a default faker is used
 func (m sessionMods) RandomCreatedAt(f *faker.Faker) SessionMod {
 	return SessionModFunc(func(_ context.Context, o *SessionTemplate) {
-		o.CreatedAt = func() time.Time {
-			return random_time_Time(f)
+		o.CreatedAt = func() string {
+			return random_string(f)
 		}
 	})
 }

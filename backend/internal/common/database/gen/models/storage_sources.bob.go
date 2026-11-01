@@ -6,7 +6,6 @@ package models
 import (
 	"context"
 	"io"
-	"time"
 
 	"github.com/aarondl/opt/omit"
 	"github.com/stephenafamo/bob"
@@ -21,9 +20,9 @@ import (
 
 // StorageSource is an object representing the database table.
 type StorageSource struct {
-	Path      string    `db:"path,pk" `
-	Name      string    `db:"name" `
-	CreatedAt time.Time `db:"created_at" `
+	Path      string `db:"path,pk" `
+	Name      string `db:"name" `
+	CreatedAt string `db:"created_at" `
 }
 
 // StorageSourceSlice is an alias for a slice of pointers to StorageSource.
@@ -105,9 +104,9 @@ func (c storageSourceColumn) ShouldOmitParens() bool {
 // All values are optional, and do not have to be set
 // Generated columns are not included
 type StorageSourceSetter struct {
-	Path      omit.Val[string]    `db:"path,pk" `
-	Name      omit.Val[string]    `db:"name" `
-	CreatedAt omit.Val[time.Time] `db:"created_at" `
+	Path      omit.Val[string] `db:"path,pk" `
+	Name      omit.Val[string] `db:"name" `
+	CreatedAt omit.Val[string] `db:"created_at" `
 }
 
 func (s StorageSourceSetter) SetColumns() []string {
@@ -474,7 +473,7 @@ type storageSourceWhere[Q sqlite.Filterable] struct {
 	cols      storageSourceColumns
 	Path      sqlite.WhereMod[Q, string]
 	Name      sqlite.WhereMod[Q, string]
-	CreatedAt sqlite.WhereMod[Q, time.Time]
+	CreatedAt sqlite.WhereMod[Q, string]
 }
 
 func (storageSourceWhere[Q]) AliasedAs(alias string) storageSourceWhere[Q] {
@@ -486,6 +485,6 @@ func buildStorageSourceWhere[Q sqlite.Filterable](cols storageSourceColumns) sto
 		cols:      cols,
 		Path:      sqlite.Where[Q, string](cols.Path.Expression),
 		Name:      sqlite.Where[Q, string](cols.Name.Expression),
-		CreatedAt: sqlite.Where[Q, time.Time](cols.CreatedAt.Expression),
+		CreatedAt: sqlite.Where[Q, string](cols.CreatedAt.Expression),
 	}
 }

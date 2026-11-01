@@ -6,7 +6,6 @@ package factory
 import (
 	"context"
 	"testing"
-	"time"
 
 	"github.com/aarondl/opt/omit"
 	"github.com/jaswdr/faker/v2"
@@ -39,8 +38,8 @@ type UserTemplate struct {
 	Username     func() string
 	PasswordHash func() string
 	Role         func() string
-	CreatedAt    func() time.Time
-	UpdatedAt    func() time.Time
+	CreatedAt    func() string
+	UpdatedAt    func() string
 
 	r userR
 	f *Factory
@@ -455,14 +454,14 @@ func (m userMods) RandomRole(f *faker.Faker) UserMod {
 }
 
 // Set the model columns to this value
-func (m userMods) CreatedAt(val time.Time) UserMod {
+func (m userMods) CreatedAt(val string) UserMod {
 	return UserModFunc(func(_ context.Context, o *UserTemplate) {
-		o.CreatedAt = func() time.Time { return val }
+		o.CreatedAt = func() string { return val }
 	})
 }
 
 // Set the Column from the function
-func (m userMods) CreatedAtFunc(f func() time.Time) UserMod {
+func (m userMods) CreatedAtFunc(f func() string) UserMod {
 	return UserModFunc(func(_ context.Context, o *UserTemplate) {
 		o.CreatedAt = f
 	})
@@ -479,21 +478,21 @@ func (m userMods) UnsetCreatedAt() UserMod {
 // if faker is nil, a default faker is used
 func (m userMods) RandomCreatedAt(f *faker.Faker) UserMod {
 	return UserModFunc(func(_ context.Context, o *UserTemplate) {
-		o.CreatedAt = func() time.Time {
-			return random_time_Time(f)
+		o.CreatedAt = func() string {
+			return random_string(f)
 		}
 	})
 }
 
 // Set the model columns to this value
-func (m userMods) UpdatedAt(val time.Time) UserMod {
+func (m userMods) UpdatedAt(val string) UserMod {
 	return UserModFunc(func(_ context.Context, o *UserTemplate) {
-		o.UpdatedAt = func() time.Time { return val }
+		o.UpdatedAt = func() string { return val }
 	})
 }
 
 // Set the Column from the function
-func (m userMods) UpdatedAtFunc(f func() time.Time) UserMod {
+func (m userMods) UpdatedAtFunc(f func() string) UserMod {
 	return UserModFunc(func(_ context.Context, o *UserTemplate) {
 		o.UpdatedAt = f
 	})
@@ -510,8 +509,8 @@ func (m userMods) UnsetUpdatedAt() UserMod {
 // if faker is nil, a default faker is used
 func (m userMods) RandomUpdatedAt(f *faker.Faker) UserMod {
 	return UserModFunc(func(_ context.Context, o *UserTemplate) {
-		o.UpdatedAt = func() time.Time {
-			return random_time_Time(f)
+		o.UpdatedAt = func() string {
+			return random_string(f)
 		}
 	})
 }

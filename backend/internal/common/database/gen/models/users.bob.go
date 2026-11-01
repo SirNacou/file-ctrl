@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io"
 	"strings"
-	"time"
 
 	"github.com/aarondl/opt/null"
 	"github.com/aarondl/opt/omit"
@@ -26,12 +25,12 @@ import (
 
 // User is an object representing the database table.
 type User struct {
-	ID           string    `db:"id,pk" `
-	Username     string    `db:"username" `
-	PasswordHash string    `db:"password_hash" `
-	Role         string    `db:"role" `
-	CreatedAt    time.Time `db:"created_at" `
-	UpdatedAt    time.Time `db:"updated_at" `
+	ID           string `db:"id,pk" `
+	Username     string `db:"username" `
+	PasswordHash string `db:"password_hash" `
+	Role         string `db:"role" `
+	CreatedAt    string `db:"created_at" `
+	UpdatedAt    string `db:"updated_at" `
 
 	R userR `db:"-" `
 
@@ -137,12 +136,12 @@ func (c userColumn) ShouldOmitParens() bool {
 // All values are optional, and do not have to be set
 // Generated columns are not included
 type UserSetter struct {
-	ID           omit.Val[string]    `db:"id,pk" `
-	Username     omit.Val[string]    `db:"username" `
-	PasswordHash omit.Val[string]    `db:"password_hash" `
-	Role         omit.Val[string]    `db:"role" `
-	CreatedAt    omit.Val[time.Time] `db:"created_at" `
-	UpdatedAt    omit.Val[time.Time] `db:"updated_at" `
+	ID           omit.Val[string] `db:"id,pk" `
+	Username     omit.Val[string] `db:"username" `
+	PasswordHash omit.Val[string] `db:"password_hash" `
+	Role         omit.Val[string] `db:"role" `
+	CreatedAt    omit.Val[string] `db:"created_at" `
+	UpdatedAt    omit.Val[string] `db:"updated_at" `
 }
 
 func (s UserSetter) SetColumns() []string {
@@ -667,8 +666,8 @@ type userWhere[Q sqlite.Filterable] struct {
 	Username     sqlite.WhereMod[Q, string]
 	PasswordHash sqlite.WhereMod[Q, string]
 	Role         sqlite.WhereMod[Q, string]
-	CreatedAt    sqlite.WhereMod[Q, time.Time]
-	UpdatedAt    sqlite.WhereMod[Q, time.Time]
+	CreatedAt    sqlite.WhereMod[Q, string]
+	UpdatedAt    sqlite.WhereMod[Q, string]
 	R            userWhereR[Q]
 }
 
@@ -683,8 +682,8 @@ func buildUserWhere[Q sqlite.Filterable](cols userColumns) userWhere[Q] {
 		Username:     sqlite.Where[Q, string](cols.Username.Expression),
 		PasswordHash: sqlite.Where[Q, string](cols.PasswordHash.Expression),
 		Role:         sqlite.Where[Q, string](cols.Role.Expression),
-		CreatedAt:    sqlite.Where[Q, time.Time](cols.CreatedAt.Expression),
-		UpdatedAt:    sqlite.Where[Q, time.Time](cols.UpdatedAt.Expression),
+		CreatedAt:    sqlite.Where[Q, string](cols.CreatedAt.Expression),
+		UpdatedAt:    sqlite.Where[Q, string](cols.UpdatedAt.Expression),
 		R:            userWhereR[Q]{cols: cols},
 	}
 }
@@ -718,8 +717,8 @@ type userPreloadBuf struct {
 	Username     null.Val[string]
 	PasswordHash null.Val[string]
 	Role         null.Val[string]
-	CreatedAt    null.Val[time.Time]
-	UpdatedAt    null.Val[time.Time]
+	CreatedAt    null.Val[string]
+	UpdatedAt    null.Val[string]
 }
 
 // userScanMapperNullable maps the preloaded user

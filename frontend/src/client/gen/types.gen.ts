@@ -181,31 +181,30 @@ export type LogoutResponses = {
 
 export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
 
-export type SetupInitialAdminData = {
+export type AuthSetupAdminData = {
   body: SetupAdminRequestBody;
   path?: never;
   query?: never;
   url: "/api/auth/setup";
 };
 
-export type SetupInitialAdminErrors = {
+export type AuthSetupAdminErrors = {
   /**
    * Error
    */
   default: ErrorModel;
 };
 
-export type SetupInitialAdminError = SetupInitialAdminErrors[keyof SetupInitialAdminErrors];
+export type AuthSetupAdminError = AuthSetupAdminErrors[keyof AuthSetupAdminErrors];
 
-export type SetupInitialAdminResponses = {
+export type AuthSetupAdminResponses = {
   /**
    * OK
    */
   200: SetupAdminResponseBody;
 };
 
-export type SetupInitialAdminResponse =
-  SetupInitialAdminResponses[keyof SetupInitialAdminResponses];
+export type AuthSetupAdminResponse = AuthSetupAdminResponses[keyof AuthSetupAdminResponses];
 
 export type AuthGetStatusData = {
   body?: never;

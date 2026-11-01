@@ -277,24 +277,24 @@ export type LogoutResponseZodInput = z.input<typeof zLogoutResponse>;
 
 export type LogoutResponseZodOutput = z.output<typeof zLogoutResponse>;
 
-export const zSetupInitialAdminBody = zSetupAdminRequestBody;
+export const zAuthSetupAdminBody = zSetupAdminRequestBody;
 
-export type SetupInitialAdminBodyZodType = z.infer<typeof zSetupInitialAdminBody>;
+export type AuthSetupAdminBodyZodType = z.infer<typeof zAuthSetupAdminBody>;
 
-export type SetupInitialAdminBodyZodInput = z.input<typeof zSetupInitialAdminBody>;
+export type AuthSetupAdminBodyZodInput = z.input<typeof zAuthSetupAdminBody>;
 
-export type SetupInitialAdminBodyZodOutput = z.output<typeof zSetupInitialAdminBody>;
+export type AuthSetupAdminBodyZodOutput = z.output<typeof zAuthSetupAdminBody>;
 
 /**
  * OK
  */
-export const zSetupInitialAdminResponse = zSetupAdminResponseBody;
+export const zAuthSetupAdminResponse = zSetupAdminResponseBody;
 
-export type SetupInitialAdminResponseZodType = z.infer<typeof zSetupInitialAdminResponse>;
+export type AuthSetupAdminResponseZodType = z.infer<typeof zAuthSetupAdminResponse>;
 
-export type SetupInitialAdminResponseZodInput = z.input<typeof zSetupInitialAdminResponse>;
+export type AuthSetupAdminResponseZodInput = z.input<typeof zAuthSetupAdminResponse>;
 
-export type SetupInitialAdminResponseZodOutput = z.output<typeof zSetupInitialAdminResponse>;
+export type AuthSetupAdminResponseZodOutput = z.output<typeof zAuthSetupAdminResponse>;
 
 /**
  * OK
