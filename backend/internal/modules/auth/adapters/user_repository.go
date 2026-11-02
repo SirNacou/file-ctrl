@@ -6,15 +6,15 @@ import (
 	"errors"
 	"time"
 
-	"uuid"
-
 	"github.com/aarondl/opt/omit"
+	"github.com/aarondl/opt/omitnull"
 	"github.com/sirnacou/file-ctrl/backend/internal/common/database"
 	"github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/domain"
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/dialect/sqlite"
 	"github.com/stephenafamo/bob/dialect/sqlite/sm"
+	"uuid"
 )
 
 type UserRepository struct {
@@ -40,10 +40,12 @@ func (r *UserRepository) Create(
 	_, err := models.Users.Insert(&models.UserSetter{
 		ID:           omit.From(user.ID.String()),
 		Username:     omit.From(user.Username),
-		PasswordHash: omit.From(user.PasswordHash),
+		PasswordHash: omitnull.FromPtr(user.PasswordHash),
 		Role:         omit.From(string(user.Role)),
 		CreatedAt:    omit.From(database.FormatTime(now)),
 		UpdatedAt:    omit.From(database.FormatTime(now)),
+		Provider:     omit.From(string(user.Provider)),
+		ProviderID:   omitnull.FromPtr(user.ProviderID),
 	}).Exec(ctx, r.db)
 
 	return err
@@ -61,13 +63,26 @@ func (r *UserRepository) Find(
 		return nil, err
 	}
 
-	id := uuid.MustParse(row.ID)
-	return &domain.User{
-		ID:           id,
-		Username:     row.Username,
-		PasswordHash: row.PasswordHash,
-		Role:         domain.Role(row.Role),
-	}, nil
+	return userFromRow(row), nil
+}
+
+func (r *UserRepository) FindByProvider(
+	ctx context.Context,
+	provider string,
+	providerID string,
+) (*domain.User, error) {
+	row, err := models.Users.Query(
+		sm.Where(models.Users.Columns.Provider.EQ(sqlite.Arg(provider))),
+		sm.Where(models.Users.Columns.ProviderID.EQ(sqlite.Arg(providerID))),
+	).One(ctx, r.db)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, domain.ErrUserNotFound
+		}
+		return nil, err
+	}
+
+	return userFromRow(row), nil
 }
 
 func (r *UserRepository) FindByUsername(
@@ -84,11 +99,16 @@ func (r *UserRepository) FindByUsername(
 		return nil, err
 	}
 
-	id := uuid.MustParse(row.ID)
+	return userFromRow(row), nil
+}
+
+func userFromRow(row *models.User) *domain.User {
 	return &domain.User{
-		ID:           id,
+		ID:           uuid.MustParse(row.ID),
 		Username:     row.Username,
-		PasswordHash: row.PasswordHash,
+		PasswordHash: row.PasswordHash.Ptr(),
 		Role:         domain.Role(row.Role),
-	}, nil
+		Provider:     domain.Provider(row.Provider),
+		ProviderID:   row.ProviderID.Ptr(),
+	}
 }

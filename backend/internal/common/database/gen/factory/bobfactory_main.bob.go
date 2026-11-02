@@ -7,6 +7,7 @@ import (
 	"context"
 	"unsafe"
 
+	"github.com/aarondl/opt/null"
 	models "github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
 )
 
@@ -121,10 +122,12 @@ func (f *Factory) fromExistingUser(ctx context.Context, m *models.User) *UserTem
 
 	o.ID = func() string { return m.ID }
 	o.Username = func() string { return m.Username }
-	o.PasswordHash = func() string { return m.PasswordHash }
+	o.PasswordHash = func() null.Val[string] { return m.PasswordHash }
 	o.Role = func() string { return m.Role }
 	o.CreatedAt = func() string { return m.CreatedAt }
 	o.UpdatedAt = func() string { return m.UpdatedAt }
+	o.Provider = func() string { return m.Provider }
+	o.ProviderID = func() null.Val[string] { return m.ProviderID }
 
 	if visited, ok := factoryVisitedCtx.Value(ctx); ok {
 		ptr := uintptr(unsafe.Pointer(m))

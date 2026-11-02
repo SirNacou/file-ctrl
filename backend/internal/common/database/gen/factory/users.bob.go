@@ -7,7 +7,9 @@ import (
 	"context"
 	"testing"
 
+	"github.com/aarondl/opt/null"
 	"github.com/aarondl/opt/omit"
+	"github.com/aarondl/opt/omitnull"
 	"github.com/jaswdr/faker/v2"
 	models "github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
 	"github.com/stephenafamo/bob"
@@ -36,10 +38,12 @@ func (mods UserModSlice) Apply(ctx context.Context, n *UserTemplate) {
 type UserTemplate struct {
 	ID           func() string
 	Username     func() string
-	PasswordHash func() string
+	PasswordHash func() null.Val[string]
 	Role         func() string
 	CreatedAt    func() string
 	UpdatedAt    func() string
+	Provider     func() string
+	ProviderID   func() null.Val[string]
 
 	r userR
 	f *Factory
@@ -97,7 +101,7 @@ func (o UserTemplate) BuildSetter() *models.UserSetter {
 	}
 	if o.PasswordHash != nil {
 		val := o.PasswordHash()
-		m.PasswordHash = omit.From(val)
+		m.PasswordHash = omitnull.FromNull(val)
 	}
 	if o.Role != nil {
 		val := o.Role()
@@ -110,6 +114,14 @@ func (o UserTemplate) BuildSetter() *models.UserSetter {
 	if o.UpdatedAt != nil {
 		val := o.UpdatedAt()
 		m.UpdatedAt = omit.From(val)
+	}
+	if o.Provider != nil {
+		val := o.Provider()
+		m.Provider = omit.From(val)
+	}
+	if o.ProviderID != nil {
+		val := o.ProviderID()
+		m.ProviderID = omitnull.FromNull(val)
 	}
 
 	return m
@@ -151,6 +163,12 @@ func (o UserTemplate) Build() *models.User {
 	if o.UpdatedAt != nil {
 		m.UpdatedAt = o.UpdatedAt()
 	}
+	if o.Provider != nil {
+		m.Provider = o.Provider()
+	}
+	if o.ProviderID != nil {
+		m.ProviderID = o.ProviderID()
+	}
 
 	o.setModelRels(m)
 
@@ -178,10 +196,6 @@ func ensureCreatableUser(m *models.UserSetter) {
 	if m.Username.IsUnset() {
 		val := random_string(nil)
 		m.Username = omit.From(val)
-	}
-	if m.PasswordHash.IsUnset() {
-		val := random_string(nil)
-		m.PasswordHash = omit.From(val)
 	}
 }
 
@@ -326,6 +340,8 @@ func (m userMods) RandomizeAllColumns(f *faker.Faker) UserMod {
 		UserMods.RandomRole(f),
 		UserMods.RandomCreatedAt(f),
 		UserMods.RandomUpdatedAt(f),
+		UserMods.RandomProvider(f),
+		UserMods.RandomProviderID(f),
 	}
 }
 
@@ -392,14 +408,14 @@ func (m userMods) RandomUsername(f *faker.Faker) UserMod {
 }
 
 // Set the model columns to this value
-func (m userMods) PasswordHash(val string) UserMod {
+func (m userMods) PasswordHash(val null.Val[string]) UserMod {
 	return UserModFunc(func(_ context.Context, o *UserTemplate) {
-		o.PasswordHash = func() string { return val }
+		o.PasswordHash = func() null.Val[string] { return val }
 	})
 }
 
 // Set the Column from the function
-func (m userMods) PasswordHashFunc(f func() string) UserMod {
+func (m userMods) PasswordHashFunc(f func() null.Val[string]) UserMod {
 	return UserModFunc(func(_ context.Context, o *UserTemplate) {
 		o.PasswordHash = f
 	})
@@ -414,10 +430,32 @@ func (m userMods) UnsetPasswordHash() UserMod {
 
 // Generates a random value for the column using the given faker
 // if faker is nil, a default faker is used
+// The generated value is sometimes null
 func (m userMods) RandomPasswordHash(f *faker.Faker) UserMod {
 	return UserModFunc(func(_ context.Context, o *UserTemplate) {
-		o.PasswordHash = func() string {
-			return random_string(f)
+		o.PasswordHash = func() null.Val[string] {
+			if f == nil {
+				f = &defaultFaker
+			}
+
+			val := random_string(f)
+			return null.From(val)
+		}
+	})
+}
+
+// Generates a random value for the column using the given faker
+// if faker is nil, a default faker is used
+// The generated value is never null
+func (m userMods) RandomPasswordHashNotNull(f *faker.Faker) UserMod {
+	return UserModFunc(func(_ context.Context, o *UserTemplate) {
+		o.PasswordHash = func() null.Val[string] {
+			if f == nil {
+				f = &defaultFaker
+			}
+
+			val := random_string(f)
+			return null.From(val)
 		}
 	})
 }
@@ -511,6 +549,90 @@ func (m userMods) RandomUpdatedAt(f *faker.Faker) UserMod {
 	return UserModFunc(func(_ context.Context, o *UserTemplate) {
 		o.UpdatedAt = func() string {
 			return random_string(f)
+		}
+	})
+}
+
+// Set the model columns to this value
+func (m userMods) Provider(val string) UserMod {
+	return UserModFunc(func(_ context.Context, o *UserTemplate) {
+		o.Provider = func() string { return val }
+	})
+}
+
+// Set the Column from the function
+func (m userMods) ProviderFunc(f func() string) UserMod {
+	return UserModFunc(func(_ context.Context, o *UserTemplate) {
+		o.Provider = f
+	})
+}
+
+// Clear any values for the column
+func (m userMods) UnsetProvider() UserMod {
+	return UserModFunc(func(_ context.Context, o *UserTemplate) {
+		o.Provider = nil
+	})
+}
+
+// Generates a random value for the column using the given faker
+// if faker is nil, a default faker is used
+func (m userMods) RandomProvider(f *faker.Faker) UserMod {
+	return UserModFunc(func(_ context.Context, o *UserTemplate) {
+		o.Provider = func() string {
+			return random_string(f)
+		}
+	})
+}
+
+// Set the model columns to this value
+func (m userMods) ProviderID(val null.Val[string]) UserMod {
+	return UserModFunc(func(_ context.Context, o *UserTemplate) {
+		o.ProviderID = func() null.Val[string] { return val }
+	})
+}
+
+// Set the Column from the function
+func (m userMods) ProviderIDFunc(f func() null.Val[string]) UserMod {
+	return UserModFunc(func(_ context.Context, o *UserTemplate) {
+		o.ProviderID = f
+	})
+}
+
+// Clear any values for the column
+func (m userMods) UnsetProviderID() UserMod {
+	return UserModFunc(func(_ context.Context, o *UserTemplate) {
+		o.ProviderID = nil
+	})
+}
+
+// Generates a random value for the column using the given faker
+// if faker is nil, a default faker is used
+// The generated value is sometimes null
+func (m userMods) RandomProviderID(f *faker.Faker) UserMod {
+	return UserModFunc(func(_ context.Context, o *UserTemplate) {
+		o.ProviderID = func() null.Val[string] {
+			if f == nil {
+				f = &defaultFaker
+			}
+
+			val := random_string(f)
+			return null.From(val)
+		}
+	})
+}
+
+// Generates a random value for the column using the given faker
+// if faker is nil, a default faker is used
+// The generated value is never null
+func (m userMods) RandomProviderIDNotNull(f *faker.Faker) UserMod {
+	return UserModFunc(func(_ context.Context, o *UserTemplate) {
+		o.ProviderID = func() null.Val[string] {
+			if f == nil {
+				f = &defaultFaker
+			}
+
+			val := random_string(f)
+			return null.From(val)
 		}
 	})
 }

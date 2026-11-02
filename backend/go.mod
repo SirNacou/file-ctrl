@@ -6,6 +6,7 @@ require (
 	github.com/aarondl/opt v0.0.0-20250607033636-982744e1bd65
 	github.com/antlr4-go/antlr/v4 v4.13.1
 	github.com/caarlos0/env/v11 v11.4.1
+	github.com/coreos/go-oidc/v3 v3.21.0
 	github.com/danielgtaylor/huma/v2 v2.40.0
 	github.com/jaswdr/faker/v2 v2.10.0
 	github.com/labstack/echo/v4 v4.16.2
@@ -17,12 +18,14 @@ require (
 	github.com/tus/tusd/v2 v2.10.1
 	golang.org/x/crypto v0.58.0
 	golang.org/x/exp v0.0.0-20260824195058-e88cd73687aa
+	golang.org/x/oauth2 v0.36.0
 	golang.org/x/sync v0.24.0
 	modernc.org/sqlite v1.60.1
 )
 
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/labstack/gommon v0.5.0 // indirect
 	github.com/mattn/go-colorable v0.1.16 // indirect
