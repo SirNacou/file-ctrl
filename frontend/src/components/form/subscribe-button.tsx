@@ -14,8 +14,14 @@ export const SubscribeButton = ({ label, loadingText }: SubscribeButtonProps) =>
     <form.Subscribe selector={({ canSubmit, isSubmitting }) => ({ canSubmit, isSubmitting })}>
       {({ canSubmit, isSubmitting }) => (
         <Button type="submit" disabled={!canSubmit || isSubmitting}>
-          {isSubmitting && <Loader2 className="animate-spin" aria-hidden="true" />}
-          {isSubmitting && loadingText ? loadingText : label}
+          {isSubmitting ? (
+            <>
+              <Loader2 className="animate-spin" aria-hidden="true" />
+              {loadingText ? loadingText : label}
+            </>
+          ) : (
+            label
+          )}
         </Button>
       )}
     </form.Subscribe>

@@ -24,6 +24,7 @@
   "registries": {
     "@uiable": "https://uiable.com/r/{name}.json",
     "@magicui": "https://magicui.design/r/{name}",
-    "@uploadcn": "https://uploadcn.dev/r/{style}/{name}.json"
+    "@uploadcn": "https://uploadcn.dev/r/{style}/{name}.json",
+    "@shuip": "https://shuip.plvo.dev/r/{style}/{name}.json"
   }
 }

@@ -1,15 +1,15 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 import { authGetStatusOptions } from '#/client/gen/@tanstack/react-query.gen.ts'
-import { AppSidebar } from '#/components/app-sidebar.tsx'
 import { ThemeToggle } from '#/components/theme-toggle.tsx'
+import { AppSidebar } from '#/routes/_protected/-components/app-sidebar.tsx'
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 
 export const Route = createFileRoute('/_protected')({
   beforeLoad: async ({ context }) => {
     const status = await context.queryClient.query({
       ...authGetStatusOptions(),
-      staleTime: 'static',
+      staleTime: 60 * 1_000,
     })
 
     if (status.needs_setup) {

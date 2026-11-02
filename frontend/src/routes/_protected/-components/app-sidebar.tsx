@@ -1,6 +1,14 @@
-import { Link, useMatchRoute, type LinkProps } from '@tanstack/react-router'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Link, useMatchRoute, useNavigate, type LinkProps } from '@tanstack/react-router'
+import LogoutIcon from '~icons/lucide/log-out'
 
-import { ThemeToggle } from './theme-toggle'
+import {
+  authGetStatusQueryKey,
+  authLogoutMutation,
+} from '#/client/gen/@tanstack/react-query.gen.ts'
+import { Button } from '#/components/ui/button.tsx'
+
+import { ThemeToggle } from '../../../components/theme-toggle'
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +20,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from './ui/sidebar'
+} from '../../../components/ui/sidebar'
 
 type NavItem = {
   label: string
@@ -36,6 +44,19 @@ const navGroups: NavGroup[] = [
 
 export const AppSidebar = () => {
   const matchRoute = useMatchRoute()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const logoutMutation = useMutation({
+    ...authLogoutMutation(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: authGetStatusQueryKey(),
+      })
+      await navigate({
+        to: '/login',
+      })
+    },
+  })
 
   return (
     <Sidebar>
@@ -73,6 +94,9 @@ export const AppSidebar = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <ThemeToggle />
+            <Button size={'icon'} onClick={() => logoutMutation.mutate({})}>
+              <LogoutIcon />
+            </Button>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
