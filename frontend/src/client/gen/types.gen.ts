@@ -131,81 +131,80 @@ export type Source = {
   path: string;
 };
 
-export type LoginData = {
+export type AuthLoginData = {
   body: LoginRequestBody;
   path?: never;
   query?: never;
   url: "/api/auth/login";
 };
 
-export type LoginErrors = {
+export type AuthLoginErrors = {
   /**
    * Error
    */
   default: ErrorModel;
 };
 
-export type LoginError = LoginErrors[keyof LoginErrors];
+export type AuthLoginError = AuthLoginErrors[keyof AuthLoginErrors];
 
-export type LoginResponses = {
+export type AuthLoginResponses = {
   /**
    * OK
    */
   200: LoginResponseBody;
 };
 
-export type LoginResponse = LoginResponses[keyof LoginResponses];
+export type AuthLoginResponse = AuthLoginResponses[keyof AuthLoginResponses];
 
-export type LogoutData = {
+export type AuthLogoutData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/auth/logout";
 };
 
-export type LogoutErrors = {
+export type AuthLogoutErrors = {
   /**
    * Error
    */
   default: ErrorModel;
 };
 
-export type LogoutError = LogoutErrors[keyof LogoutErrors];
+export type AuthLogoutError = AuthLogoutErrors[keyof AuthLogoutErrors];
 
-export type LogoutResponses = {
+export type AuthLogoutResponses = {
   /**
    * No Content
    */
   204: void;
 };
 
-export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
+export type AuthLogoutResponse = AuthLogoutResponses[keyof AuthLogoutResponses];
 
-export type SetupInitialAdminData = {
+export type AuthSetupAdminData = {
   body: SetupAdminRequestBody;
   path?: never;
   query?: never;
   url: "/api/auth/setup";
 };
 
-export type SetupInitialAdminErrors = {
+export type AuthSetupAdminErrors = {
   /**
    * Error
    */
   default: ErrorModel;
 };
 
-export type SetupInitialAdminError = SetupInitialAdminErrors[keyof SetupInitialAdminErrors];
+export type AuthSetupAdminError = AuthSetupAdminErrors[keyof AuthSetupAdminErrors];
 
-export type SetupInitialAdminResponses = {
+export type AuthSetupAdminResponses = {
   /**
    * OK
    */
   200: SetupAdminResponseBody;
 };
 
-export type SetupInitialAdminResponse =
-  SetupInitialAdminResponses[keyof SetupInitialAdminResponses];
+export type AuthSetupAdminResponse = AuthSetupAdminResponses[keyof AuthSetupAdminResponses];
 
 export type AuthGetStatusData = {
   body?: never;

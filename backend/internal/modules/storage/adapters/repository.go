@@ -6,6 +6,7 @@ import (
 	"log/slog"
 
 	"github.com/aarondl/opt/omit"
+	"github.com/sirnacou/file-ctrl/backend/internal/common/database"
 	"github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/domain"
 	"github.com/stephenafamo/bob"
@@ -46,7 +47,7 @@ func (r *StorageSourcesRepository) Insert(ctx context.Context, model *domain.Sto
 	_, err := models.StorageSources.Insert(&models.StorageSourceSetter{
 		Name:      omit.From(model.Name),
 		Path:      omit.From(model.Path.String()),
-		CreatedAt: omit.From(model.CreatedAt),
+		CreatedAt: omit.From(database.FormatTime(model.CreatedAt)),
 	}).Exec(ctx, r.db)
 	if err != nil {
 		return fmt.Errorf("failed to insert new Storage Source: %w", err)
@@ -75,9 +76,15 @@ func toStorageSourceDomain(m *models.StorageSource) (*domain.StorageSource, erro
 	if err != nil {
 		return nil, err
 	}
+
+	createdAt, err := database.ParseTime(m.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+
 	return &domain.StorageSource{
 		Path:      subpath,
-		CreatedAt: m.CreatedAt,
+		CreatedAt: createdAt,
 		Name:      m.Name,
 	}, nil
 }

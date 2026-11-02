@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+type HumaSessionCookie struct {
+	SessionCookie http.Cookie `cookie:"filectrl_session"`
+}
+
 const SessionCookieName = "filectrl_session"
 
 type SessionCookies struct {

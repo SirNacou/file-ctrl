@@ -18,7 +18,8 @@ type (
 	GetStatusResponse struct {
 		NeedsSetup    bool
 		Authenticated bool
-		User          *domain.User
+		Username      string
+		Role          domain.Role
 	}
 	GetStatusHandler struct {
 		userFinderCounter UserFinderCounter
@@ -61,7 +62,7 @@ func (h *GetStatusHandler) Handle(
 
 	tokenHash := domain.HashSessionToken(req.RawSessionToken)
 	session, err := h.sessionFinder.FindByTokenHash(ctx, tokenHash)
-	if err != nil || session.IsExpired() {
+	if err != nil || session == nil || session.IsExpired() {
 		return &GetStatusResponse{
 			NeedsSetup:    false,
 			Authenticated: false,
@@ -76,6 +77,7 @@ func (h *GetStatusHandler) Handle(
 	return &GetStatusResponse{
 		NeedsSetup:    false,
 		Authenticated: true,
-		User:          user,
+		Username:      user.Username,
+		Role:          user.Role,
 	}, nil
 }

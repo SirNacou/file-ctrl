@@ -27,6 +27,9 @@ COPY --from=backend-builder /app/server .
 
 ENV APP_ENV=production
 ENV PORT=8080
+ENV DATABASE_PATH=/data/metadata.db
+ENV STORAGE_DIR=/storage
+ENV UPLOAD_DIR=/uploads
 EXPOSE 8080
 
 ENTRYPOINT [ "./server" ]

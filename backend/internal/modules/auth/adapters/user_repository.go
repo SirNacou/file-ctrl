@@ -5,9 +5,11 @@ import (
 	"database/sql"
 	"errors"
 	"time"
+
 	"uuid"
 
 	"github.com/aarondl/opt/omit"
+	"github.com/sirnacou/file-ctrl/backend/internal/common/database"
 	"github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/domain"
 	"github.com/stephenafamo/bob"
@@ -40,9 +42,9 @@ func (r *UserRepository) Create(
 		Username:     omit.From(user.Username),
 		PasswordHash: omit.From(user.PasswordHash),
 		Role:         omit.From(string(user.Role)),
-		CreatedAt:    omit.From(now),
-		UpdatedAt:    omit.From(now),
-	}).One(ctx, r.db)
+		CreatedAt:    omit.From(database.FormatTime(now)),
+		UpdatedAt:    omit.From(database.FormatTime(now)),
+	}).Exec(ctx, r.db)
 
 	return err
 }
@@ -67,7 +69,6 @@ func (r *UserRepository) Find(
 		Role:         domain.Role(row.Role),
 	}, nil
 }
-
 
 func (r *UserRepository) FindByUsername(
 	ctx context.Context,

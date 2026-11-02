@@ -8,6 +8,7 @@ import (
 	"uuid"
 
 	"github.com/aarondl/opt/omit"
+	"github.com/sirnacou/file-ctrl/backend/internal/common/database"
 	"github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/domain"
 	"github.com/stephenafamo/bob"
@@ -32,8 +33,8 @@ func (r *SessionRepository) Create(
 	_, err := models.Sessions.Insert(&models.SessionSetter{
 		ID:        omit.From(session.ID),
 		UserID:    omit.From(session.UserID.String()),
-		ExpiresAt: omit.From(session.ExpiresAt.UTC()),
-		CreatedAt: omit.From(time.Now().UTC()),
+		ExpiresAt: omit.From(database.FormatTime(session.ExpiresAt)),
+		CreatedAt: omit.From(database.FormatTime(session.CreatedAt)),
 	}).Exec(ctx, r.db)
 	return err
 }
@@ -50,11 +51,21 @@ func (r *SessionRepository) FindByTokenHash(
 		return nil, err
 	}
 
+	expiresAt, err := database.ParseTime(sess.ExpiresAt)
+	if err != nil {
+		return nil, err
+	}
+
+	createdAt, err := database.ParseTime(sess.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+
 	return &domain.Session{
 		ID:        sess.ID,
 		UserID:    uuid.MustParse(sess.UserID),
-		ExpiresAt: sess.ExpiresAt,
-		CreatedAt: sess.CreatedAt,
+		ExpiresAt: expiresAt,
+		CreatedAt: createdAt,
 	}, nil
 }
 

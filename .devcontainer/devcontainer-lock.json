@@ -74,6 +74,11 @@
       "version": "1.0.0",
       "resolved": "ghcr.io/rafaph/devcontainer-features/goose-cli@sha256:a49fa4ddecdded8e19f23aaf7ef49613a0e4ce0cd8be208045db3742cd5e1fe5",
       "integrity": "sha256:a49fa4ddecdded8e19f23aaf7ef49613a0e4ce0cd8be208045db3742cd5e1fe5"
+    },
+    "ghcr.io/rails/devcontainer/features/sqlite3:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/rails/devcontainer/features/sqlite3@sha256:fa4a12e87152158ed9b67acb819ad2e1bd78c7e3808ff08e786a76a677af2c58",
+      "integrity": "sha256:fa4a12e87152158ed9b67acb819ad2e1bd78c7e3808ff08e786a76a677af2c58"
     }
   }
 }

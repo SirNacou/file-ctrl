@@ -12,6 +12,15 @@ import type {
   AuthGetStatusData,
   AuthGetStatusErrors,
   AuthGetStatusResponses,
+  AuthLoginData,
+  AuthLoginErrors,
+  AuthLoginResponses,
+  AuthLogoutData,
+  AuthLogoutErrors,
+  AuthLogoutResponses,
+  AuthSetupAdminData,
+  AuthSetupAdminErrors,
+  AuthSetupAdminResponses,
   CreateStorageFolderData,
   CreateStorageFolderErrors,
   CreateStorageFolderResponses,
@@ -21,12 +30,6 @@ import type {
   ListUnregisteredSourcesData,
   ListUnregisteredSourcesErrors,
   ListUnregisteredSourcesResponses,
-  LoginData,
-  LoginErrors,
-  LoginResponses,
-  LogoutData,
-  LogoutErrors,
-  LogoutResponses,
   RegisterStorageData,
   RegisterStorageErrors,
   RegisterStorageResponses,
@@ -36,9 +39,6 @@ import type {
   RenameFileData,
   RenameFileErrors,
   RenameFileResponses,
-  SetupInitialAdminData,
-  SetupInitialAdminErrors,
-  SetupInitialAdminResponses,
   StorageDeleteFilesData,
   StorageDeleteFilesErrors,
   StorageDeleteFilesResponses,
@@ -57,21 +57,21 @@ import type {
 } from "./types.gen";
 import {
   zAuthGetStatusResponse,
+  zAuthLoginBody,
+  zAuthLoginResponse,
+  zAuthLogoutResponse,
+  zAuthSetupAdminBody,
+  zAuthSetupAdminResponse,
   zCreateStorageFolderBody,
   zCreateStorageFolderPath,
   zListStorageSourcesResponse,
   zListUnregisteredSourcesResponse,
-  zLoginBody,
-  zLoginResponse,
-  zLogoutResponse,
   zRegisterStorageBody,
   zRegisterStorageResponse,
   zRemoveStoragePath,
   zRemoveStorageResponse,
   zRenameFileBody,
   zRenameFilePath,
-  zSetupInitialAdminBody,
-  zSetupInitialAdminResponse,
   zStorageDeleteFilesBody,
   zStorageDeleteFilesPath,
   zStorageDownloadArchivePath,
@@ -106,19 +106,19 @@ export type Options<
 /**
  * Authenticate with username and password
  */
-export const login = <ThrowOnError extends boolean = false>(
-  options: Options<LoginData, ThrowOnError>,
-): RequestResult<LoginResponses, LoginErrors, ThrowOnError> =>
-  (options.client ?? client).post<LoginResponses, LoginErrors, ThrowOnError>({
+export const authLogin = <ThrowOnError extends boolean = false>(
+  options: Options<AuthLoginData, ThrowOnError>,
+): RequestResult<AuthLoginResponses, AuthLoginErrors, ThrowOnError> =>
+  (options.client ?? client).post<AuthLoginResponses, AuthLoginErrors, ThrowOnError>({
     requestValidator: async (data) =>
       await z
         .object({
-          body: zLoginBody,
+          body: zAuthLoginBody,
           path: z.never().optional(),
           query: z.never().optional(),
         })
         .parseAsync(data),
-    responseValidator: async (data) => await zLoginResponse.parseAsync(data),
+    responseValidator: async (data) => await zAuthLoginResponse.parseAsync(data),
     url: "/api/auth/login",
     ...options,
     headers: {
@@ -130,10 +130,10 @@ export const login = <ThrowOnError extends boolean = false>(
 /**
  * Invalidate session and clear cookie
  */
-export const logout = <ThrowOnError extends boolean = false>(
-  options?: Options<LogoutData, ThrowOnError>,
-): RequestResult<LogoutResponses, LogoutErrors, ThrowOnError> =>
-  (options?.client ?? client).post<LogoutResponses, LogoutErrors, ThrowOnError>({
+export const authLogout = <ThrowOnError extends boolean = false>(
+  options?: Options<AuthLogoutData, ThrowOnError>,
+): RequestResult<AuthLogoutResponses, AuthLogoutErrors, ThrowOnError> =>
+  (options?.client ?? client).post<AuthLogoutResponses, AuthLogoutErrors, ThrowOnError>({
     requestValidator: async (data) =>
       await z
         .object({
@@ -142,7 +142,7 @@ export const logout = <ThrowOnError extends boolean = false>(
           query: z.never().optional(),
         })
         .parseAsync(data),
-    responseValidator: async (data) => await zLogoutResponse.parseAsync(data),
+    responseValidator: async (data) => await zAuthLogoutResponse.parseAsync(data),
     url: "/api/auth/logout",
     ...options,
   });
@@ -150,23 +150,19 @@ export const logout = <ThrowOnError extends boolean = false>(
 /**
  * Create first administrator account on first run
  */
-export const setupInitialAdmin = <ThrowOnError extends boolean = false>(
-  options: Options<SetupInitialAdminData, ThrowOnError>,
-): RequestResult<SetupInitialAdminResponses, SetupInitialAdminErrors, ThrowOnError> =>
-  (options.client ?? client).post<
-    SetupInitialAdminResponses,
-    SetupInitialAdminErrors,
-    ThrowOnError
-  >({
+export const authSetupAdmin = <ThrowOnError extends boolean = false>(
+  options: Options<AuthSetupAdminData, ThrowOnError>,
+): RequestResult<AuthSetupAdminResponses, AuthSetupAdminErrors, ThrowOnError> =>
+  (options.client ?? client).post<AuthSetupAdminResponses, AuthSetupAdminErrors, ThrowOnError>({
     requestValidator: async (data) =>
       await z
         .object({
-          body: zSetupInitialAdminBody,
+          body: zAuthSetupAdminBody,
           path: z.never().optional(),
           query: z.never().optional(),
         })
         .parseAsync(data),
-    responseValidator: async (data) => await zSetupInitialAdminResponse.parseAsync(data),
+    responseValidator: async (data) => await zAuthSetupAdminResponse.parseAsync(data),
     url: "/api/auth/setup",
     ...options,
     headers: {

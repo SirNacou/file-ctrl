@@ -41,8 +41,8 @@ func GetStatus(api huma.API, h *app.GetStatusHandler) {
 			Body: AuthStatusResponseBody{
 				NeedsSetup:    res.NeedsSetup,
 				Authenticated: res.Authenticated,
-				Username:      res.User.Username,
-				Role:          string(res.User.Role),
+				Username:      res.Username,
+				Role:          string(res.Role),
 			},
 		}, nil
 	})

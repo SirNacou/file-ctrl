@@ -20,7 +20,8 @@
         "renesaarsoo.sql-formatter-vsc",
         "ms-azuretools.vscode-docker",
         "mhutchie.git-graph",
-        "burkeholland.simple-react-snippets"
+        "burkeholland.simple-react-snippets",
+        "cweijan.vscode-database-client2"
       ],
       "settings": {
         "debug.javascript.autoAttachFilter": "disabled",
@@ -46,7 +47,8 @@
     "ghcr.io/helpers4/devcontainer/vite-plus:1": {},
     "ghcr.io/iyaki/devcontainer-features/lefthook:2": {},
     "ghcr.io/mrsimonemms/devcontainers/air:1": {},
-    "ghcr.io/rafaph/devcontainer-features/goose-cli:1": {}
+    "ghcr.io/rafaph/devcontainer-features/goose-cli:1": {},
+    "ghcr.io/rails/devcontainer/features/sqlite3:1": {}
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [

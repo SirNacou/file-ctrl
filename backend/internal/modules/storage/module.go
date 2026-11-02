@@ -17,7 +17,11 @@ type StorageModule struct {
 	upload   *api.StorageUploadFilesEndpoint
 }
 
-func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error) {
+func NewStorageModule(
+	storageDir string,
+	uploadDir string,
+	db bob.Executor,
+) (*StorageModule, error) {
 	repo := adapters.NewStorageSourcesRepository(db)
 	fs := localfs.NewStorage(storageDir)
 
@@ -37,7 +41,7 @@ func NewStorageModule(storageDir string, db bob.Executor) (*StorageModule, error
 		UploadFile:              app.NewUploadFileHandler(repo, fs),
 	}
 
-	upload, err := api.NewStorageUploadFilesEndpoint(storageDir, h.ValidateUpload, h.UploadFile)
+	upload, err := api.NewStorageUploadFilesEndpoint(uploadDir, h.ValidateUpload, h.UploadFile)
 	if err != nil {
 		return nil, fmt.Errorf("create upload handler: %w", err)
 	}

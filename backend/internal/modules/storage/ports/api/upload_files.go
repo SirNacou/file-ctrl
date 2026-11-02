@@ -22,11 +22,11 @@ type StorageUploadFilesEndpoint struct {
 }
 
 func NewStorageUploadFilesEndpoint(
-	storageDir string,
+	uploadDir string,
 	validateUploadHandler *app.ValidateUploadHandler,
 	uploadFileHandler *app.UploadFileHandler,
 ) (*StorageUploadFilesEndpoint, error) {
-	stagingDir := filepath.Join(storageDir, ".uploads")
+	stagingDir := filepath.Clean(uploadDir)
 	if err := os.MkdirAll(stagingDir, 0o755); err != nil {
 		return nil, err
 	}

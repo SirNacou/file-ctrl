@@ -8,29 +8,25 @@ import (
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/app"
 )
 
-type LogoutReponse struct {
+type LogoutRequest struct {
+	HumaSessionCookie
+}
+type LogoutResponse struct {
 	SetCookie http.Cookie `header:"Set-Cookie"`
 }
 
 func Logout(api huma.API, h *app.LogoutHandler, cookies *SessionCookies) {
 	huma.Register(api, huma.Operation{
-		OperationID: "logout",
+		OperationID: "auth-logout",
 		Method:      http.MethodPost,
 		Path:        "/logout",
 		Summary:     "Invalidate session and clear cookie",
-	}, func(ctx context.Context, input *struct{}) (*LogoutReponse, error) {
-		hCtx := ctx.(huma.Context)
-		cookie, _ := huma.ReadCookie(hCtx, SessionCookieName)
-		rawToken := ""
-		if cookie != nil {
-			rawToken = cookie.Value
-		}
-
-		_, _ = h.Handle(ctx, &app.LogoutRequest{RawSessionToken: rawToken})
+	}, func(ctx context.Context, input *LogoutRequest) (*LogoutResponse, error) {
+		_, _ = h.Handle(ctx, &app.LogoutRequest{RawSessionToken: input.SessionCookie.Value})
 
 		clearCookie := cookies.Clear()
 
-		return &LogoutReponse{
+		return &LogoutResponse{
 			SetCookie: *clearCookie,
 		}, nil
 	})

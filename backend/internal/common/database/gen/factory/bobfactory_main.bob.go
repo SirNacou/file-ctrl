@@ -5,7 +5,6 @@ package factory
 
 import (
 	"context"
-	"time"
 	"unsafe"
 
 	models "github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
@@ -48,8 +47,8 @@ func (f *Factory) fromExistingSession(ctx context.Context, m *models.Session) *S
 
 	o.ID = func() string { return m.ID }
 	o.UserID = func() string { return m.UserID }
-	o.ExpiresAt = func() time.Time { return m.ExpiresAt }
-	o.CreatedAt = func() time.Time { return m.CreatedAt }
+	o.ExpiresAt = func() string { return m.ExpiresAt }
+	o.CreatedAt = func() string { return m.CreatedAt }
 
 	if visited, ok := factoryVisitedCtx.Value(ctx); ok {
 		ptr := uintptr(unsafe.Pointer(m))
@@ -90,7 +89,7 @@ func (f *Factory) fromExistingStorageSource(ctx context.Context, m *models.Stora
 
 	o.Path = func() string { return m.Path }
 	o.Name = func() string { return m.Name }
-	o.CreatedAt = func() time.Time { return m.CreatedAt }
+	o.CreatedAt = func() string { return m.CreatedAt }
 
 	return o
 }
@@ -124,8 +123,8 @@ func (f *Factory) fromExistingUser(ctx context.Context, m *models.User) *UserTem
 	o.Username = func() string { return m.Username }
 	o.PasswordHash = func() string { return m.PasswordHash }
 	o.Role = func() string { return m.Role }
-	o.CreatedAt = func() time.Time { return m.CreatedAt }
-	o.UpdatedAt = func() time.Time { return m.UpdatedAt }
+	o.CreatedAt = func() string { return m.CreatedAt }
+	o.UpdatedAt = func() string { return m.UpdatedAt }
 
 	if visited, ok := factoryVisitedCtx.Value(ctx); ok {
 		ptr := uintptr(unsafe.Pointer(m))

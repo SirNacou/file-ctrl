@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/sirnacou/file-ctrl/backend/internal/common/database"
 	"github.com/sirnacou/file-ctrl/backend/internal/common/database/gen/models"
 	"github.com/stephenafamo/bob"
 )
@@ -43,10 +44,20 @@ func (h *ListStorageSourcesHandler) Handle(
 
 	sources := make([]Source, 0, len(res))
 	for _, s := range res {
+		createdAt, err := database.ParseTime(s.CreatedAt)
+		if err != nil {
+			slog.ErrorContext(
+				ctx,
+				"failed to parse storage source creation time",
+				slog.String("error", err.Error()),
+			)
+			return nil, errors.New("failed to parse database result")
+		}
+
 		sources = append(sources, Source{
 			Path:      s.Path,
 			Name:      s.Name,
-			CreatedAt: s.CreatedAt,
+			CreatedAt: createdAt,
 		})
 	}
 

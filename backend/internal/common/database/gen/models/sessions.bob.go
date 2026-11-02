@@ -7,7 +7,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"time"
 
 	"github.com/aarondl/opt/omit"
 	"github.com/stephenafamo/bob"
@@ -24,10 +23,10 @@ import (
 
 // Session is an object representing the database table.
 type Session struct {
-	ID        string    `db:"id,pk" `
-	UserID    string    `db:"user_id" `
-	ExpiresAt time.Time `db:"expires_at" `
-	CreatedAt time.Time `db:"created_at" `
+	ID        string `db:"id,pk" `
+	UserID    string `db:"user_id" `
+	ExpiresAt string `db:"expires_at" `
+	CreatedAt string `db:"created_at" `
 
 	R sessionR `db:"-" `
 }
@@ -127,10 +126,10 @@ func (c sessionColumn) ShouldOmitParens() bool {
 // All values are optional, and do not have to be set
 // Generated columns are not included
 type SessionSetter struct {
-	ID        omit.Val[string]    `db:"id,pk" `
-	UserID    omit.Val[string]    `db:"user_id" `
-	ExpiresAt omit.Val[time.Time] `db:"expires_at" `
-	CreatedAt omit.Val[time.Time] `db:"created_at" `
+	ID        omit.Val[string] `db:"id,pk" `
+	UserID    omit.Val[string] `db:"user_id" `
+	ExpiresAt omit.Val[string] `db:"expires_at" `
+	CreatedAt omit.Val[string] `db:"created_at" `
 }
 
 func (s SessionSetter) SetColumns() []string {
@@ -589,8 +588,8 @@ type sessionWhere[Q sqlite.Filterable] struct {
 	cols      sessionColumns
 	ID        sqlite.WhereMod[Q, string]
 	UserID    sqlite.WhereMod[Q, string]
-	ExpiresAt sqlite.WhereMod[Q, time.Time]
-	CreatedAt sqlite.WhereMod[Q, time.Time]
+	ExpiresAt sqlite.WhereMod[Q, string]
+	CreatedAt sqlite.WhereMod[Q, string]
 	R         sessionWhereR[Q]
 }
 
@@ -603,8 +602,8 @@ func buildSessionWhere[Q sqlite.Filterable](cols sessionColumns) sessionWhere[Q]
 		cols:      cols,
 		ID:        sqlite.Where[Q, string](cols.ID.Expression),
 		UserID:    sqlite.Where[Q, string](cols.UserID.Expression),
-		ExpiresAt: sqlite.Where[Q, time.Time](cols.ExpiresAt.Expression),
-		CreatedAt: sqlite.Where[Q, time.Time](cols.CreatedAt.Expression),
+		ExpiresAt: sqlite.Where[Q, string](cols.ExpiresAt.Expression),
+		CreatedAt: sqlite.Where[Q, string](cols.CreatedAt.Expression),
 		R:         sessionWhereR[Q]{cols: cols},
 	}
 }
