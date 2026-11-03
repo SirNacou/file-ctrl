@@ -32,7 +32,10 @@ func NewServer() (*Server, error) {
 	}
 	slog.SetDefault(cm.Logger)
 
-	am := auth.NewAuthModule(cm.DB, cm.Env)
+	am, err := auth.NewAuthModule(cm.DB, cm.Env)
+	if err != nil {
+		return nil, fmt.Errorf("create auth module: %w", err)
+	}
 	sm, err := storage.NewStorageModule(cm.Env.StorageDir, cm.Env.UploadDir, cm.DB)
 	if err != nil {
 		return nil, fmt.Errorf("create storage module: %w", err)
