@@ -7,8 +7,26 @@ export type ClientOptions = {
 export type AuthStatusResponseBody = {
   authenticated: boolean;
   needs_setup: boolean;
+  oidc_enabled: boolean;
   role?: string;
   username?: string;
+};
+
+export type Cookie = {
+  Domain: string;
+  Expires: Date;
+  HttpOnly: boolean;
+  MaxAge: bigint;
+  Name: string;
+  Partitioned: boolean;
+  Path: string;
+  Quoted: boolean;
+  Raw: string;
+  RawExpires: string;
+  SameSite: bigint;
+  Secure: boolean;
+  Unparsed: Array<string>;
+  Value: string;
 };
 
 export type CreateFolderRequestBody = {
@@ -180,6 +198,65 @@ export type AuthLogoutResponses = {
 };
 
 export type AuthLogoutResponse = AuthLogoutResponses[keyof AuthLogoutResponses];
+
+export type AuthOidcCallbackData = {
+  body?: never;
+  path?: never;
+  query: {
+    /**
+     * Authorization code from provider
+     */
+    code: string;
+    /**
+     * OIDC state returned from provider
+     */
+    state: string;
+  };
+  url: "/api/auth/oidc/callback";
+};
+
+export type AuthOidcCallbackErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type AuthOidcCallbackError = AuthOidcCallbackErrors[keyof AuthOidcCallbackErrors];
+
+export type AuthOidcCallbackResponses = {
+  /**
+   * No Content
+   */
+  204: void;
+};
+
+export type AuthOidcCallbackResponse = AuthOidcCallbackResponses[keyof AuthOidcCallbackResponses];
+
+export type AuthOidcLoginData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/auth/oidc/login";
+};
+
+export type AuthOidcLoginErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type AuthOidcLoginError = AuthOidcLoginErrors[keyof AuthOidcLoginErrors];
+
+export type AuthOidcLoginResponses = {
+  /**
+   * No Content
+   */
+  204: void;
+};
+
+export type AuthOidcLoginResponse = AuthOidcLoginResponses[keyof AuthOidcLoginResponses];
 
 export type AuthSetupAdminData = {
   body: SetupAdminRequestBody;

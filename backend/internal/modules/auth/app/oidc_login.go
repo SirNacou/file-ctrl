@@ -2,6 +2,8 @@ package app
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/domain"
@@ -18,11 +20,22 @@ type OIDCLoginSessions interface {
 	Create(ctx context.Context, session *domain.Session) error
 }
 
+type OIDCIdentity struct {
+	Subject           string
+	Email             string
+	PreferredUsername string
+}
+
+var ErrOIDCExchange = errors.New("OIDC exchange and verification failed")
+
+type OIDCIdentityVerifier interface {
+	ExchangeAndVerify(ctx context.Context, code, expectedNonce string) (*OIDCIdentity, error)
+}
+
 type (
 	OIDCLoginRequest struct {
-		Subject           string
-		Email             string
-		PreferredUsername string
+		Code  string
+		Nonce string
 	}
 	OIDCLoginResponse struct {
 		ID        uuid.UUID
@@ -34,16 +47,19 @@ type (
 	OIDCLoginHandler struct {
 		users    OIDCLoginUsers
 		sessions OIDCLoginSessions
+		verifier OIDCIdentityVerifier
 	}
 )
 
 func NewOIDCLoginHandler(
 	users OIDCLoginUsers,
 	sessions OIDCLoginSessions,
+	verifier OIDCIdentityVerifier,
 ) *OIDCLoginHandler {
 	return &OIDCLoginHandler{
 		users:    users,
 		sessions: sessions,
+		verifier: verifier,
 	}
 }
 
@@ -51,14 +67,23 @@ func (h *OIDCLoginHandler) Handle(
 	ctx context.Context,
 	req *OIDCLoginRequest,
 ) (*OIDCLoginResponse, error) {
-	user, err := h.users.FindByProvider(ctx, "oidc", req.Subject)
+	identity, err := h.verifier.ExchangeAndVerify(ctx, req.Code, req.Nonce)
 	if err != nil {
-		username := req.PreferredUsername
+		return nil, fmt.Errorf("%w: %v", ErrOIDCExchange, err)
+	}
+
+	user, err := h.users.FindByProvider(ctx, "oidc", identity.Subject)
+	if err != nil {
+		username := identity.PreferredUsername
 		if username == "" {
-			username = req.Email
+			username = identity.Email
 		}
 		if username == "" {
-			username = "user-" + req.Subject[:8]
+			if len(identity.Subject) >= 8 {
+				username = "user-" + identity.Subject[:8]
+			} else {
+				username = "user-" + identity.Subject
+			}
 		}
 
 		role := domain.RoleUser
@@ -67,7 +92,7 @@ func (h *OIDCLoginHandler) Handle(
 			role = domain.RoleAdmin
 		}
 
-		user, err = domain.NewFederatedUser(username, req.Subject, domain.ProviderOIDC, role)
+		user, err = domain.NewFederatedUser(username, identity.Subject, domain.ProviderOIDC, role)
 		if err != nil {
 			return nil, err
 		}

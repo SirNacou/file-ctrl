@@ -7,6 +7,8 @@ import {
   authGetStatus,
   authLogin,
   authLogout,
+  authOidcCallback,
+  authOidcLogin,
   authSetupAdmin,
   createStorageFolder,
   listStorageSources,
@@ -31,6 +33,12 @@ import type {
   AuthLogoutData,
   AuthLogoutError,
   AuthLogoutResponse,
+  AuthOidcCallbackData,
+  AuthOidcCallbackError,
+  AuthOidcCallbackResponse,
+  AuthOidcLoginData,
+  AuthOidcLoginError,
+  AuthOidcLoginResponse,
   AuthSetupAdminData,
   AuthSetupAdminError,
   AuthSetupAdminResponse,
@@ -109,29 +117,6 @@ export const authLogoutMutation = (
   return mutationOptions;
 };
 
-/**
- * Create first administrator account on first run
- */
-export const authSetupAdminMutation = (
-  options?: Partial<Options<AuthSetupAdminData>>,
-): UseMutationOptions<AuthSetupAdminResponse, AuthSetupAdminError, Options<AuthSetupAdminData>> => {
-  const mutationOptions: UseMutationOptions<
-    AuthSetupAdminResponse,
-    AuthSetupAdminError,
-    Options<AuthSetupAdminData>
-  > = {
-    mutationFn: async (fnOptions) => {
-      const { data } = await authSetupAdmin({
-        ...options,
-        ...fnOptions,
-        throwOnError: true,
-      });
-      return data;
-    },
-  };
-  return mutationOptions;
-};
-
 export type QueryKey<TOptions extends Options> = [
   Pick<TOptions, "baseUrl" | "body" | "headers" | "path" | "query"> & {
     _id: string;
@@ -169,6 +154,79 @@ const createQueryKey = <TOptions extends Options>(
     params.query = options.query;
   }
   return [params];
+};
+
+export const authOidcCallbackQueryKey = (options: Options<AuthOidcCallbackData>) =>
+  createQueryKey("authOidcCallback", options, false, ["Auth"]);
+
+/**
+ * Exchange authorization code and establish session
+ */
+export const authOidcCallbackOptions = (options: Options<AuthOidcCallbackData>) =>
+  queryOptions<
+    AuthOidcCallbackResponse,
+    AuthOidcCallbackError,
+    AuthOidcCallbackResponse,
+    ReturnType<typeof authOidcCallbackQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await authOidcCallback({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: authOidcCallbackQueryKey(options),
+  });
+
+export const authOidcLoginQueryKey = (options?: Options<AuthOidcLoginData>) =>
+  createQueryKey("authOidcLogin", options, false, ["Auth"]);
+
+/**
+ * Initiate OIDC SSO redirect
+ */
+export const authOidcLoginOptions = (options?: Options<AuthOidcLoginData>) =>
+  queryOptions<
+    AuthOidcLoginResponse,
+    AuthOidcLoginError,
+    AuthOidcLoginResponse,
+    ReturnType<typeof authOidcLoginQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await authOidcLogin({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: authOidcLoginQueryKey(options),
+  });
+
+/**
+ * Create first administrator account on first run
+ */
+export const authSetupAdminMutation = (
+  options?: Partial<Options<AuthSetupAdminData>>,
+): UseMutationOptions<AuthSetupAdminResponse, AuthSetupAdminError, Options<AuthSetupAdminData>> => {
+  const mutationOptions: UseMutationOptions<
+    AuthSetupAdminResponse,
+    AuthSetupAdminError,
+    Options<AuthSetupAdminData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await authSetupAdmin({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
 };
 
 export const authGetStatusQueryKey = (options?: Options<AuthGetStatusData>) =>

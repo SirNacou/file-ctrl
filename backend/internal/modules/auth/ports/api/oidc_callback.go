@@ -2,10 +2,10 @@ package api
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
-	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/adapters"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/app"
 )
 
@@ -26,7 +26,6 @@ type OIDCCallbackResponse struct {
 func OIDCCallback(
 	api huma.API,
 	h *app.OIDCLoginHandler,
-	oidcService *adapters.OIDCService,
 	oidcCookies *OIDCCookies,
 	cookies *SessionCookies,
 ) {
@@ -46,21 +45,15 @@ func OIDCCallback(
 			return nil, huma.Error400BadRequest("Missing nonce verification cookie")
 		}
 
-		// 2. Exchange authorization code with the provider and parse claims
-		claims, err := oidcService.ExchangeAndVerify(ctx, i.Code, i.CookieNonce)
-		if err != nil {
-			return nil, huma.Error401Unauthorized(
-				"OIDC exchange and verification failed: " + err.Error(),
-			)
-		}
-
-		// 3. JIT user sync / lookup & session creation in SQLite
+		// 2. Exchange/verify the OIDC code and create the local session
 		res, err := h.Handle(ctx, &app.OIDCLoginRequest{
-			Subject:           claims.Subject,
-			Email:             claims.Email,
-			PreferredUsername: claims.PreferredUsername,
+			Code:  i.Code,
+			Nonce: i.CookieNonce,
 		})
 		if err != nil {
+			if errors.Is(err, app.ErrOIDCExchange) {
+				return nil, huma.Error401Unauthorized(err.Error())
+			}
 			return nil, huma.Error500InternalServerError("Failed to create user session", err)
 		}
 

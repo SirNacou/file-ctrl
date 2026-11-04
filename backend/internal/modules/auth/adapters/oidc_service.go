@@ -9,6 +9,7 @@ import (
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/sirnacou/file-ctrl/backend/internal/common/config"
+	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/app"
 	"golang.org/x/oauth2"
 )
 
@@ -84,7 +85,7 @@ func (s *OIDCService) AuthCodeURL(state, nonce string) string {
 func (s *OIDCService) ExchangeAndVerify(
 	ctx context.Context,
 	code, expectedNonce string,
-) (*OIDCClaims, error) {
+) (*app.OIDCIdentity, error) {
 	token, err := s.oauthCfg.Exchange(ctx, code)
 	if err != nil {
 		return nil, fmt.Errorf("failed to exchange token: %w", err)
@@ -109,5 +110,9 @@ func (s *OIDCService) ExchangeAndVerify(
 		return nil, fmt.Errorf("failed to parse id_token claims: %w", err)
 	}
 
-	return &claims, nil
+	return &app.OIDCIdentity{
+		Subject:           claims.Subject,
+		Email:             claims.Email,
+		PreferredUsername: claims.PreferredUsername,
+	}, nil
 }

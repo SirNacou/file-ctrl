@@ -21,20 +21,20 @@ type AuthModule struct {
 	oidcCookies *api.OIDCCookies
 }
 
-func NewAuthModule(db bob.Executor, env *config.Env) (*AuthModule, error) {
+func NewAuthModule(ctx context.Context, db bob.Executor, env *config.Env) (*AuthModule, error) {
 	userRepo := adapters.NewUserRepository(db)
 	sessionRepo := adapters.NewSessionRepository(db)
 
-	oidcService, err := adapters.NewOIDCService(context.Background(), env.OIDC)
+	oidcService, err := adapters.NewOIDCService(ctx, env.OIDC)
 	if err != nil {
 		return nil, fmt.Errorf("create OIDC service: %w", err)
 	}
 
 	h := &app.Handlers{
-		GetStatus:             app.NewGetStatusHandler(userRepo, sessionRepo),
+		GetStatus:             app.NewGetStatusHandler(userRepo, sessionRepo, oidcService),
 		Login:                 app.NewLoginHandler(userRepo, sessionRepo),
 		Logout:                app.NewLogoutHandler(sessionRepo),
-		OIDCLogin:             app.NewOIDCLoginHandler(userRepo, sessionRepo),
+		OIDCLogin:             app.NewOIDCLoginHandler(userRepo, sessionRepo, oidcService),
 		RemoveExpiredSessions: app.NewRemoveExpiredSessionsHandler(sessionRepo),
 		SetupAdmin:            app.NewSetupAdminHandler(userRepo, sessionRepo),
 		VerifySession:         app.NewVerifySessionHandler(userRepo, sessionRepo),

@@ -21,5 +21,5 @@ func Register(
 	Logout(authAPI, h.Logout, cookies)
 	SetupAdmin(authAPI, h.SetupAdmin, cookies)
 	OIDCLogin(authAPI, oidcService, oidcCookies)
-	OIDCCallback(authAPI, h.OIDCLogin, oidcService, oidcCookies, cookies)
+	OIDCCallback(authAPI, h.OIDCLogin, oidcCookies, cookies)
 }

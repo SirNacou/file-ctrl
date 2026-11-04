@@ -25,14 +25,14 @@ type Server struct {
 	auth    *auth.AuthModule
 }
 
-func NewServer() (*Server, error) {
+func NewServer(ctx context.Context) (*Server, error) {
 	cm, err := common.NewCommonModule()
 	if err != nil {
 		return nil, fmt.Errorf("create common module: %w", err)
 	}
 	slog.SetDefault(cm.Logger)
 
-	am, err := auth.NewAuthModule(cm.DB, cm.Env)
+	am, err := auth.NewAuthModule(ctx, cm.DB, cm.Env)
 	if err != nil {
 		return nil, fmt.Errorf("create auth module: %w", err)
 	}
