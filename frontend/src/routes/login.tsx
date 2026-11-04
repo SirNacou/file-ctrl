@@ -9,11 +9,14 @@ export const Route = createFileRoute('/login')({
     if (status.needs_setup) {
       throw redirect({ to: '/setup' })
     }
+
+    return { oidcEnabled: status.oidc_enabled }
   },
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const navigate = Route.useNavigate()
-  return <LoginForm onSuccess={() => navigate({ to: '/' })} />
+  const { oidcEnabled } = Route.useRouteContext()
+  return <LoginForm oidcEnabled={oidcEnabled} onSuccess={() => navigate({ to: '/' })} />
 }

@@ -7,11 +7,11 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
-	"uuid"
 
 	"github.com/labstack/echo/v5"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/app"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/auth/domain"
+	"uuid"
 )
 
 type (
@@ -32,9 +32,11 @@ func GetUserFromContext(ctx context.Context) *UserContext {
 }
 
 var publicPaths = map[string]struct{}{
-	"/api/auth/status": {},
-	"/api/auth/login":  {},
-	"/api/auth/setup":  {},
+	"/api/auth/status":        {},
+	"/api/auth/login":         {},
+	"/api/auth/setup":         {},
+	"/api/auth/oidc/login":    {},
+	"/api/auth/oidc/callback": {},
 }
 
 func AuthMiddleware(handler *app.VerifySessionHandler) echo.MiddlewareFunc {

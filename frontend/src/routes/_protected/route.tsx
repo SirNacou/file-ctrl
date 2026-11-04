@@ -21,8 +21,7 @@ export const Route = createFileRoute('/_protected')({
 
     return {
       user: {
-        username: status.username,
-        role: status.role,
+        ...status,
       },
     }
   },

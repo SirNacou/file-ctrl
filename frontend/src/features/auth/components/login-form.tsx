@@ -9,8 +9,11 @@ import { InputField } from '#/components/ui/shuip/tanstack-form/input-field.tsx'
 import { PasswordField } from '#/components/ui/shuip/tanstack-form/password-field.tsx'
 import { SubmitButton } from '#/components/ui/shuip/tanstack-form/submit-button.tsx'
 
+import { OidcLoginButton, oidcLoginUrl } from './oidc-login-button'
+
 type LoginFormProps = {
   onSuccess: () => void
+  oidcEnabled: boolean
 }
 
 const { useAppForm } = createFormHook({
@@ -30,8 +33,9 @@ const defaultValues: AuthLoginBodyZodInput = {
   password: '',
 }
 
-export function LoginForm({ onSuccess }: LoginFormProps) {
+export function LoginForm({ onSuccess, oidcEnabled }: LoginFormProps) {
   const queryClient = useQueryClient()
+  const enabledOidcLoginUrl = oidcEnabled ? oidcLoginUrl : undefined
   const loginMutation = useMutation({
     ...authLoginMutation(),
     onSuccess: async () => {
@@ -109,6 +113,16 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           <form.AppForm>
             <form.SubmitButton pendingLabel="Signing in...">Sign In</form.SubmitButton>
           </form.AppForm>
+          {enabledOidcLoginUrl && (
+            <>
+              <div className="text-muted-foreground flex items-center gap-3 text-xs">
+                <span className="bg-border h-px flex-1" />
+                or
+                <span className="bg-border h-px flex-1" />
+              </div>
+              <OidcLoginButton href={enabledOidcLoginUrl} />
+            </>
+          )}
         </form>
       </div>
     </div>

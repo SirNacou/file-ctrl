@@ -15,11 +15,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
+import { OidcLoginButton, oidcLoginUrl } from './oidc-login-button'
+
 interface SetupWizardFormProps {
   onSuccess: () => void
+  oidcEnabled: boolean
 }
 
-export function SetupWizardForm({ onSuccess }: SetupWizardFormProps) {
+export function SetupWizardForm({ onSuccess, oidcEnabled }: SetupWizardFormProps) {
   const [username, setUsername] = useState('admin')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -27,6 +30,7 @@ export function SetupWizardForm({ onSuccess }: SetupWizardFormProps) {
   const [validationError, setValidationError] = useState<string | null>(null)
 
   const queryClient = useQueryClient()
+  const enabledOidcLoginUrl = oidcEnabled ? oidcLoginUrl : undefined
   const setupMutation = useMutation({
     ...authSetupAdminMutation(),
     onSuccess: async () => {
@@ -205,6 +209,10 @@ export function SetupWizardForm({ onSuccess }: SetupWizardFormProps) {
             )}
           </Button>
         </form>
+
+        {enabledOidcLoginUrl && (
+          <OidcLoginButton href={enabledOidcLoginUrl} label="Set up with SSO" />
+        )}
       </div>
     </div>
   )
