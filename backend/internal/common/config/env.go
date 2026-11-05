@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"path/filepath"
 	"strings"
 
@@ -10,17 +11,37 @@ import (
 )
 
 var (
-	ErrInvalidPort         = errors.New("port must not be empty")
-	ErrDBInsideStorage     = errors.New("database file cannot be located inside the storage root")
-	ErrUploadInsideStorage = errors.New("upload directory cannot be located inside the storage root")
+	ErrInvalidPort     = errors.New("port must not be empty")
+	ErrDBInsideStorage = errors.New(
+		"database file cannot be located inside the storage root",
+	)
+	ErrUploadInsideStorage = errors.New(
+		"upload directory cannot be located inside the storage root",
+	)
+	ErrOIDCIssuerURL          = errors.New("OIDC issuer URL is required when OIDC is enabled")
+	ErrOIDCClientID           = errors.New("OIDC client ID is required when OIDC is enabled")
+	ErrOIDCClientSecret       = errors.New("OIDC client secret is required when OIDC is enabled")
+	ErrOIDCRedirectURL        = errors.New("OIDC redirect URL is required when OIDC is enabled")
+	ErrOIDCInvalidIssuerURL   = errors.New("OIDC issuer URL must be an absolute HTTP(S) URL")
+	ErrOIDCInvalidRedirectURL = errors.New("OIDC redirect URL must be an absolute HTTP(S) URL")
 )
 
 type Env struct {
-	AppEnv               string `env:"APP_ENV"       envDefault:"development"`
-	DatabasePath         string `env:"DATABASE_PATH" envDefault:"../data/metadata.db"`
-	StorageDir           string `env:"STORAGE_DIR"   envDefault:"../storage"`
-	UploadDir            string `env:"UPLOAD_DIR"    envDefault:"../data/uploads"`
-	CookieSecureOverride *bool  `env:"COOKIE_SECURE"`
+	AppEnv               string     `env:"APP_ENV"       envDefault:"development"`
+	DatabasePath         string     `env:"DATABASE_PATH" envDefault:"../data/metadata.db"`
+	StorageDir           string     `env:"STORAGE_DIR"   envDefault:"../storage"`
+	UploadDir            string     `env:"UPLOAD_DIR"    envDefault:"../data/uploads"`
+	CookieSecureOverride *bool      `env:"COOKIE_SECURE"`
+	OIDC                 OIDCConfig `                                                     envPrefix:"OIDC_"`
+}
+
+type OIDCConfig struct {
+	Enabled      bool     `env:"ENABLED"       envDefault:"false"`
+	IssuerURL    string   `env:"ISSUER_URL"`
+	ClientID     string   `env:"CLIENT_ID"`
+	ClientSecret string   `env:"CLIENT_SECRET"`
+	RedirectURL  string   `env:"REDIRECT_URL"`
+	Scopes       []string `env:"SCOPES"        envDefault:"openid,profile,email" envSeparator:","`
 }
 
 func LoadEnv() (*Env, error) {
@@ -88,7 +109,36 @@ func (c *Env) Validate() error {
 		return ErrUploadInsideStorage
 	}
 
+	if c.OIDC.Enabled {
+		if strings.TrimSpace(c.OIDC.IssuerURL) == "" {
+			return ErrOIDCIssuerURL
+		}
+		if strings.TrimSpace(c.OIDC.ClientID) == "" {
+			return ErrOIDCClientID
+		}
+		if strings.TrimSpace(c.OIDC.ClientSecret) == "" {
+			return ErrOIDCClientSecret
+		}
+		if strings.TrimSpace(c.OIDC.RedirectURL) == "" {
+			return ErrOIDCRedirectURL
+		}
+		if !isAbsoluteHTTPURL(c.OIDC.IssuerURL) {
+			return ErrOIDCInvalidIssuerURL
+		}
+		if !isAbsoluteHTTPURL(c.OIDC.RedirectURL) {
+			return ErrOIDCInvalidRedirectURL
+		}
+	}
+
 	return nil
+}
+
+func isAbsoluteHTTPURL(value string) bool {
+	parsed, err := url.Parse(strings.TrimSpace(value))
+	if err != nil || parsed.Host == "" {
+		return false
+	}
+	return parsed.Scheme == "http" || parsed.Scheme == "https"
 }
 
 func pathIsWithin(root, path string) bool {

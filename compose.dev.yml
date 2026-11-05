@@ -1,0 +1,5 @@
+services:
+  oidc:
+    image: ghcr.io/navikt/mock-oauth2-server:latest
+    ports:
+      - "8081:8080"

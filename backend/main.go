@@ -14,7 +14,7 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	server, err := api.NewServer()
+	server, err := api.NewServer(ctx)
 	if err != nil {
 		slog.Error("init failed", slog.Any("error", err))
 		os.Exit(1)

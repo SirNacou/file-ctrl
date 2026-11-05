@@ -18,6 +18,12 @@ import type {
   AuthLogoutData,
   AuthLogoutErrors,
   AuthLogoutResponses,
+  AuthOidcCallbackData,
+  AuthOidcCallbackErrors,
+  AuthOidcCallbackResponses,
+  AuthOidcLoginData,
+  AuthOidcLoginErrors,
+  AuthOidcLoginResponses,
   AuthSetupAdminData,
   AuthSetupAdminErrors,
   AuthSetupAdminResponses,
@@ -60,6 +66,9 @@ import {
   zAuthLoginBody,
   zAuthLoginResponse,
   zAuthLogoutResponse,
+  zAuthOidcCallbackQuery,
+  zAuthOidcCallbackResponse,
+  zAuthOidcLoginResponse,
   zAuthSetupAdminBody,
   zAuthSetupAdminResponse,
   zCreateStorageFolderBody,
@@ -144,6 +153,46 @@ export const authLogout = <ThrowOnError extends boolean = false>(
         .parseAsync(data),
     responseValidator: async (data) => await zAuthLogoutResponse.parseAsync(data),
     url: "/api/auth/logout",
+    ...options,
+  });
+
+/**
+ * Exchange authorization code and establish session
+ */
+export const authOidcCallback = <ThrowOnError extends boolean = false>(
+  options: Options<AuthOidcCallbackData, ThrowOnError>,
+): RequestResult<AuthOidcCallbackResponses, AuthOidcCallbackErrors, ThrowOnError> =>
+  (options.client ?? client).get<AuthOidcCallbackResponses, AuthOidcCallbackErrors, ThrowOnError>({
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: z.never().optional(),
+          path: z.never().optional(),
+          query: zAuthOidcCallbackQuery,
+        })
+        .parseAsync(data),
+    responseValidator: async (data) => await zAuthOidcCallbackResponse.parseAsync(data),
+    url: "/api/auth/oidc/callback",
+    ...options,
+  });
+
+/**
+ * Initiate OIDC SSO redirect
+ */
+export const authOidcLogin = <ThrowOnError extends boolean = false>(
+  options?: Options<AuthOidcLoginData, ThrowOnError>,
+): RequestResult<AuthOidcLoginResponses, AuthOidcLoginErrors, ThrowOnError> =>
+  (options?.client ?? client).get<AuthOidcLoginResponses, AuthOidcLoginErrors, ThrowOnError>({
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: z.never().optional(),
+          path: z.never().optional(),
+          query: z.never().optional(),
+        })
+        .parseAsync(data),
+    responseValidator: async (data) => await zAuthOidcLoginResponse.parseAsync(data),
+    url: "/api/auth/oidc/login",
     ...options,
   });
 

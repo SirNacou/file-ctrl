@@ -11,6 +11,7 @@ import (
 
 	"github.com/aarondl/opt/null"
 	"github.com/aarondl/opt/omit"
+	"github.com/aarondl/opt/omitnull"
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/dialect/sqlite"
 	"github.com/stephenafamo/bob/dialect/sqlite/dialect"
@@ -25,12 +26,14 @@ import (
 
 // User is an object representing the database table.
 type User struct {
-	ID           string `db:"id,pk" `
-	Username     string `db:"username" `
-	PasswordHash string `db:"password_hash" `
-	Role         string `db:"role" `
-	CreatedAt    string `db:"created_at" `
-	UpdatedAt    string `db:"updated_at" `
+	ID           string           `db:"id,pk" `
+	Username     string           `db:"username" `
+	PasswordHash null.Val[string] `db:"password_hash" `
+	Role         string           `db:"role" `
+	CreatedAt    string           `db:"created_at" `
+	UpdatedAt    string           `db:"updated_at" `
+	Provider     string           `db:"provider" `
+	ProviderID   null.Val[string] `db:"provider_id" `
 
 	R userR `db:"-" `
 
@@ -63,7 +66,7 @@ type userRLoaded struct {
 
 func buildUserColumns(tableName string) userColumns {
 	columnsExpr := expr.NewColumnsExpr(
-		"id", "username", "password_hash", "role", "created_at", "updated_at",
+		"id", "username", "password_hash", "role", "created_at", "updated_at", "provider", "provider_id",
 	)
 
 	if tableName != "" {
@@ -79,6 +82,8 @@ func buildUserColumns(tableName string) userColumns {
 		Role:         buildUserColumn(tableName, "role"),
 		CreatedAt:    buildUserColumn(tableName, "created_at"),
 		UpdatedAt:    buildUserColumn(tableName, "updated_at"),
+		Provider:     buildUserColumn(tableName, "provider"),
+		ProviderID:   buildUserColumn(tableName, "provider_id"),
 	}
 }
 
@@ -91,6 +96,8 @@ type userColumns struct {
 	Role         userColumn
 	CreatedAt    userColumn
 	UpdatedAt    userColumn
+	Provider     userColumn
+	ProviderID   userColumn
 }
 
 // Alias returns the current table alias for the columns set.
@@ -136,23 +143,25 @@ func (c userColumn) ShouldOmitParens() bool {
 // All values are optional, and do not have to be set
 // Generated columns are not included
 type UserSetter struct {
-	ID           omit.Val[string] `db:"id,pk" `
-	Username     omit.Val[string] `db:"username" `
-	PasswordHash omit.Val[string] `db:"password_hash" `
-	Role         omit.Val[string] `db:"role" `
-	CreatedAt    omit.Val[string] `db:"created_at" `
-	UpdatedAt    omit.Val[string] `db:"updated_at" `
+	ID           omit.Val[string]     `db:"id,pk" `
+	Username     omit.Val[string]     `db:"username" `
+	PasswordHash omitnull.Val[string] `db:"password_hash" `
+	Role         omit.Val[string]     `db:"role" `
+	CreatedAt    omit.Val[string]     `db:"created_at" `
+	UpdatedAt    omit.Val[string]     `db:"updated_at" `
+	Provider     omit.Val[string]     `db:"provider" `
+	ProviderID   omitnull.Val[string] `db:"provider_id" `
 }
 
 func (s UserSetter) SetColumns() []string {
-	vals := make([]string, 0, 6)
+	vals := make([]string, 0, 8)
 	if s.ID.IsValue() {
 		vals = append(vals, "id")
 	}
 	if s.Username.IsValue() {
 		vals = append(vals, "username")
 	}
-	if s.PasswordHash.IsValue() {
+	if s.PasswordHash.IsValue() || s.PasswordHash.IsNull() {
 		vals = append(vals, "password_hash")
 	}
 	if s.Role.IsValue() {
@@ -164,6 +173,12 @@ func (s UserSetter) SetColumns() []string {
 	if s.UpdatedAt.IsValue() {
 		vals = append(vals, "updated_at")
 	}
+	if s.Provider.IsValue() {
+		vals = append(vals, "provider")
+	}
+	if s.ProviderID.IsValue() || s.ProviderID.IsNull() {
+		vals = append(vals, "provider_id")
+	}
 	return vals
 }
 
@@ -174,8 +189,8 @@ func (s UserSetter) Overwrite(t *User) {
 	if s.Username.IsValue() {
 		t.Username = s.Username.MustGet()
 	}
-	if s.PasswordHash.IsValue() {
-		t.PasswordHash = s.PasswordHash.MustGet()
+	if s.PasswordHash.IsValue() || s.PasswordHash.IsNull() {
+		t.PasswordHash = s.PasswordHash.MustGetNull()
 	}
 	if s.Role.IsValue() {
 		t.Role = s.Role.MustGet()
@@ -185,6 +200,12 @@ func (s UserSetter) Overwrite(t *User) {
 	}
 	if s.UpdatedAt.IsValue() {
 		t.UpdatedAt = s.UpdatedAt.MustGet()
+	}
+	if s.Provider.IsValue() {
+		t.Provider = s.Provider.MustGet()
+	}
+	if s.ProviderID.IsValue() || s.ProviderID.IsNull() {
+		t.ProviderID = s.ProviderID.MustGetNull()
 	}
 }
 
@@ -223,7 +244,7 @@ func (s *UserSetter) Apply(q *dialect.InsertQuery) {
 				if s.PasswordHash.IsUnset() {
 					return sqlite.Arg(nil).WriteSQL(ctx, w, d, start)
 				}
-				return sqlite.Arg(s.PasswordHash.MustGet()).WriteSQL(ctx, w, d, start)
+				return sqlite.Arg(s.PasswordHash.MustGetNull()).WriteSQL(ctx, w, d, start)
 			}))
 		case "role":
 			vals = append(vals, bob.ExpressionFunc(func(ctx context.Context, w io.StringWriter, d bob.Dialect, start int) ([]any, error) {
@@ -246,6 +267,20 @@ func (s *UserSetter) Apply(q *dialect.InsertQuery) {
 				}
 				return sqlite.Arg(s.UpdatedAt.MustGet()).WriteSQL(ctx, w, d, start)
 			}))
+		case "provider":
+			vals = append(vals, bob.ExpressionFunc(func(ctx context.Context, w io.StringWriter, d bob.Dialect, start int) ([]any, error) {
+				if s.Provider.IsUnset() {
+					return sqlite.Arg(nil).WriteSQL(ctx, w, d, start)
+				}
+				return sqlite.Arg(s.Provider.MustGet()).WriteSQL(ctx, w, d, start)
+			}))
+		case "provider_id":
+			vals = append(vals, bob.ExpressionFunc(func(ctx context.Context, w io.StringWriter, d bob.Dialect, start int) ([]any, error) {
+				if s.ProviderID.IsUnset() {
+					return sqlite.Arg(nil).WriteSQL(ctx, w, d, start)
+				}
+				return sqlite.Arg(s.ProviderID.MustGetNull()).WriteSQL(ctx, w, d, start)
+			}))
 		}
 	}
 
@@ -257,7 +292,7 @@ func (s UserSetter) UpdateMod() bob.Mod[*dialect.UpdateQuery] {
 }
 
 func (s UserSetter) Expressions(prefix ...string) []bob.Expression {
-	exprs := make([]bob.Expression, 0, 6)
+	exprs := make([]bob.Expression, 0, 8)
 
 	if s.ID.IsValue() {
 		exprs = append(exprs, expr.Join{Sep: " = ", Exprs: []bob.Expression{
@@ -273,7 +308,7 @@ func (s UserSetter) Expressions(prefix ...string) []bob.Expression {
 		}})
 	}
 
-	if s.PasswordHash.IsValue() {
+	if s.PasswordHash.IsValue() || s.PasswordHash.IsNull() {
 		exprs = append(exprs, expr.Join{Sep: " = ", Exprs: []bob.Expression{
 			sqlite.Quote(append(prefix, "password_hash")...),
 			sqlite.Arg(s.PasswordHash),
@@ -301,6 +336,20 @@ func (s UserSetter) Expressions(prefix ...string) []bob.Expression {
 		}})
 	}
 
+	if s.Provider.IsValue() {
+		exprs = append(exprs, expr.Join{Sep: " = ", Exprs: []bob.Expression{
+			sqlite.Quote(append(prefix, "provider")...),
+			sqlite.Arg(s.Provider),
+		}})
+	}
+
+	if s.ProviderID.IsValue() || s.ProviderID.IsNull() {
+		exprs = append(exprs, expr.Join{Sep: " = ", Exprs: []bob.Expression{
+			sqlite.Quote(append(prefix, "provider_id")...),
+			sqlite.Arg(s.ProviderID),
+		}})
+	}
+
 	return exprs
 }
 
@@ -311,7 +360,7 @@ func userScanMapper(ctx context.Context, cols []string) (scan.BeforeFunc, func(a
 		idx int
 		dst func(o *User) any
 	}
-	targets := make([]target, 0, 6)
+	targets := make([]target, 0, 8)
 	for i, col := range cols {
 		switch col {
 		case "id":
@@ -326,6 +375,10 @@ func userScanMapper(ctx context.Context, cols []string) (scan.BeforeFunc, func(a
 			targets = append(targets, target{i, func(o *User) any { return &o.CreatedAt }})
 		case "updated_at":
 			targets = append(targets, target{i, func(o *User) any { return &o.UpdatedAt }})
+		case "provider":
+			targets = append(targets, target{i, func(o *User) any { return &o.Provider }})
+		case "provider_id":
+			targets = append(targets, target{i, func(o *User) any { return &o.ProviderID }})
 		}
 	}
 
@@ -664,10 +717,12 @@ type userWhere[Q sqlite.Filterable] struct {
 	cols         userColumns
 	ID           sqlite.WhereMod[Q, string]
 	Username     sqlite.WhereMod[Q, string]
-	PasswordHash sqlite.WhereMod[Q, string]
+	PasswordHash sqlite.WhereNullMod[Q, string]
 	Role         sqlite.WhereMod[Q, string]
 	CreatedAt    sqlite.WhereMod[Q, string]
 	UpdatedAt    sqlite.WhereMod[Q, string]
+	Provider     sqlite.WhereMod[Q, string]
+	ProviderID   sqlite.WhereNullMod[Q, string]
 	R            userWhereR[Q]
 }
 
@@ -680,10 +735,12 @@ func buildUserWhere[Q sqlite.Filterable](cols userColumns) userWhere[Q] {
 		cols:         cols,
 		ID:           sqlite.Where[Q, string](cols.ID.Expression),
 		Username:     sqlite.Where[Q, string](cols.Username.Expression),
-		PasswordHash: sqlite.Where[Q, string](cols.PasswordHash.Expression),
+		PasswordHash: sqlite.WhereNull[Q, string](cols.PasswordHash.Expression),
 		Role:         sqlite.Where[Q, string](cols.Role.Expression),
 		CreatedAt:    sqlite.Where[Q, string](cols.CreatedAt.Expression),
 		UpdatedAt:    sqlite.Where[Q, string](cols.UpdatedAt.Expression),
+		Provider:     sqlite.Where[Q, string](cols.Provider.Expression),
+		ProviderID:   sqlite.WhereNull[Q, string](cols.ProviderID.Expression),
 		R:            userWhereR[Q]{cols: cols},
 	}
 }
@@ -719,6 +776,8 @@ type userPreloadBuf struct {
 	Role         null.Val[string]
 	CreatedAt    null.Val[string]
 	UpdatedAt    null.Val[string]
+	Provider     null.Val[string]
+	ProviderID   null.Val[string]
 }
 
 // userScanMapperNullable maps the preloaded user
@@ -733,7 +792,7 @@ func userScanMapperNullable(prefix string) scan.Mapper[*User] {
 			idx int
 			dst func(b *userPreloadBuf) any
 		}
-		targets := make([]target, 0, 6)
+		targets := make([]target, 0, 8)
 		for i, col := range cols {
 			name, ok := strings.CutPrefix(col, prefix)
 			if !ok {
@@ -752,6 +811,10 @@ func userScanMapperNullable(prefix string) scan.Mapper[*User] {
 				targets = append(targets, target{i, func(b *userPreloadBuf) any { return &b.CreatedAt }})
 			case "updated_at":
 				targets = append(targets, target{i, func(b *userPreloadBuf) any { return &b.UpdatedAt }})
+			case "provider":
+				targets = append(targets, target{i, func(b *userPreloadBuf) any { return &b.Provider }})
+			case "provider_id":
+				targets = append(targets, target{i, func(b *userPreloadBuf) any { return &b.ProviderID }})
 			}
 		}
 
@@ -779,7 +842,9 @@ func userScanMapperNullable(prefix string) scan.Mapper[*User] {
 					!(buf.PasswordHash.IsValue()) &&
 					!(buf.Role.IsValue()) &&
 					!(buf.CreatedAt.IsValue()) &&
-					!(buf.UpdatedAt.IsValue()) {
+					!(buf.UpdatedAt.IsValue()) &&
+					!(buf.Provider.IsValue()) &&
+					!(buf.ProviderID.IsValue()) {
 					return nil, nil
 				}
 
@@ -790,9 +855,7 @@ func userScanMapperNullable(prefix string) scan.Mapper[*User] {
 				if buf.Username.IsValue() {
 					o.Username = buf.Username.MustGet()
 				}
-				if buf.PasswordHash.IsValue() {
-					o.PasswordHash = buf.PasswordHash.MustGet()
-				}
+				o.PasswordHash = buf.PasswordHash
 				if buf.Role.IsValue() {
 					o.Role = buf.Role.MustGet()
 				}
@@ -802,6 +865,10 @@ func userScanMapperNullable(prefix string) scan.Mapper[*User] {
 				if buf.UpdatedAt.IsValue() {
 					o.UpdatedAt = buf.UpdatedAt.MustGet()
 				}
+				if buf.Provider.IsValue() {
+					o.Provider = buf.Provider.MustGet()
+				}
+				o.ProviderID = buf.ProviderID
 				return o, nil
 			}
 	}

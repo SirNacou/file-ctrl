@@ -45,7 +45,11 @@ func (h *LoginHandler) Handle(ctx context.Context, req *LoginRequest) (*LoginRes
 		return nil, domain.ErrInvalidCredentials
 	}
 
-	valid, err := password.VerifyPassword(user.PasswordHash)
+	if user.PasswordHash == nil {
+		return nil, domain.ErrInvalidCredentials
+	}
+
+	valid, err := password.VerifyPassword(*user.PasswordHash)
 	if err != nil || !valid {
 		return nil, domain.ErrInvalidCredentials
 	}

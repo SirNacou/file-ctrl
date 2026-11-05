@@ -5,6 +5,7 @@ import * as z from "zod";
 export const zAuthStatusResponseBody = z.object({
   authenticated: z.boolean(),
   needs_setup: z.boolean(),
+  oidc_enabled: z.boolean(),
   role: z.string().optional(),
   username: z.string().optional(),
 });
@@ -14,6 +15,43 @@ export type AuthStatusResponseBodyZodType = z.infer<typeof zAuthStatusResponseBo
 export type AuthStatusResponseBodyZodInput = z.input<typeof zAuthStatusResponseBody>;
 
 export type AuthStatusResponseBodyZodOutput = z.output<typeof zAuthStatusResponseBody>;
+
+export const zCookie = z.object({
+  Domain: z.string(),
+  Expires: z.iso.datetime({ offset: true }),
+  HttpOnly: z.boolean(),
+  MaxAge: z.coerce
+    .bigint()
+    .min(BigInt("-9223372036854775808"), {
+      error: "Invalid value: Expected int64 to be >= -9223372036854775808",
+    })
+    .max(BigInt("9223372036854775807"), {
+      error: "Invalid value: Expected int64 to be <= 9223372036854775807",
+    }),
+  Name: z.string(),
+  Partitioned: z.boolean(),
+  Path: z.string(),
+  Quoted: z.boolean(),
+  Raw: z.string(),
+  RawExpires: z.string(),
+  SameSite: z.coerce
+    .bigint()
+    .min(BigInt("-9223372036854775808"), {
+      error: "Invalid value: Expected int64 to be >= -9223372036854775808",
+    })
+    .max(BigInt("9223372036854775807"), {
+      error: "Invalid value: Expected int64 to be <= 9223372036854775807",
+    }),
+  Secure: z.boolean(),
+  Unparsed: z.array(z.string()),
+  Value: z.string(),
+});
+
+export type CookieZodType = z.infer<typeof zCookie>;
+
+export type CookieZodInput = z.input<typeof zCookie>;
+
+export type CookieZodOutput = z.output<typeof zCookie>;
 
 export const zCreateFolderRequestBody = z.object({
   name: z.string(),
@@ -276,6 +314,39 @@ export type AuthLogoutResponseZodType = z.infer<typeof zAuthLogoutResponse>;
 export type AuthLogoutResponseZodInput = z.input<typeof zAuthLogoutResponse>;
 
 export type AuthLogoutResponseZodOutput = z.output<typeof zAuthLogoutResponse>;
+
+export const zAuthOidcCallbackQuery = z.object({
+  code: z.string(),
+  state: z.string(),
+});
+
+export type AuthOidcCallbackQueryZodType = z.infer<typeof zAuthOidcCallbackQuery>;
+
+export type AuthOidcCallbackQueryZodInput = z.input<typeof zAuthOidcCallbackQuery>;
+
+export type AuthOidcCallbackQueryZodOutput = z.output<typeof zAuthOidcCallbackQuery>;
+
+/**
+ * No Content
+ */
+export const zAuthOidcCallbackResponse = z.void();
+
+export type AuthOidcCallbackResponseZodType = z.infer<typeof zAuthOidcCallbackResponse>;
+
+export type AuthOidcCallbackResponseZodInput = z.input<typeof zAuthOidcCallbackResponse>;
+
+export type AuthOidcCallbackResponseZodOutput = z.output<typeof zAuthOidcCallbackResponse>;
+
+/**
+ * No Content
+ */
+export const zAuthOidcLoginResponse = z.void();
+
+export type AuthOidcLoginResponseZodType = z.infer<typeof zAuthOidcLoginResponse>;
+
+export type AuthOidcLoginResponseZodInput = z.input<typeof zAuthOidcLoginResponse>;
+
+export type AuthOidcLoginResponseZodOutput = z.output<typeof zAuthOidcLoginResponse>;
 
 export const zAuthSetupAdminBody = zSetupAdminRequestBody;
 

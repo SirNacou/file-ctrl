@@ -15,9 +15,11 @@ type AuthStatusRequest struct {
 type AuthStatusResponse struct {
 	Body AuthStatusResponseBody
 }
+
 type AuthStatusResponseBody struct {
 	NeedsSetup    bool   `json:"needs_setup"`
 	Authenticated bool   `json:"authenticated"`
+	OidcEnabled   bool   `json:"oidc_enabled"` // <--- Added
 	Username      string `json:"username,omitempty"`
 	Role          string `json:"role,omitempty"`
 }
@@ -41,6 +43,7 @@ func GetStatus(api huma.API, h *app.GetStatusHandler) {
 			Body: AuthStatusResponseBody{
 				NeedsSetup:    res.NeedsSetup,
 				Authenticated: res.Authenticated,
+				OidcEnabled:   res.OidcEnabled, // <--- Mapped
 				Username:      res.Username,
 				Role:          string(res.Role),
 			},

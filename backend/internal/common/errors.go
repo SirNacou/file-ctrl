@@ -1,7 +1,9 @@
 package common
 
 import (
+	"errors"
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -24,9 +26,18 @@ type DomainError struct {
 
 func (e *DomainError) Error() string {
 	if e.Type == TypeValidation && len(e.ValidationMap) > 0 {
-		var details []string
-		for field, msgs := range e.ValidationMap {
-			details = append(details, fmt.Sprintf("%s: %s", field, strings.Join(msgs, ", ")))
+		fields := make([]string, 0, len(e.ValidationMap))
+		for f := range e.ValidationMap {
+			fields = append(fields, f)
+		}
+		sort.Strings(fields)
+
+		details := make([]string, 0, len(fields))
+		for _, f := range fields {
+			details = append(
+				details,
+				fmt.Sprintf("%s: %s", f, strings.Join(e.ValidationMap[f], ", ")),
+			)
 		}
 		return fmt.Sprintf("[%s] %s (%s)", e.Type, e.Message, strings.Join(details, "; "))
 	}
@@ -74,42 +85,67 @@ func NewFailureError(message string, err error) error {
 	}
 }
 
-func NewValidationError(field, message string) *DomainError {
+const defaultValidationMessage = "validation failed"
+
+// ValidationErrors accumulates field errors. Zero value is ready to use.
+type ValidationErrors struct {
+	message string
+	fields  map[string][]string
+}
+
+func NewValidation() *ValidationErrors {
+	return &ValidationErrors{fields: make(map[string][]string)}
+}
+
+func (v *ValidationErrors) WithMessage(msg string) *ValidationErrors {
+	v.message = msg
+	return v
+}
+
+func (v *ValidationErrors) Add(field, message string) *ValidationErrors {
+	if v.fields == nil {
+		v.fields = make(map[string][]string)
+	}
+	v.fields[field] = append(v.fields[field], message)
+	return v
+}
+
+func (v *ValidationErrors) Addf(field, format string, args ...any) *ValidationErrors {
+	return v.Add(field, fmt.Sprintf(format, args...))
+}
+
+// Merge folds in any validation error (e.g. from a nested value object).
+// Non-validation and nil errors are ignored, so callers can pass results directly.
+func (v *ValidationErrors) Merge(err error) *ValidationErrors {
+	var de *DomainError
+	if errors.As(err, &de) && de.Type == TypeValidation {
+		for field, msgs := range de.ValidationMap {
+			for _, m := range msgs {
+				v.Add(field, m)
+			}
+		}
+	}
+	return v
+}
+
+func (v *ValidationErrors) HasErrors() bool { return len(v.fields) > 0 }
+
+func (v *ValidationErrors) Err() error {
+	if !v.HasErrors() {
+		return nil
+	}
+	msg := v.message
+	if msg == "" {
+		msg = defaultValidationMessage
+	}
 	return &DomainError{
-		Type:    TypeValidation,
-		Message: "validation failed",
-		ValidationMap: map[string][]string{
-			field: {message},
-		},
+		Type:          TypeValidation,
+		Message:       msg,
+		ValidationMap: v.fields,
 	}
 }
 
-func JoinValidationErrors(summaryMessage string, errs ...*DomainError) error {
-	var combinedMap map[string][]string
-	hasErrors := false
-
-	for _, err := range errs {
-		if err == nil || err.Type != TypeValidation {
-			continue
-		}
-		if combinedMap == nil {
-			combinedMap = make(map[string][]string)
-		}
-		hasErrors = true
-
-		// Merge the fields safely
-		for field, messages := range err.ValidationMap {
-			combinedMap[field] = append(combinedMap[field], messages...)
-		}
-	}
-
-	if !hasErrors {
-		return nil
-	}
-
-	return &DomainError{
-		Type:          TypeValidation,
-		Message:       summaryMessage,
-		ValidationMap: combinedMap,
-	}
+// Single-error shortcut, now just a thin wrapper.
+func NewValidationError(field, message string) error {
+	return NewValidation().Add(field, message).Err()
 }
