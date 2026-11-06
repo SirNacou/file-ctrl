@@ -1,0 +1,17 @@
+services:
+  file-ctrl:
+    image: ghcr.io/sirnacou/file-ctrl:latest
+    container_name: file-ctrl
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      DATABASE_PATH: /data/metadata.db
+      STORAGE_DIR: /storage
+      UPLOAD_DIR: /data/uploads
+    ports:
+      - "8080:8080"
+    volumes:
+      - ${HOST_STORAGE_DIR:-./storage}:/storage
+      - ${HOST_DATA_DIR:-./data}:/data
