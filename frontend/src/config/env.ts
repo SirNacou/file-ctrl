@@ -4,7 +4,7 @@ import { z } from 'zod'
 export const env = defineEnv({
   clientPrefix: 'PUBLIC_',
   client: {
-    PUBLIC_APP_URL: z.url(),
+    PUBLIC_APP_URL: z.union([z.url(), z.literal('')]).default(''),
   },
   env: {
     ...process.env, // Server env variables
