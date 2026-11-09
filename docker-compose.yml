@@ -5,11 +5,6 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    environment:
-      APP_ENV: ${APP_ENV:-production}
-      DATABASE_PATH: /data/metadata.db
-      STORAGE_DIR: /storage
-      UPLOAD_DIR: /data/uploads
     ports:
       - "8080:8080"
     volumes:

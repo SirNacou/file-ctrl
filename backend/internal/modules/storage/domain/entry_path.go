@@ -41,8 +41,11 @@ func (p EntryPath) Display() string {
 // The relative part is validated on its own, so it can never escape p.
 func (p EntryPath) Join(rel string) (EntryPath, error) {
 	child, err := NewEntryPath(rel)
-	if err != nil || child.IsRoot() {
+	if err != nil {
 		return EntryPath{}, err
+	}
+	if child.IsRoot() {
+		return EntryPath{}, NewErrInvalidPath(rel)
 	}
 	return NewEntryPath(path.Join(p.value, child.value))
 }

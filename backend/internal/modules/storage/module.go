@@ -5,7 +5,7 @@ import (
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/labstack/echo/v5"
-	"github.com/sirnacou/file-ctrl/backend/internal/common/localfs"
+	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/adapters/localfs"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/adapters"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/app"
 	"github.com/sirnacou/file-ctrl/backend/internal/modules/storage/ports/api"
