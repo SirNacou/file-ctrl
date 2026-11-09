@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"log/slog"
 	"slices"
 	"strings"
 	"time"
@@ -64,7 +65,12 @@ func (h *ListDirectoryHandler) Handle(
 	// Note: omit ctx here if FSDirReader.ReadDir matches localfs.Store.ReadDir(sourcePath, dir)
 	entries, err := h.fsDirReader.ReadDir(ctx, sourcePath, entryPath)
 	if err != nil {
-		return nil, domain.NewErrInvalidPath(entryPath.String())
+		slog.ErrorContext(ctx, "failed to read storage directory",
+			slog.String("storage_path", sourcePath.String()),
+			slog.String("subpath", entryPath.String()),
+			slog.Any("error", err),
+		)
+		return nil, domain.NewErrFailToReadDir(entryPath.String())
 	}
 
 	items, err := readItems(entries, entryPath)

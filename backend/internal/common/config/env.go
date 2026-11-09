@@ -28,6 +28,7 @@ var (
 
 type Env struct {
 	AppEnv               string     `env:"APP_ENV"       envDefault:"development"`
+	HTTPPort             int        `env:"PORT"           envDefault:"8080"`
 	DatabasePath         string     `env:"DATABASE_PATH" envDefault:"../data/metadata.db"`
 	StorageDir           string     `env:"STORAGE_DIR"   envDefault:"../storage"`
 	UploadDir            string     `env:"UPLOAD_DIR"    envDefault:"../data/uploads"`
@@ -66,7 +67,7 @@ func (c *Env) IsDev() bool {
 }
 
 func (c *Env) Port() int {
-	return 8080
+	return c.HTTPPort
 }
 
 // Validate checks pure in-memory constraints and normalizes paths.
